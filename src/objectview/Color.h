@@ -10,7 +10,7 @@
 #ifndef OBJECTVIEW_COLOR_H_
 #define OBJECTVIEW_COLOR_H_
 
-namespace objectview {
+namespace color {
 
 class Color {
 public:
@@ -26,15 +26,17 @@ public:
 
 	GLfloat getAlpha() const { return alpha; }
 
+	static Color WHITE;
+	static Color BLACK;
+	static Color BLUE;
+	static Color RED;
+	static Color GREEN;
+
 private:
 	GLfloat r;
 	GLfloat g;
 	GLfloat b;
 	GLfloat alpha;
-
-
-
-
 };
 
 } /* namespace words */

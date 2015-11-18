@@ -5,22 +5,22 @@
  *      Author: cassiano
  */
 
-#include <GL/gl.h>
-#include <cmath>
+#include "Vector.h"
+#include <math.h>
 
 #ifndef GEOMETRY_VECTOR3_H_
 #define GEOMETRY_VECTOR3_H_
 
 namespace geometry {
 
-class Vector3 {
+class Vector3 : public Vector {
 public:
-	Vector3(GLfloat,GLfloat,GLfloat);
+	Vector3(GLfloat x,GLfloat y,GLfloat z);
 	virtual ~Vector3();
 
-	Vector3 operator+(Vector3);
-	Vector3 operator-(Vector3);
-	GLfloat operator*(Vector3);
+	Vector3 operator+(Vector3 other);
+	Vector3 operator-(Vector3 other);
+	GLfloat operator*(Vector3 other);
 
 	virtual GLfloat magnitude();
 	virtual void normalize();
@@ -35,6 +35,6 @@ private:
 	GLfloat z;
 };
 
-} /* namespace words */
+} /* namespace geometry */
 
 #endif /* GEOMETRY_VECTOR3_H_ */

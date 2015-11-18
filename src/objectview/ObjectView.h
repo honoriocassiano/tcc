@@ -18,17 +18,17 @@ public:
 	virtual ~ObjectView();
 
 	void draw();
-	void setColor(objectview::Color);
+	void setColor(color::Color);
 
 protected:
 	virtual void drawObject() = 0;
 
 private:
 
-	objectview::Color color = objectview::Color(1.0f, 1.0f, 1.0f);
+	color::Color color = color::Color::WHITE;//objectview::Color(1.0f, 1.0f, 1.0f);
 
-	void initdraw();
-	void enddraw();
+	GLint initdraw();
+	void enddraw(GLint);
 
 };
 

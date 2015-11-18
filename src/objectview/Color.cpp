@@ -7,7 +7,13 @@
 
 #include "Color.h"
 
-namespace objectview {
+namespace color {
+
+Color Color::WHITE = Color(1.0f, 1.0f, 1.0f);
+Color Color::BLACK = Color(0.0f, 0.0f, 0.0f);
+Color Color::BLUE = Color(0.0f, 0.0f, 1.0f);
+Color Color::RED = Color(1.0f, 0.0f, 0.0f);
+Color Color::GREEN = Color(0.0f, 1.0f, 0.0f);
 
 Color::Color(GLfloat r, GLfloat g, GLfloat b) {
 	this->r = r;
@@ -27,5 +33,5 @@ Color::~Color() {
 	// TODO Auto-generated destructor stub
 }
 
-} /* namespace words */
+} /* namespace color */
 

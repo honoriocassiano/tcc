@@ -16,24 +16,32 @@ ObjectView::~ObjectView() {
 }
 
 void ObjectView::draw() {
-	initdraw();
+	GLint mode  = initdraw();
 
 	glColor4f(color.getR(), color.getG(), color.getB(), color.getAlpha());
 
 	drawObject();
-	enddraw();
+	enddraw(mode);
 }
 
-void ObjectView::initdraw() {
+GLint ObjectView::initdraw() {
+
+	GLint mode = 0;
+	glGetIntegerv(GL_MATRIX_MODE, &mode);
+
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	glLoadIdentity();
+
+	return mode;
 }
 
-void ObjectView::enddraw() {
+void ObjectView::enddraw(GLint matrixMode) {
+	glFlush();
 	glPopMatrix();
+	glMatrixMode(matrixMode);
 }
 
-void ObjectView::setColor(objectview::Color color) {
+void ObjectView::setColor(color::Color color) {
 	this->color = color;
 }

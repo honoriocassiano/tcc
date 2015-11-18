@@ -7,10 +7,15 @@
 //============================================================================
 
 #include "objectview/Line.h"
-
+#include <iostream>
+#include "objectview/Color.h"
+#include "geometry/Point3.h"
 #include <GL/glut.h>
 
-void displayMe(void)
+using namespace std;
+using namespace geometry;
+
+void display(void)
 {
 
 	/*
@@ -25,11 +30,22 @@ void displayMe(void)
 */
 
 	glClear(GL_COLOR_BUFFER_BIT);
-	Line *l =  new Line();
+
+	/*
+	glColor3f(1.0, 0.0, 0.0);
+			glVertex3f(0.0, 0.0, 0.0);
+			glVertex3f(15, 0, 0);
+			*/
+
+	Point3 origin = Point3(0.0f, 0.0f, 0.0f);
+	Point3 destiny = Point3(5.0f, 0.0f, 0.0f);
+
+	Line *l =  new Line(origin, destiny);
+	l->setColor(color::Color::BLUE);
 
 	l->draw();
 
-	glFlush();
+	//glFlush();
 }
 
 int main(int argc, char** argv)
@@ -38,8 +54,9 @@ int main(int argc, char** argv)
     glutInitDisplayMode(GLUT_SINGLE);
     glutInitWindowSize(300, 300);
     glutInitWindowPosition(100, 100);
-    glutCreateWindow("Hello world :D");
-    glutDisplayFunc(displayMe);
+    glutCreateWindow("Hello world");
+    glutDisplayFunc(display);
     glutMainLoop();
+
     return 0;
 }
