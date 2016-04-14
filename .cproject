@@ -23,10 +23,10 @@
 							<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.610011044" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base">
 								<option id="gnu.cpp.compiler.option.dialect.std.1954337805" name="Language standard" superClass="gnu.cpp.compiler.option.dialect.std" value="gnu.cpp.compiler.dialect.c++1y" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.include.paths.451128056" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/structures/Array}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/structures/Halfedge}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/structures}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Tcc/src/structures/Array}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Tcc/src/structures}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Tcc/src/structures/Halfedge}&quot;"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.106530828" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -60,9 +60,6 @@
 	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
 		<project id="Tcc.null.1975723586" name="Tcc"/>
 	</storageModule>
-	<storageModule moduleId="scannerConfiguration">
-		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
-	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
 	<storageModule moduleId="refreshScope" versionNumber="2">
 		<configuration configurationName="Default">
@@ -70,4 +67,13 @@
 		</configuration>
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
+	<storageModule moduleId="scannerConfiguration">
+		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		<scannerConfigBuildInfo instanceId="cdt.managedbuild.toolchain.gnu.base.676444967;cdt.managedbuild.toolchain.gnu.base.676444967.1587198259;cdt.managedbuild.tool.gnu.cpp.compiler.base.610011044;cdt.managedbuild.tool.gnu.cpp.compiler.input.106530828">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="cdt.managedbuild.toolchain.gnu.base.676444967;cdt.managedbuild.toolchain.gnu.base.676444967.1587198259;cdt.managedbuild.tool.gnu.c.compiler.base.1281454445;cdt.managedbuild.tool.gnu.c.compiler.input.1314915854">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		</scannerConfigBuildInfo>
+	</storageModule>
 </cproject>

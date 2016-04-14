@@ -14,8 +14,6 @@
 #include "camera.h"
 #include "mesh.h"
 
-#include "Sphere.hpp"
-
 // ====================================================================
 
 class GLCanvas {
