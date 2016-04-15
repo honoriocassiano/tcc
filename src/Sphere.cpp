@@ -12,7 +12,7 @@
 GLfloat Sphere::to_rad = M_PI / 180.0;
 
 Sphere::Sphere(GLfloat radius, int horizontal_sections,
-		int vertical_sections) : mesh(new Mesh()) {
+		int vertical_sections) : CelestialBody(Vec3f()) {
 	this->radius = radius;
 
 	this->h_sections = horizontal_sections;
@@ -110,8 +110,8 @@ void Sphere::makeIndexes() {
 //			vertex_index[position + 4] = index_4;
 //			vertex_index[position + 5] = index_5;
 
-			mesh->addTriangle(mesh->getVertex(index_0), mesh->getVertex(index_1), mesh->getVertex(index_2));
-			mesh->addTriangle(mesh->getVertex(index_3), mesh->getVertex(index_4), mesh->getVertex(index_5));
+			mMesh->addTriangle(mMesh->getVertex(index_0), mMesh->getVertex(index_1), mMesh->getVertex(index_2));
+			mMesh->addTriangle(mMesh->getVertex(index_3), mMesh->getVertex(index_4), mMesh->getVertex(index_5));
 
 			index_0 = CIRCLE_NEXT_MOD(index_0, first_circle_point);
 			index_1 = CIRCLE_NEXT_MOD(index_1, first_circle_point);
@@ -142,12 +142,12 @@ void Sphere::update(float time) {
 //	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void Sphere::setCenter(const Vec3f& position) {
-	oldCenter = center;
-	center = position;
-
-	updatePoints();
-}
+//void Sphere::setCenter(const Vec3f& position) {
+//	oldCenter = center;
+//	center = position;
+//
+//	updatePoints();
+//}
 
 void Sphere::updateVertexes() {
 //	glBufferData(GL_ARRAY_BUFFER, vertex_size * sizeof(GLfloat), vertex,
@@ -200,7 +200,7 @@ void Sphere::makePoints() {
 			GLfloat p_y = y * p;
 			GLfloat p_z = z * p;
 			
-			mesh->addVertex(Vec3f(x + p_x, y + p_y, z + p_z));
+			mMesh->addVertex(Vec3f(x + p_x, y + p_y, z + p_z));
 
 //			vertex[counter] = x + p_x;
 //			vertex[counter + 1] = y + p_y;
@@ -212,9 +212,9 @@ void Sphere::makePoints() {
 }
 
 void Sphere::updatePoints() {
-	for (int i = 0; i < mesh->numVertices(); ++i) {
+	for (int i = 0; i < mMesh->numVertices(); ++i) {
 		//Vertex* v = mesh->getVertex(i);
-		const Vec3f oldPosition = mesh->getVertex(i)->get();
+		const Vec3f oldPosition = mMesh->getVertex(i)->get();
 
 		Vec3f newPosition(0, 0, 0);
 
@@ -224,7 +224,7 @@ void Sphere::updatePoints() {
 //		newPosition.y = center.y + oldPosition.y;
 //		newPosition.z = center.z + oldPosition.z;
 
-		mesh->getVertex(i)->set(newPosition);
+		mMesh->getVertex(i)->set(newPosition);
 
 		printf("(%f, %f, %f) => (%f, %f, %f)\n", oldPosition.x(), oldPosition.y(), oldPosition.z(), newPosition.x(), newPosition.y(), newPosition.z());
 	}

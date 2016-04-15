@@ -8,11 +8,11 @@
 #include <GL/gl.h>
 #include <GL/glut.h>
 
-#include "mesh.h"
+#include "CelestialBody.h"
 
 #include "Perlin.hpp"
 
-class Sphere {
+class Sphere : public CelestialBody {
 public:
     Sphere(GLfloat radius, int horizontal_sections, int vertical_sections);
     virtual ~Sphere();
@@ -20,8 +20,9 @@ public:
 	virtual void show();
 	virtual void update(float time);
 
-	Mesh* getMesh() { return mesh; }
-	void setCenter(const Vec3f& position);
+	//Mesh* getMesh() { return mesh; }
+//	void setCenter(const Vec3f& position);
+//	const Vec3f& getCenter() const { return center; }
 
 private:
 	static GLfloat to_rad;
@@ -45,7 +46,7 @@ private:
 	GLfloat * vertex;
 	GLuint * vertex_index;
 
-	Mesh* mesh;
+//	Mesh* mesh;
 
 	void makeVBO();
 	void makePoints();

@@ -1,7 +1,8 @@
 #include <stdio.h>
 
 #include "argparser.h"
-#include "glCanvas.h"
+//#include "glCanvas.h"
+#include "Window.h"
 
 #include "Sphere.hpp"
 
@@ -26,8 +27,10 @@ int main(int argc, char *argv[]) {
 
 	// sphere->setCenter(Vec3f(5, -1, 2));
 
-	GLCanvas glcanvas;
-	glcanvas.initialize(args, sphere->getMesh());
+	//GLCanvas glcanvas;
+	Window window;
+	window.initialize(args, sphere->getMesh());
+	//glcanvas.initialize(args, sphere->getMesh());
 
 	//delete args;
 
