@@ -4,9 +4,8 @@
 //#include "glCanvas.h"
 #include "Window.h"
 
-#include "Sphere.hpp"
-
 #include <GL/glut.h>
+#include "Sphere.h"
 
 // =========================================
 // =========================================
@@ -19,7 +18,7 @@ int main(int argc, char *argv[]) {
 
 	ArgParser *args = new ArgParser(argc, argv);
 
-	Sphere* sphere = new Sphere(30, 100, 100);
+	Sphere* sphere = new Sphere(30, 150, 150);
 
 	// mesh->Load(args->input_file);
 

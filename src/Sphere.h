@@ -8,9 +8,8 @@
 #include <GL/gl.h>
 #include <GL/glut.h>
 
+#include "Perlin.h"
 #include "CelestialBody.h"
-
-#include "Perlin.hpp"
 
 class Sphere : public CelestialBody {
 public:
@@ -19,10 +18,6 @@ public:
 
 	virtual void show();
 	virtual void update(float time);
-
-	//Mesh* getMesh() { return mesh; }
-//	void setCenter(const Vec3f& position);
-//	const Vec3f& getCenter() const { return center; }
 
 private:
 	static GLfloat to_rad;

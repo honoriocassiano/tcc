@@ -1,5 +1,4 @@
-#include "Sphere.hpp"
-
+#include "Sphere.h"
 #include <stdio.h>
 
 #include "vertex.h"
@@ -11,8 +10,8 @@
 
 GLfloat Sphere::to_rad = M_PI / 180.0;
 
-Sphere::Sphere(GLfloat radius, int horizontal_sections,
-		int vertical_sections) : CelestialBody(Vec3f()) {
+Sphere::Sphere(GLfloat radius, int horizontal_sections, int vertical_sections) :
+		CelestialBody(Vec3f()) {
 	this->radius = radius;
 
 	this->h_sections = horizontal_sections;
@@ -35,8 +34,8 @@ Sphere::Sphere(GLfloat radius, int horizontal_sections,
 }
 
 Sphere::~Sphere() {
-	delete [] vertex_index;
-	delete [] vertex;
+	delete[] vertex_index;
+	delete[] vertex;
 }
 
 void Sphere::show() {
@@ -82,27 +81,22 @@ void Sphere::makeIndexes() {
 
 	int position = 0;
 
-	int i_0 = 0,
-		i_1 = 1,
-		i_2 = h_sections,
-		i_3 = h_sections,
-		i_4 = 1,
-		i_5 = h_sections + 1;
+	int i_0 = 0, i_1 = 1, i_2 = h_sections, i_3 = h_sections, i_4 = 1, i_5 =
+			h_sections + 1;
 
 	for (int i = 1; i <= v_sections; ++i) {
 
 		int first_circle_point = (i - 1) * h_sections;
 		int first_next_circle_point = i * h_sections;
 
-		int index_0 = i_0 + first_circle_point,
-			index_1 = i_1 + first_circle_point,
-			index_2 = i_2 + first_circle_point,
-			index_3 = i_3 + first_circle_point,
-			index_4 = i_4 + first_circle_point,
-			index_5 = i_5 + first_circle_point;
+		int index_0 = i_0 + first_circle_point, index_1 = i_1
+				+ first_circle_point, index_2 = i_2 + first_circle_point,
+				index_3 = i_3 + first_circle_point, index_4 = i_4
+						+ first_circle_point, index_5 = i_5
+						+ first_circle_point;
 
 		for (int j = 0; j < h_sections; ++j) {
-			
+
 //			vertex_index[position] = index_0;
 //			vertex_index[position + 1] = index_1;
 //			vertex_index[position + 2] = index_2;
@@ -110,8 +104,10 @@ void Sphere::makeIndexes() {
 //			vertex_index[position + 4] = index_4;
 //			vertex_index[position + 5] = index_5;
 
-			mMesh->addTriangle(mMesh->getVertex(index_0), mMesh->getVertex(index_1), mMesh->getVertex(index_2));
-			mMesh->addTriangle(mMesh->getVertex(index_3), mMesh->getVertex(index_4), mMesh->getVertex(index_5));
+			mMesh->addTriangle(mMesh->getVertex(index_0),
+					mMesh->getVertex(index_1), mMesh->getVertex(index_2));
+			mMesh->addTriangle(mMesh->getVertex(index_3),
+					mMesh->getVertex(index_4), mMesh->getVertex(index_5));
 
 			index_0 = CIRCLE_NEXT_MOD(index_0, first_circle_point);
 			index_1 = CIRCLE_NEXT_MOD(index_1, first_circle_point);
@@ -192,14 +188,27 @@ void Sphere::makePoints() {
 
 			float scale = 2.0;
 
-			float p = perlin->generate( ((x+radius)* scale)/radius , ((y+radius)* scale)/radius, ((z+radius)* scale)/radius) * 0.25;
+			float p = 0.0;
+			float a = 10.0, b = 2.0;
+
+			float a_i = 1, b_i = 1;
+
+			for (int octave = 0; octave < 6; ++octave) {
+				p += perlin->generate( (b_i * (x + radius)) / a_i, (b_i * (y + radius)) / a_i,
+						(b_i * (z + radius)) / a_i);
+
+				a_i *= a;
+				b_i *= b;
+			}
+
+			p *= 0.075;
 
 			//std::cout << "(X, Y, Z) => (" << x/radius << ", "  << y/radius << ", "  << z/radius << ") " << "perlin: " << p << "\n";
 
 			GLfloat p_x = x * p;
 			GLfloat p_y = y * p;
 			GLfloat p_z = z * p;
-			
+
 			mMesh->addVertex(Vec3f(x + p_x, y + p_y, z + p_z));
 
 //			vertex[counter] = x + p_x;
@@ -226,6 +235,8 @@ void Sphere::updatePoints() {
 
 		mMesh->getVertex(i)->set(newPosition);
 
-		printf("(%f, %f, %f) => (%f, %f, %f)\n", oldPosition.x(), oldPosition.y(), oldPosition.z(), newPosition.x(), newPosition.y(), newPosition.z());
+		printf("(%f, %f, %f) => (%f, %f, %f)\n", oldPosition.x(),
+				oldPosition.y(), oldPosition.z(), newPosition.x(),
+				newPosition.y(), newPosition.z());
 	}
 }
