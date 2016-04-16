@@ -15,6 +15,7 @@
 #include "mesh.h"
 
 #include "CelestialBody.h"
+#include "Clock.h"
 
 #include <vector>
 #include <algorithm>
@@ -24,13 +25,19 @@
 class Window {
 
 private:
+	Clock mClock;
+
+	static Window * mInstance;
 
 	// State of the mouse cursor
 	static int mouseButton;
 	static int mouseX;
 	static int mouseY;
 
+	void update();
+
 	// Callback functions for mouse and keyboard events
+	static void idle(void);
 	static void display(void);
 	static void reshape(int w, int h);
 	static void mouse(int button, int state, int x, int y);
@@ -50,8 +57,10 @@ private:
 public:
 	// Constructor and destructor
 	Window(void) {
+		mInstance = this;
 	}
 	~Window(void) {
+		mInstance = nullptr;
 	}
 
 	// Set up the canvas and enter the rendering loop

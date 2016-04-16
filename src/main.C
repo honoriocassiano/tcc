@@ -28,6 +28,9 @@ int main(int argc, char *argv[]) {
 
 	//GLCanvas glcanvas;
 	Window window;
+
+	window.addBody(sphere);
+
 	window.initialize(args, sphere->getMesh());
 	//glcanvas.initialize(args, sphere->getMesh());
 
