@@ -11,10 +11,10 @@
 #include "Perlin.h"
 #include "CelestialBody.h"
 
-class Sphere : public CelestialBody {
+class Planet : public CelestialBody {
 public:
-    Sphere(GLfloat radius, int horizontal_sections, int vertical_sections);
-    virtual ~Sphere();
+    Planet(GLfloat radius, int horizontal_sections, int vertical_sections);
+    virtual ~Planet();
 
 	virtual void show();
 	virtual void update(float time);

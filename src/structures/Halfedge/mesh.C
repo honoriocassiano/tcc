@@ -2,6 +2,8 @@
 #include <assert.h>
 #include <GL/gl.h>
 
+#include <string.h>
+
 #include "mesh.h"
 #include "edge.h"
 #include "vertex.h"
@@ -426,12 +428,12 @@ std::vector<Triangle*> Mesh::getTrianglesByVertex(Edge * e) {
 	do {
 		faces.push_back(currentEdge->getTriangle());
 
-		if(currentEdge->getOpposite()) {
+		if (currentEdge->getOpposite()) {
 			currentEdge = currentEdge->getOpposite()->getNext()->getNext();
 		} else {
 			break;
 		}
-	} while(currentEdge != e);
+	} while (currentEdge != e);
 
 	return faces;
 }
@@ -452,18 +454,26 @@ void Mesh::computeFaceNormals() {
 void Mesh::computeVerticesNormals() {
 	Iterator<Edge*> *iter = edges->StartIteration();
 
+	bool verticesStatus[edges->Count()];
+
+	memset(verticesStatus, false, sizeof(verticesStatus));
+
 	Edge *e = NULL;
 
-	while( (e = iter->GetNext())) {
-		std::vector<Triangle*> triangles = getTrianglesByVertex(e);
+	while ((e = iter->GetNext())) {
+		if (!verticesStatus[e->getVertex()->getIndex()]) {
+			std::vector<Triangle*> triangles = getTrianglesByVertex(e);
 
-		Vec3f normal(0, 0, 0);
+			Vec3f normal(0, 0, 0);
 
-		for(Triangle* t : triangles) {
-			normal += t->getNormal();
+			for (Triangle* t : triangles) {
+				normal += t->getNormal();
+			}
+
+			e->getVertex()->setNormal(normal);
+
+			verticesStatus[e->getVertex()->getIndex()] = true;
 		}
-
-		e->getVertex()->setNormal(normal);
 	}
 
 	edges->EndIteration(iter);

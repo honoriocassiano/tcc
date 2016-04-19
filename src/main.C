@@ -5,7 +5,7 @@
 #include "Window.h"
 
 #include <GL/glut.h>
-#include "Sphere.h"
+#include "Planet.h"
 
 // =========================================
 // =========================================
@@ -18,7 +18,7 @@ int main(int argc, char *argv[]) {
 
 	ArgParser *args = new ArgParser(argc, argv);
 
-	Sphere* sphere = new Sphere(30, 150, 150);
+	Planet* sphere = new Planet(30, 150, 150);
 
 	// mesh->Load(args->input_file);
 

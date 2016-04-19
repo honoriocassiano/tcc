@@ -1,4 +1,4 @@
-#include "Sphere.h"
+#include "Planet.h"
 #include <stdio.h>
 
 #include "vertex.h"
@@ -8,9 +8,9 @@
 #define DEBUG_INDEX 0
 #define DEBUG_GLEW 0
 
-GLfloat Sphere::to_rad = M_PI / 180.0;
+GLfloat Planet::to_rad = M_PI / 180.0;
 
-Sphere::Sphere(GLfloat radius, int horizontal_sections, int vertical_sections) :
+Planet::Planet(GLfloat radius, int horizontal_sections, int vertical_sections) :
 		CelestialBody(Vec3f()) {
 	this->radius = radius;
 
@@ -33,12 +33,12 @@ Sphere::Sphere(GLfloat radius, int horizontal_sections, int vertical_sections) :
 	makeIndexes();
 }
 
-Sphere::~Sphere() {
+Planet::~Planet() {
 	delete[] vertex_index;
 	delete[] vertex;
 }
 
-void Sphere::show() {
+void Planet::show() {
 
 	std::cout << "Drawing Sphere\n";
 
@@ -77,7 +77,7 @@ void Sphere::show() {
 
 #define CIRCLE_NEXT_MOD(n, first) ( first +  ((n + 1) % h_sections) )
 
-void Sphere::makeIndexes() {
+void Planet::makeIndexes() {
 
 	int position = 0;
 
@@ -122,7 +122,7 @@ void Sphere::makeIndexes() {
 	}
 }
 
-void Sphere::update(float time) {
+void Planet::update(float time) {
 	glPolygonMode( GL_FRONT_AND_BACK, GL_LINE);
 
 //	glBindBuffer(GL_ARRAY_BUFFER, vertex_id);
@@ -145,12 +145,12 @@ void Sphere::update(float time) {
 //	updatePoints();
 //}
 
-void Sphere::updateVertexes() {
+void Planet::updateVertexes() {
 //	glBufferData(GL_ARRAY_BUFFER, vertex_size * sizeof(GLfloat), vertex,
 //				 GL_STATIC_DRAW);
 }
 
-void Sphere::makeVBO() {
+void Planet::makeVBO() {
 
 //	glGenBuffers(1, &vertex_id);
 //	glGenBuffers(1, &vertex_index_id);
@@ -165,7 +165,7 @@ void Sphere::makeVBO() {
 
 }
 
-void Sphere::makePoints() {
+void Planet::makePoints() {
 
 	int counter = 0;
 
@@ -220,7 +220,7 @@ void Sphere::makePoints() {
 	}
 }
 
-void Sphere::updatePoints() {
+void Planet::updatePoints() {
 	for (int i = 0; i < mMesh->numVertices(); ++i) {
 		//Vertex* v = mesh->getVertex(i);
 		const Vec3f oldPosition = mMesh->getVertex(i)->get();
