@@ -243,22 +243,15 @@ void Window::update() {
 }
 
 void Window::idle(void) {
-	const Vec3f speed = Vec3f(.1f, .1f, .1f);
-
-	//if (mInstance->mClock.getElapsedTime() >= 1.0) {
-	mInstance->mBodies[0]->setCenter(
-			mInstance->mBodies[0]->getCenter()
-					+ (speed * mInstance->mClock.getTime().getAsSeconds()));
-	//mInstance->mBodies[0]->getCenter() + (speed * (mInstance->mClock.getElapsedTime() / 1000.0)));
-
-//		printf("(%.2f, %.2f, %.2f)\n", mInstance->mBodies[0]->getCenter().x(),
-//				mInstance->mBodies[0]->getCenter().y(),
-//				mInstance->mBodies[0]->getCenter().z());
-
-	mInstance->mClock.restart();
-
-	glutPostRedisplay();
-	//}
+//	const Vec3f speed = Vec3f(.1f, .1f, .1f);
+//
+//	mInstance->mBodies[0]->setCenter(
+//			mInstance->mBodies[0]->getCenter()
+//					+ (speed * mInstance->mClock.getTime().getAsSeconds()));
+//
+//	mInstance->mClock.restart();
+//
+//	glutPostRedisplay();
 }
 
 void Window::Render() {

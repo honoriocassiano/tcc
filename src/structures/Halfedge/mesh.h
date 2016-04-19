@@ -7,6 +7,9 @@
 #include "boundingbox.h"
 #include "../argparser.h"
 
+// TODO Verificar a necessidade dessa estrutura
+#include <vector>
+
 class Vertex;
 class Edge;
 class Triangle;
@@ -62,6 +65,8 @@ public:
   void Paint(ArgParser *args);
   void LoopSubdivision();
   void Simplification(int target_tri_count);
+
+  std::vector<Triangle*> getTrianglesByVertex(Edge * e);
 
 private:
 

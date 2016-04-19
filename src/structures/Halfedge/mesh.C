@@ -255,6 +255,17 @@ void InsertNormal(const Vec3f &p1, const Vec3f &p2, const Vec3f &p3) {
 
 void Mesh::Paint(ArgParser *args) {
 
+//	auto it = edges->StartIteration();
+//	Edge * edge = it->GetNext();
+//	edges->EndIteration(it);
+//
+//	auto v0 = edge->getVertex();
+//	auto v1 = edge->getOpposite()->getVertex();
+//
+//	std::vector<Triangle*> faces = getTrianglesByVertex(edge);
+//
+//	printf("count: %lu\n", faces.size());
+
 	// scale it so it fits in the window
 	Vec3f center;
 	bbox->getCenter(center);
@@ -403,4 +414,15 @@ void Mesh::Simplification(int target_tri_count) {
 	printf("Simplify the mesh! %d -> %d\n", numTriangles(), target_tri_count);
 }
 
+std::vector<Triangle*> Mesh::getTrianglesByVertex(Edge * e) {
+	std::vector<Triangle*> faces;
+	Edge * currentEdge = e;
+
+	do {
+		faces.push_back(currentEdge->getTriangle());
+		currentEdge = currentEdge->getOpposite()->getNext()->getNext();
+	} while(currentEdge != e);
+
+	return faces;
+}
 // =================================================================
