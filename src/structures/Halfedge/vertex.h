@@ -27,10 +27,15 @@ public:
   double z() const { return position.z(); }
   const Vec3f& get() const { return position; }
 
+  const Vec3f& getNormal() const { return normal; }
+
   // =========
   // MODIFIERS
   void set(Vec3f v) { position = v; }
   void set(double x, double y, double z) { position.Set(x,y,z); }
+
+  void setNormal(Vec3f v) { normal = v; }
+  void setNormal(double x, double y, double z) { normal.Set(x,y,z); }
 
 private:
 
@@ -42,6 +47,7 @@ private:
   // ==============
   // REPRESENTATION
   Vec3f position;
+  Vec3f normal;
 
   // this is the index from the original .obj file.
   // technically not part of the half-edge data structure

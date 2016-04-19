@@ -255,16 +255,8 @@ void InsertNormal(const Vec3f &p1, const Vec3f &p2, const Vec3f &p3) {
 
 void Mesh::Paint(ArgParser *args) {
 
-//	auto it = edges->StartIteration();
-//	Edge * edge = it->GetNext();
-//	edges->EndIteration(it);
-//
-//	auto v0 = edge->getVertex();
-//	auto v1 = edge->getOpposite()->getVertex();
-//
-//	std::vector<Triangle*> faces = getTrianglesByVertex(edge);
-//
-//	printf("count: %lu\n", faces.size());
+	computeFaceNormals();
+	computeVerticesNormals();
 
 	// scale it so it fits in the window
 	Vec3f center;
@@ -286,9 +278,22 @@ void Mesh::Paint(ArgParser *args) {
 		Vec3f a = (*t)[0]->get();
 		Vec3f b = (*t)[1]->get();
 		Vec3f c = (*t)[2]->get();
-		InsertNormal(a, b, c);
+
+		Vec3f n_a = (*t)[0]->getNormal();
+		Vec3f n_b = (*t)[1]->getNormal();
+		Vec3f n_c = (*t)[2]->getNormal();
+		//InsertNormal(a, b, c);
+
+		//Vec3f normal = t->getNormal();
+		//glNormal3f(normal.x(), normal.y(), normal.z());
+
+		glNormal3f(n_a.x(), n_a.y(), n_a.z());
 		glVertex3f(a.x(), a.y(), a.z());
+
+		glNormal3f(n_b.x(), n_b.y(), n_b.z());
 		glVertex3f(b.x(), b.y(), b.z());
+
+		glNormal3f(n_c.x(), n_c.y(), n_c.z());
 		glVertex3f(c.x(), c.y(), c.z());
 	}
 	triangles->EndIteration(iter);
@@ -420,9 +425,47 @@ std::vector<Triangle*> Mesh::getTrianglesByVertex(Edge * e) {
 
 	do {
 		faces.push_back(currentEdge->getTriangle());
-		currentEdge = currentEdge->getOpposite()->getNext()->getNext();
+
+		if(currentEdge->getOpposite()) {
+			currentEdge = currentEdge->getOpposite()->getNext()->getNext();
+		} else {
+			break;
+		}
 	} while(currentEdge != e);
 
 	return faces;
+}
+
+void Mesh::computeFaceNormals() {
+	Iterator<Triangle*> *iter = triangles->StartIteration();
+
+	while (Triangle *t = iter->GetNext()) {
+		Vec3f a = (*t)[0]->get();
+		Vec3f b = (*t)[1]->get();
+		Vec3f c = (*t)[2]->get();
+		//InsertNormal(a, b, c);
+		t->setNormal(ComputeNormal(a, b, c));
+	}
+	triangles->EndIteration(iter);
+}
+
+void Mesh::computeVerticesNormals() {
+	Iterator<Edge*> *iter = edges->StartIteration();
+
+	Edge *e = NULL;
+
+	while( (e = iter->GetNext())) {
+		std::vector<Triangle*> triangles = getTrianglesByVertex(e);
+
+		Vec3f normal(0, 0, 0);
+
+		for(Triangle* t : triangles) {
+			normal += t->getNormal();
+		}
+
+		e->getVertex()->setNormal(normal);
+	}
+
+	edges->EndIteration(iter);
 }
 // =================================================================

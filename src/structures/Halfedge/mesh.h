@@ -70,6 +70,9 @@ public:
 
 private:
 
+  void computeFaceNormals();
+  void computeVerticesNormals();
+
   // ==============
   // REPRESENTATION
   Array<Vertex*> *vertices;
