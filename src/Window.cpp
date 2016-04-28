@@ -208,7 +208,8 @@ void Window::initialize(ArgParser *_args, Mesh *_mesh) {
 
 	glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
 	glCullFace(GL_BACK);
-	glDisable(GL_CULL_FACE);
+	glEnable(GL_CULL_FACE);
+	//glDisable(GL_CULL_FACE);
 
 	display_list_index = glGenLists(1);
 

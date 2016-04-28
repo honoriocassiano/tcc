@@ -15,6 +15,8 @@ class Edge;
 class Triangle;
 class VertexParent;
 
+class CelestialBody;
+
 // ======================================================================
 // ======================================================================
 
@@ -67,6 +69,8 @@ public:
   void Simplification(int target_tri_count);
 
   std::vector<Triangle*> getTrianglesByVertex(Edge * e);
+
+  friend class CelestialBody;
 
 private:
 

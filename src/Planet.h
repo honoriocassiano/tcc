@@ -43,12 +43,24 @@ private:
 
 //	Mesh* mesh;
 
+	void subdivide();
+
 	void makeVBO();
 	void makePoints();
+	void makeTriangles();
 	void makeIndexes();
 	void updateVertexes();
 
 	void updatePoints();
+
+	const static GLfloat vdata[12][3];
+	const static GLuint tindices[20][3];
+
+	float mTurbulenceDistortion;
+
+	static int octaves;
+	static int A;
+	static int B;
 };
 
 #endif

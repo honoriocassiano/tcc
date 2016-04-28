@@ -22,6 +22,8 @@ public:
 	Mesh * getMesh() { return mMesh; }
 
 protected:
+	Bag<Triangle*>* getTriangles() { return mMesh->triangles; }
+
 	Vec3f mCenter;
 	Mesh * mMesh;
 };

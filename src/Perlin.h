@@ -3,21 +3,26 @@
 
 class Perlin {
 public:
-	static Perlin* getInstance();
+	//static Perlin* getInstance();
+	static void shuffle();
 
-	float generate(float x, float y = 0.0, float z = 0.0);
+	static float generate(float x, float y = 0.0, float z = 0.0);
+
+	static float generateTurbulence(int octaves, int A, int B, float x, float y = 0.0, float z = 0.0);
 
 private:
 	static int permutation[256];
-	static Perlin* instance;
+//	static Perlin* instance;
 
-	int perm[512];
+	static int perm[512];
 
-	Perlin();
+	static bool shuffled;
 
-	float fade(float t);
-	float lerp(float t, float a, float b);
-	float grad(int hash, float x, float y, float z);
+//	Perlin();
+
+	static float fade(float t);
+	static float lerp(float t, float a, float b);
+	static float grad(int hash, float x, float y, float z);
 };
 
 

@@ -18,7 +18,7 @@ int main(int argc, char *argv[]) {
 
 	ArgParser *args = new ArgParser(argc, argv);
 
-	Planet* sphere = new Planet(30, 150, 150);
+	Planet* sphere = new Planet(5, 150, 150);
 
 	// mesh->Load(args->input_file);
 
