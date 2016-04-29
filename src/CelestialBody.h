@@ -11,6 +11,8 @@
 #include "vectors.h"
 #include "mesh.h"
 
+#include "Time.h"
+
 class CelestialBody {
 public:
 	CelestialBody(const Vec3f& center) : mCenter(center), mMesh(new Mesh()) {}
@@ -21,8 +23,16 @@ public:
 
 	Mesh * getMesh() { return mMesh; }
 
+	virtual void update(const Time& dt) = 0;
+	virtual void draw() = 0;
+
 protected:
 	Bag<Triangle*>* getTriangles() { return mMesh->triangles; }
+
+	void recalculateNormals() {
+		mMesh->computeFaceNormals();
+		mMesh->computeVerticesNormals();
+	}
 
 	Vec3f mCenter;
 	Mesh * mMesh;

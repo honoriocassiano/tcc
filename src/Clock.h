@@ -21,13 +21,13 @@ public:
 	void start();
 	void restart();
 
-	long int getElapsedTime();
+//	long int getElapsedTime();
 
 	Time getTime();
 
 private:
-	time_t mPreviousTime;
-	time_t mCurrentTime;
+//	time_t mPreviousTime;
+//	time_t mCurrentTime;
 
 	std::chrono::system_clock::time_point mPrev;
 	std::chrono::system_clock::time_point mCurr;

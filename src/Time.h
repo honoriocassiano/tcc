@@ -20,12 +20,12 @@ public:
 	~Time() {
 	}
 
-	double getAsSeconds() {
+	double getAsSeconds() const {
 		return std::chrono::duration_cast<std::chrono::milliseconds>(mDuration).count()
 				/ 1000.0d;
 	}
 
-	long int getAsMilliseconds() {
+	long int getAsMilliseconds() const {
 		return std::chrono::duration_cast<std::chrono::milliseconds>(mDuration).count();
 	}
 

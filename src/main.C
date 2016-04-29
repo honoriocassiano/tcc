@@ -7,9 +7,27 @@
 #include <GL/glut.h>
 #include "Planet.h"
 
+#include "SDLWindow.h"
+
 // =========================================
 // =========================================
 
+int main(int argc, char **argv) {
+	srand(time(NULL));
+
+	SDLWindow window(640, 480);
+
+	Planet* planet = new Planet(5, 150, 150);
+
+	window.addBody(planet);
+
+	window.run();
+
+	return 0;
+}
+
+
+/*
 int main(int argc, char *argv[]) {
 	//srand48(0);
 	srand(time(NULL));
@@ -38,6 +56,7 @@ int main(int argc, char *argv[]) {
 
 	return 0;
 }
+*/
 
 // =========================================
 // =========================================

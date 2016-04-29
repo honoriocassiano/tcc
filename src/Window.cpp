@@ -10,6 +10,8 @@
 #include <GL/gl.h>
 #include <GL/glut.h>
 
+#include "Planet.h"
+
 // ========================================================
 // static variables of Window class
 
@@ -232,6 +234,10 @@ void Window::initialize(ArgParser *_args, Mesh *_mesh) {
 void Window::update() {
 	Vec3f center = mBodies[0]->getCenter();
 
+	float radius = ((Planet*) mBodies[0])->getRadius();
+
+	glScalef(radius, radius, radius);
+
 	//glLoadIdentity();
 	//glTranslatef(center.x(), center.y(), center.z());
 	glPushMatrix();
@@ -253,6 +259,14 @@ void Window::idle(void) {
 //	mInstance->mClock.restart();
 //
 //	glutPostRedisplay();
+
+	const Time elapsed = mInstance->mClock.getTime();
+
+	mInstance->mBodies[0]->update(elapsed);
+
+	mInstance->mClock.restart();
+
+	glutPostRedisplay();
 }
 
 void Window::Render() {

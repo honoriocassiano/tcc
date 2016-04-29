@@ -264,8 +264,10 @@ void Mesh::Paint(ArgParser *args) {
 	Vec3f center;
 	bbox->getCenter(center);
 	float s = 1 / bbox->maxDim();
-	glScalef(s, s, s);
-	glTranslatef(-center.x(), -center.y(), -center.z());
+	//glScalef(s, s, s);
+//	glTranslatef(-center.x(), -center.y(), -7);///-center.z()*100);
+
+//	printf("(%f, %f, %f)\n", center.x(), center.y(), center.z());
 
 	// this offset prevents "z-fighting" bewteen the edges and faces
 	// the edges will always win.
@@ -303,6 +305,7 @@ void Mesh::Paint(ArgParser *args) {
 
 	glDisable(GL_POLYGON_OFFSET_FILL);
 
+	/*
 	if (args->wireframe) {
 		glDisable(GL_LIGHTING);
 
@@ -357,6 +360,7 @@ void Mesh::Paint(ArgParser *args) {
 
 		glEnable(GL_LIGHTING);
 	}
+	*/
 
 	HandleGLError();
 }

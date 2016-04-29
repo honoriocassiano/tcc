@@ -11,7 +11,8 @@
 #include <stdio.h>
 
 Clock::Clock() :
-		mPreviousTime(0), mCurrentTime(0), mIsStarted(false) {
+//		mPreviousTime(0), mCurrentTime(0), mIsStarted(false) {
+		mIsStarted(false) {
 }
 
 Clock::~Clock() {
@@ -20,53 +21,39 @@ Clock::~Clock() {
 
 void Clock::restart() {
 	if (mIsStarted) {
-		mPreviousTime = time(&mCurrentTime);
-
+//		mPreviousTime = time(&mCurrentTime);
 		mPrev = std::chrono::system_clock::now();
-		//mCurrentTime = 0;
 	}
 }
 
 void Clock::start() {
 	if (!mIsStarted) {
-		mPreviousTime = time(nullptr);
+//		mPreviousTime = time(nullptr);
 		mPrev = std::chrono::system_clock::now();
 
 		mIsStarted = true;
 	}
 }
 
-long int Clock::getElapsedTime() {
-	if (mIsStarted) {
-		time(&mCurrentTime);
-		mCurr = std::chrono::system_clock::now();
-
-		//printf("%ld, %ld\n", mPreviousTime, mCurrentTime);
-		std::chrono::milliseconds elapsed = std::chrono::duration_cast<
-				std::chrono::milliseconds>(mCurr - mPrev);
-
-		printf("%ld\n", elapsed.count());
-
-		return elapsed.count();
-
-		//return difftime(mCurrentTime, mPreviousTime);
-	} else {
-		return 0.0d;
-	}
-}
+//long int Clock::getElapsedTime() {
+//	if (mIsStarted) {
+//		time(&mCurrentTime);
+//		mCurr = std::chrono::system_clock::now();
+//
+//		std::chrono::milliseconds elapsed = std::chrono::duration_cast<
+//				std::chrono::milliseconds>(mCurr - mPrev);
+//
+//		return elapsed.count();
+//	} else {
+//		return 0.0d;
+//	}
+//}
 
 Time Clock::getTime() {
 	if (mIsStarted) {
 		mCurr = std::chrono::system_clock::now();
 
-//		std::chrono::milliseconds elapsed = std::chrono::duration_cast<
-//				std::chrono::milliseconds>(mCurr - mPrev);
-//
-//		printf("%ld\n", elapsed.count());
-
 		return Time(mCurr - mPrev);
-
-		//return difftime(mCurrentTime, mPreviousTime);
 	} else {
 		return Time(std::chrono::system_clock::duration::zero());
 	}

@@ -4,12 +4,13 @@
 #include <cmath>
 #include <iostream>
 
-//#include <GL/glew.h>
 #include <GL/gl.h>
 #include <GL/glut.h>
 
 #include "Perlin.h"
 #include "CelestialBody.h"
+
+
 
 class Planet : public CelestialBody {
 public:
@@ -17,7 +18,12 @@ public:
     virtual ~Planet();
 
 	virtual void show();
-	virtual void update(float time);
+
+	float getRadius() const { return mRadius; }
+//	virtual void update(float time);
+
+	void update(const Time& dt) override;
+	void draw() override;
 
 private:
 	static GLfloat to_rad;
@@ -25,7 +31,7 @@ private:
 	Vec3f center;
 	Vec3f oldCenter;
 
-	GLfloat radius;
+	GLfloat mRadius;
 	int h_sections;
 	int v_sections;
 
@@ -41,22 +47,18 @@ private:
 	GLfloat * vertex;
 	GLuint * vertex_index;
 
-//	Mesh* mesh;
-
 	void subdivide();
 
-	void makeVBO();
 	void makePoints();
 	void makeTriangles();
-	void makeIndexes();
-	void updateVertexes();
-
 	void updatePoints();
 
 	const static GLfloat vdata[12][3];
 	const static GLuint tindices[20][3];
 
 	float mTurbulenceDistortion;
+
+	bool mPendingUpdate;
 
 	static int octaves;
 	static int A;
