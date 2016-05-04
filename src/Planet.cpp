@@ -7,6 +7,8 @@
 
 #include "triangle.h"
 
+#include "MeshDrawer.h"
+
 #define DEBUG_POINTS 0
 #define DEBUG_INDEX 0
 #define DEBUG_GLEW 0
@@ -211,7 +213,8 @@ void Planet::draw() {
 	glTranslatef(mCenter.x(), mCenter.y(), mCenter.z());
 	glScalef(mRadius, mRadius, mRadius);
 
-	mMesh->Paint(nullptr);
+	//mMesh->Paint(nullptr);
+	MeshDrawer::draw(mMesh);
 
 	glPopMatrix();
 }

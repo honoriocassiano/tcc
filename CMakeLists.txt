@@ -16,8 +16,6 @@ add_executable(TCC ${SOURCE_FILES})
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 
 find_package(OpenGL REQUIRED)
-find_package(GLUT REQUIRED)
-########################
 find_package(SDL2 REQUIRED)
 
 include_directories(${CMAKE_SOURCE_DIR}/src)
@@ -26,8 +24,6 @@ include_directories(${CMAKE_SOURCE_DIR}/src/structures/Array)
 include_directories(${CMAKE_SOURCE_DIR}/src/structures/Halfedge)
 
 include_directories(${OPENGL_INCLUDE_DIR})
-include_directories(${GLUT_INCLUDE_DIR})
-#####################3
 include_directories(${SDL2_INCLUDE_DIR})
 
-target_link_libraries(TCC ${OPENGL_LIBRARIES} ${GLUT_glut_LIBRARY} ${SDL2_LIBRARY})
+target_link_libraries(TCC ${OPENGL_LIBRARIES} ${SDL2_LIBRARY})

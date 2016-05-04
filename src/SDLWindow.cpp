@@ -26,7 +26,7 @@ int HandleGLErrorWindow2() {
 SDLWindow::SDLWindow(int width, int height) :
 		mCamera(nullptr), mClock(new Clock()), mIsRunning(false), mWindow(nullptr), mWidth(
 				width), mHeight(height) {
-	mCamera = new PerspectiveCamera(Vec3f(0, 0, -5), Vec3f(0, 0, 1),
+	mCamera = new PerspectiveCamera(Vec3f(0, 0, -50), Vec3f(0, 0, 1),
 			Vec3f(0, 1, 0), 20 * M_PI / 180.0);
 
 	assert(initSDL());
@@ -139,11 +139,6 @@ void SDLWindow::display() {
 	for (CelestialBody* body : mBodies) {
 		body->draw();
 	}
-//	glBegin(GL_TRIANGLES);
-//	glVertex3f(-0.5, 0, 0);
-//	glVertex3f(0, 0.5, 0);
-//	glVertex3f(0.5, 0, 0);
-//	glEnd();
 
 	// Trocar buffers
 	SDL_GL_SwapWindow(mWindow);

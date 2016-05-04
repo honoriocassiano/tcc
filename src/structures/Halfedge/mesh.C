@@ -9,7 +9,6 @@
 #include "vertex.h"
 #include "triangle.h"
 #include "vertex_parent.h"
-#include "glCanvas.h"
 
 #define INITIAL_VERTEX 10000
 #define INITIAL_EDGE 10000
@@ -362,7 +361,7 @@ void Mesh::Paint(ArgParser *args) {
 	}
 	*/
 
-	HandleGLError();
+//	HandleGLError();
 }
 
 // =================================================================

@@ -1,8 +1,6 @@
 #include <stdio.h>
 
 #include "argparser.h"
-//#include "glCanvas.h"
-#include "Window.h"
 
 #include <GL/glut.h>
 #include "Planet.h"

@@ -16,6 +16,7 @@ class Triangle;
 class VertexParent;
 
 class CelestialBody;
+class MeshDrawer;
 
 // ======================================================================
 // ======================================================================
@@ -71,6 +72,7 @@ public:
   std::vector<Triangle*> getTrianglesByVertex(Edge * e);
 
   friend class CelestialBody;
+  friend class MeshDrawer;
 
 private:
 

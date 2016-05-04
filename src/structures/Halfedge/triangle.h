@@ -5,6 +5,8 @@
 #include "boundingbox.h"
 #include "edge.h"
 
+#include "vertex.h"
+
 // ===========================================================
 
 class Triangle {
