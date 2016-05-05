@@ -19,6 +19,8 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 
+#include "PerspectiveCamera2.h"
+
 class SDLWindow {
 public:
 	SDLWindow(int width, int height);

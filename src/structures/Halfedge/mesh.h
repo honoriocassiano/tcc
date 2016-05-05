@@ -65,7 +65,6 @@ public:
 
   // ===============
   // OTHER FUNCTIONS
-  void Paint(ArgParser *args);
   void LoopSubdivision();
   void Simplification(int target_tri_count);
 

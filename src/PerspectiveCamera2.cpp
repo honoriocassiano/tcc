@@ -1,5 +1,13 @@
+/*
+ * PerspectiveCamera2.cpp
+ *
+ *  Created on: 4 de mai de 2016
+ *      Author: cassiano
+ */
+
+#include "PerspectiveCamera2.h"
+
 #include <math.h>
-#include "camera.h"
 #include "matrix.h"
 
 #include <GL/gl.h>
@@ -7,20 +15,7 @@
 
 #include <stdio.h>
 
-// ====================================================================
-// ====================================================================
-// CONSTRUCTORS
-
-Camera::Camera(Vec3f c, Vec3f d, Vec3f u) {
-  center = c;
-  direction = d;
-  up = u;
-  // normalize the vectors
-  up.Normalize();
-  direction.Normalize();
-}
-
-PerspectiveCamera::PerspectiveCamera(Vec3f c, Vec3f d, Vec3f u, float a) : Camera(c,d,u) {
+PerspectiveCamera2::PerspectiveCamera2(Vec3f c, Vec3f d, Vec3f u, float a) : Camera(c,d,u) {
   angle = a;
 
   Vec3f screenCenter = center + direction;
@@ -37,7 +32,7 @@ PerspectiveCamera::PerspectiveCamera(Vec3f c, Vec3f d, Vec3f u, float a) : Camer
 // Create a camera with the appropriate dimensions that
 // crops the screen in the narrowest dimension.
 
-void PerspectiveCamera::glInit(int w, int h) {
+void PerspectiveCamera2::glInit(int w, int h) {
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
 
@@ -46,22 +41,6 @@ void PerspectiveCamera::glInit(int w, int h) {
   if (aspect > 1) asp_angle /= aspect;
 
   gluPerspective(asp_angle, aspect, 1, 100.0);
-}
-
-// ====================================================================
-// ====================================================================
-// GL PLACE CAMERA
-// Place a camera within an OpenGL scene
-
-void Camera::glPlaceCamera(void) {
-  Vec3f lookAt = center + direction;
-//	Vec3f lookAt = direction;
-  gluLookAt(center.x(), center.y(), center.z(),
-	    lookAt.x(), lookAt.y(), lookAt.z(),
-            up.x(), up.y(), up.z());
-
-//  printf("(%f, %f, %f)\n", center.x(), center.y(), center.z());
-  //printf("(%f, %f, %f) (%f, %f, %f)\n", lookAt.x(), lookAt.y(), lookAt.z(), lookAt2.x(), lookAt2.y(), lookAt2.z());
 }
 
 // ====================================================================
@@ -81,7 +60,7 @@ void Camera::glPlaceCamera(void) {
 // dollyCamera: Move camera along the direction vector
 // ====================================================================
 
-void PerspectiveCamera::dollyCamera(float dist) {
+void PerspectiveCamera2::dollyCamera(float dist) {
   center += direction*dist;
   Vec3f screenCenter = center + direction;
   float screenHeight = tan(angle/2.0);
@@ -92,7 +71,7 @@ void PerspectiveCamera::dollyCamera(float dist) {
 // truckCamera: Translate camera perpendicular to the direction vector
 // ====================================================================
 
-void PerspectiveCamera::truckCamera(float dx, float dy) {
+void PerspectiveCamera2::truckCamera(float dx, float dy) {
   center += getHorizontal()*dx + getScreenUp()*dy;
   Vec3f screenCenter = center + direction;
   float screenHeight = tan(angle/2.0);
@@ -103,7 +82,7 @@ void PerspectiveCamera::truckCamera(float dx, float dy) {
 // rotateCamera: Rotate around the up and horizontal vectors
 // ====================================================================
 
-void PerspectiveCamera::rotateCamera(float rx, float ry) {
+void PerspectiveCamera2::rotateCamera(float rx, float ry) {
   // Don't let the model flip upside-down (There is a singularity
   // at the poles when 'up' and 'direction' are aligned)
   float tiltAngle = acos(up.Dot3(direction));
@@ -112,11 +91,36 @@ void PerspectiveCamera::rotateCamera(float rx, float ry) {
   else if (tiltAngle-ry < 0.01)
     ry = tiltAngle - 0.01;
 
-  Matrix rotMat = Matrix::MakeAxisRotation(up, rx);
-  rotMat *= Matrix::MakeAxisRotation(getHorizontal(), ry);
+//  Matrix rotMat = Matrix::MakeAxisRotation(up, rx);
+//  rotMat *= Matrix::MakeAxisRotation(getHorizontal(), ry);
+  //Matrix rotMat = Matrix::MakeAxisRotation(up, rx);
+//  Matrix rotMat = Matrix::MakeAxisRotation(getHorizontal(), ry);
+//
+//  //this->getScreenUp()
+//
+//  rotMat.Transform(center);
+//  rotMat.TransformDirection(direction);
 
-  rotMat.Transform(center);
-  rotMat.TransformDirection(direction);
+//  float c = cos(rx * (M_PI / 180));
+//  float s = sin(rx * (M_PI / 180));
+  float c = cos(rx);
+    float s = sin(rx);
+
+  printf("%f, %f\n", c, s);
+
+  float x = direction.x();
+  float z = direction.z();
+
+  float nx = x * c - z * s;
+  float nz = x * s + z * c;
+
+  printf("(%f, %f, %f) => ", direction.x(), direction.y(), direction.z());
+  direction.Set(nx, direction.y(), nz);
+  printf("(%f, %f, %f)\n", direction.x(), direction.y(), direction.z());
+
+//  rotMat.Transform(direction);
+//    rotMat.TransformDirection(center);
+
   direction.Normalize();
   Vec3f screenCenter = center + direction;
   float screenHeight = tan(angle/2.0);
@@ -125,6 +129,3 @@ void PerspectiveCamera::rotateCamera(float rx, float ry) {
   xAxis = getHorizontal() * 2 * screenHeight;
   yAxis = getScreenUp() * 2 * screenHeight;
 }
-
-// ====================================================================
-// ====================================================================

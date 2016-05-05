@@ -1,5 +1,5 @@
-#ifndef SPHERE_H_
-#define SPHERE_H_
+#ifndef PLANET_H_
+#define PLANET_H_
 
 #include <cmath>
 #include <iostream>
@@ -10,16 +10,16 @@
 #include "Perlin.h"
 #include "CelestialBody.h"
 
-
-
-class Planet : public CelestialBody {
+class Planet: public CelestialBody {
 public:
-    Planet(GLfloat radius, int horizontal_sections, int vertical_sections);
-    virtual ~Planet();
+	Planet(GLfloat radius, int horizontal_sections, int vertical_sections);
+	virtual ~Planet();
 
 	virtual void show();
 
-	float getRadius() const { return mRadius; }
+	float getRadius() const {
+		return mRadius;
+	}
 //	virtual void update(float time);
 
 	void update(const Time& dt) override;

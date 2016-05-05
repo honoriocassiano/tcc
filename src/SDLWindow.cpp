@@ -26,8 +26,11 @@ int HandleGLErrorWindow2() {
 SDLWindow::SDLWindow(int width, int height) :
 		mCamera(nullptr), mClock(new Clock()), mIsRunning(false), mWindow(nullptr), mWidth(
 				width), mHeight(height) {
-	mCamera = new PerspectiveCamera(Vec3f(0, 0, -50), Vec3f(0, 0, 1),
-			Vec3f(0, 1, 0), 20 * M_PI / 180.0);
+//	mCamera = new PerspectiveCamera(Vec3f(0, 0, -50), Vec3f(0, 0, 1),
+//			Vec3f(0, 1, 0), 20 * M_PI / 180.0);
+
+	mCamera = new PerspectiveCamera2(Vec3f(0, 0, -50), Vec3f(0, 0, 1),
+				Vec3f(0, 1, 0), 20 * M_PI / 180.0);
 
 	assert(initSDL());
 	assert(initOpenGL());
@@ -112,7 +115,8 @@ void SDLWindow::processRealtimeEvents() {
 
 	if ((x != 0 || y != 0) && mouseState) {
 		if (mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)) {
-			mCamera->rotateCamera(0.005 * x, 0.005 * (-y));
+			mCamera->rotateCamera(-0.005 * x, -0.005 * y);
+			//mCamera->rotateCamera(-0.005 * x, -0.005 * y);
 		}
 		// Inserir ações com outros botões aqui
 	}
