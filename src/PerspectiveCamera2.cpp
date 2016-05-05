@@ -15,15 +15,17 @@
 
 #include <stdio.h>
 
-PerspectiveCamera2::PerspectiveCamera2(Vec3f c, Vec3f d, Vec3f u, float a) : Camera(c,d,u) {
-  angle = a;
+PerspectiveCamera2::PerspectiveCamera2(Vec3f c, Vec3f d, Vec3f u, float a) :
+		Camera(c, d, u) {
+	angle = a;
 
-  Vec3f screenCenter = center + direction;
-  float screenHeight = tan(angle/2.0);
+	Vec3f screenCenter = center + direction;
+	float screenHeight = tan(angle / 2.0);
 
-  lowerLeft = screenCenter - (getScreenUp() * screenHeight) - (getHorizontal() * screenHeight);
-  xAxis = getHorizontal() * 2 * screenHeight;
-  yAxis = getScreenUp() * 2 * screenHeight;
+	lowerLeft = screenCenter - (getScreenUp() * screenHeight)
+			- (getHorizontal() * screenHeight);
+	xAxis = getHorizontal() * 2 * screenHeight;
+	yAxis = getScreenUp() * 2 * screenHeight;
 }
 
 // ====================================================================
@@ -33,14 +35,15 @@ PerspectiveCamera2::PerspectiveCamera2(Vec3f c, Vec3f d, Vec3f u, float a) : Cam
 // crops the screen in the narrowest dimension.
 
 void PerspectiveCamera2::glInit(int w, int h) {
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
 
-  float aspect = float(w)/float(h);
-  float asp_angle = angle * 180/M_PI;
-  if (aspect > 1) asp_angle /= aspect;
+	float aspect = float(w) / float(h);
+	float asp_angle = angle * 180 / M_PI;
+	if (aspect > 1)
+		asp_angle /= aspect;
 
-  gluPerspective(asp_angle, aspect, 1, 100.0);
+	gluPerspective(asp_angle, aspect, 1, 100.0);
 }
 
 // ====================================================================
@@ -61,10 +64,11 @@ void PerspectiveCamera2::glInit(int w, int h) {
 // ====================================================================
 
 void PerspectiveCamera2::dollyCamera(float dist) {
-  center += direction*dist;
-  Vec3f screenCenter = center + direction;
-  float screenHeight = tan(angle/2.0);
-  lowerLeft = screenCenter - (getScreenUp() * screenHeight) - (getHorizontal() * screenHeight);
+	center += direction * dist;
+	Vec3f screenCenter = center + direction;
+	float screenHeight = tan(angle / 2.0);
+	lowerLeft = screenCenter - (getScreenUp() * screenHeight)
+			- (getHorizontal() * screenHeight);
 }
 
 // ====================================================================
@@ -72,10 +76,11 @@ void PerspectiveCamera2::dollyCamera(float dist) {
 // ====================================================================
 
 void PerspectiveCamera2::truckCamera(float dx, float dy) {
-  center += getHorizontal()*dx + getScreenUp()*dy;
-  Vec3f screenCenter = center + direction;
-  float screenHeight = tan(angle/2.0);
-  lowerLeft = screenCenter - (getScreenUp() * screenHeight) - (getHorizontal() * screenHeight);
+	center += getHorizontal() * dx + getScreenUp() * dy;
+	Vec3f screenCenter = center + direction;
+	float screenHeight = tan(angle / 2.0);
+	lowerLeft = screenCenter - (getScreenUp() * screenHeight)
+			- (getHorizontal() * screenHeight);
 }
 
 // ====================================================================
@@ -83,49 +88,27 @@ void PerspectiveCamera2::truckCamera(float dx, float dy) {
 // ====================================================================
 
 void PerspectiveCamera2::rotateCamera(float rx, float ry) {
-  // Don't let the model flip upside-down (There is a singularity
-  // at the poles when 'up' and 'direction' are aligned)
-  float tiltAngle = acos(up.Dot3(direction));
-  if (tiltAngle-ry > 3.13)
-    ry = tiltAngle - 3.13;
-  else if (tiltAngle-ry < 0.01)
-    ry = tiltAngle - 0.01;
+	// Don't let the model flip upside-down (There is a singularity
+	// at the poles when 'up' and 'direction' are aligned)
+	float tiltAngle = acos(up.Dot3(direction));
+	if (tiltAngle - ry > 3.13)
+		ry = tiltAngle - 3.13;
+	else if (tiltAngle - ry < 0.01)
+		ry = tiltAngle - 0.01;
 
-//  Matrix rotMat = Matrix::MakeAxisRotation(up, rx);
-//  rotMat *= Matrix::MakeAxisRotation(getHorizontal(), ry);
-  //Matrix rotMat = Matrix::MakeAxisRotation(up, rx);
-//  Matrix rotMat = Matrix::MakeAxisRotation(getHorizontal(), ry);
-//
-//  //this->getScreenUp()
-//
-//  rotMat.Transform(center);
-//  rotMat.TransformDirection(direction);
+	Matrix rotMat = Matrix::MakeAxisRotation(up, rx);
+	rotMat *= Matrix::MakeAxisRotation(getHorizontal(), ry);
 
-//  float c = cos(rx * (M_PI / 180));
-//  float s = sin(rx * (M_PI / 180));
-  float c = cos(rx);
-    float s = sin(rx);
+//	printf("(%f, %f, %f) => ", direction.x(), direction.y(), direction.z());
+	rotMat.TransformDirection(direction);
+//	printf("(%f, %f, %f)\n", direction.x(), direction.y(), direction.z());
 
-  printf("%f, %f\n", c, s);
+	direction.Normalize();
+	Vec3f screenCenter = center + direction;
+	float screenHeight = tan(angle / 2.0);
 
-  float x = direction.x();
-  float z = direction.z();
-
-  float nx = x * c - z * s;
-  float nz = x * s + z * c;
-
-  printf("(%f, %f, %f) => ", direction.x(), direction.y(), direction.z());
-  direction.Set(nx, direction.y(), nz);
-  printf("(%f, %f, %f)\n", direction.x(), direction.y(), direction.z());
-
-//  rotMat.Transform(direction);
-//    rotMat.TransformDirection(center);
-
-  direction.Normalize();
-  Vec3f screenCenter = center + direction;
-  float screenHeight = tan(angle/2.0);
-
-  lowerLeft = screenCenter - (getScreenUp() * screenHeight) - (getHorizontal() * screenHeight);
-  xAxis = getHorizontal() * 2 * screenHeight;
-  yAxis = getScreenUp() * 2 * screenHeight;
+	lowerLeft = screenCenter - (getScreenUp() * screenHeight)
+			- (getHorizontal() * screenHeight);
+	xAxis = getHorizontal() * 2 * screenHeight;
+	yAxis = getScreenUp() * 2 * screenHeight;
 }
