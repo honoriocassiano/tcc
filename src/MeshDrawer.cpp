@@ -53,28 +53,39 @@ void MeshDrawer::draw(Mesh* mesh) {
 	glPolygonOffset(1.1, 4.0);
 
 	// draw the triangles
-	glColor3f(1, 1, 1);
+//	glColor3f(1, 1, 1);
 	Iterator<Triangle*> *iter = mesh->triangles->StartIteration();
 	glBegin(GL_TRIANGLES);
 	while (Triangle *t = iter->GetNext()) {
-		Vec3f a = (*t)[0]->get();
-		Vec3f b = (*t)[1]->get();
-		Vec3f c = (*t)[2]->get();
+		Vertex* va = (*t)[0];
+		Vertex* vb = (*t)[1];
+		Vertex* vc = (*t)[2];
 
-		Vec3f n_a = (*t)[0]->getNormal();
-		Vec3f n_b = (*t)[1]->getNormal();
-		Vec3f n_c = (*t)[2]->getNormal();
+		Vec3f a = va->get();
+		Vec3f b = vb->get();
+		Vec3f c = vc->get();
+
+		Vec3f n_a = va->getNormal();
+		Vec3f n_b = vb->getNormal();
+		Vec3f n_c = vc->getNormal();
 		//InsertNormal(a, b, c);
 
 		//Vec3f normal = t->getNormal();
 		//glNormal3f(normal.x(), normal.y(), normal.z());
 
+//		printf("(%f, %f, %f)\n", va->getColor().r(), va->getColor().g(), va->getColor().b());
+
+		glColor3f(va->getColor().r(), va->getColor().g(), va->getColor().b());
 		glNormal3f(n_a.x(), n_a.y(), n_a.z());
 		glVertex3f(a.x(), a.y(), a.z());
 
+//		glColor3f(n_b.r(), n_b.g(), n_b.b());
+		glColor3f(vb->getColor().r(), vb->getColor().g(), vb->getColor().b());
 		glNormal3f(n_b.x(), n_b.y(), n_b.z());
 		glVertex3f(b.x(), b.y(), b.z());
 
+//		glColor3f(n_c.r(), n_c.g(), n_c.b());
+		glColor3f(vc->getColor().r(), vc->getColor().g(), vc->getColor().b());
 		glNormal3f(n_c.x(), n_c.y(), n_c.z());
 		glVertex3f(c.x(), c.y(), c.z());
 	}

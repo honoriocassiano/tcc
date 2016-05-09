@@ -5,6 +5,7 @@
 #include <assert.h>
 
 #include "../vectors.h"
+#include "../Color.h"
 
 class Vertex;
 
@@ -16,7 +17,7 @@ public:
 
   // ========================
   // CONSTRUCTOR & DESTRUCTOR
-  Vertex(int i, const Vec3f &pos) : position(pos) { index = i; }
+  Vertex(int i, const Vec3f &pos) : position(pos), color(1.0f, 1.0f, 1.0f) { index = i; }
   virtual ~Vertex() { }
   
   // =========
@@ -28,6 +29,7 @@ public:
   const Vec3f& get() const { return position; }
 
   const Vec3f& getNormal() const { return normal; }
+  const Color& getColor() const { return color; }
 
   // =========
   // MODIFIERS
@@ -36,6 +38,7 @@ public:
 
   void setNormal(Vec3f v) { normal = v; }
   void setNormal(double x, double y, double z) { normal.Set(x,y,z); }
+  void setColor(Color c) { color = c; }
 
 private:
 
@@ -48,6 +51,7 @@ private:
   // REPRESENTATION
   Vec3f position;
   Vec3f normal;
+  Color color;
 
   // this is the index from the original .obj file.
   // technically not part of the half-edge data structure

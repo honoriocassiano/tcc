@@ -51,12 +51,12 @@ Planet::Planet(GLfloat radius, int horizontal_sections, int vertical_sections) :
 	this->vertex_id = 0;
 	this->vertex_index_id = 0;
 
-	mTurbulenceDistortion = 0.1f;
+	mTurbulenceDistortion = 0.2f;
 
 	makePoints();
 	makeTriangles();
 
-	for (int i = 0; i < 4; ++i) {
+	for (int i = 0; i < 5; ++i) {
 		subdivide();
 	}
 }
@@ -130,7 +130,32 @@ void Planet::makePoints() {
 
 		position += (position * turbulence * mTurbulenceDistortion);
 
-		mMesh->addVertex(position);
+		//green 008000
+//		acqua 7FFFD4
+
+		float positiveTurbulence = (turbulence * 0.5) + 0.5;
+
+//		positiveTurbulence = 1 - positiveTurbulence;
+
+//		float r = (0x7F * positiveTurbulence + 0x00 * (1 - positiveTurbulence))/255.0f;
+//		float g = (0xFF * positiveTurbulence + 0x80 * (1 - positiveTurbulence))/255.0f;
+//		float b = (0xD4 * positiveTurbulence + 0x00 * (1 - positiveTurbulence))/255.0f;
+
+		Color green(0x00 / 255.0f, 0x80 / 255.0f, 0x00 / 255.0f);
+		Color acqua(0xCD / 255.0f, 0x85 / 255.0f, 0x3F / 255.0f);
+
+//		float r = 0x00;
+//		float g = 0x00;
+//		float b = 0xFF;
+
+//		if(turbulence < 0) {
+//			printf("%f\n", turbulence);
+//		}
+
+//		printf("(%f, %f, %f)\n", r, g, b);
+
+		Vertex * v = mMesh->addVertex(position);
+		v->setColor(Color::interpolate(acqua, green, positiveTurbulence));
 	}
 }
 
@@ -170,19 +195,35 @@ void Planet::subdivide() {
 		p20.Normalize();
 
 		float turbulence01 = Perlin::generateTurbulence(octaves, A, B,
-				(p01.x() + 1) * mRadius, (p01.y() + 1) * mRadius, (p01.z() + 1) * mRadius);
+				(p01.x() + 1) * mRadius, (p01.y() + 1) * mRadius,
+				(p01.z() + 1) * mRadius);
 		float turbulence12 = Perlin::generateTurbulence(octaves, A, B,
-				(p12.x() + 1) * mRadius, (p12.y() + 1) * mRadius, (p12.z() + 1) * mRadius);
+				(p12.x() + 1) * mRadius, (p12.y() + 1) * mRadius,
+				(p12.z() + 1) * mRadius);
 		float turbulence20 = Perlin::generateTurbulence(octaves, A, B,
-				(p20.x() + 1) * mRadius, (p20.y() + 1) * mRadius, (p20.z() + 1) * mRadius);
+				(p20.x() + 1) * mRadius, (p20.y() + 1) * mRadius,
+				(p20.z() + 1) * mRadius);
 
 		p01 += p01 * turbulence01 * mTurbulenceDistortion;
 		p12 += p12 * turbulence12 * mTurbulenceDistortion;
 		p20 += p20 * turbulence20 * mTurbulenceDistortion;
 
+//		float positiveTurbulence = (turbulence * 0.5) + 0.5;
+//
+//		float r = (0x7F * positiveTurbulence + 0x00 * (1 - positiveTurbulence))/255.0f;
+//		float g = (0xFF * positiveTurbulence + 0x80 * (1 - positiveTurbulence))/255.0f;
+//		float b = (0xD4 * positiveTurbulence + 0x00 * (1 - positiveTurbulence))/255.0f;
+
+		Color green(0x00 / 255.0f, 0x80 / 255.0f, 0x00 / 255.0f);
+		Color acqua(0xCD / 255.0f, 0x85 / 255.0f, 0x3F / 255.0f);
+
 		v01 = mMesh->addVertex(p01);
 		v12 = mMesh->addVertex(p12);
 		v20 = mMesh->addVertex(p20);
+
+		v01->setColor(Color::interpolate(acqua, green, (turbulence01 * 0.5) + 0.5));
+		v12->setColor(Color::interpolate(acqua, green, (turbulence12 * 0.5) + 0.5));
+		v20->setColor(Color::interpolate(acqua, green, (turbulence20 * 0.5) + 0.5));
 
 		mMesh->removeTriangle(t);
 
@@ -200,11 +241,11 @@ void Planet::update(const Time& dt) {
 
 	const Vec3f speed(sp, sp, sp);
 
-	setCenter( getCenter() + (speed * elapsed) );
+	setCenter(getCenter() + (speed * elapsed));
 }
 
 void Planet::draw() {
-	if(mPendingUpdate) {
+	if (mPendingUpdate) {
 		recalculateNormals();
 	}
 

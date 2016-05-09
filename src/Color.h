@@ -10,21 +10,23 @@
 #ifndef OBJECTVIEW_COLOR_H_
 #define OBJECTVIEW_COLOR_H_
 
-namespace color {
-
 class Color {
 public:
+	// Default color is white
+	Color();
 	Color(GLfloat, GLfloat, GLfloat);
 	Color(GLfloat, GLfloat, GLfloat, GLfloat);
 	virtual ~Color();
 
-	GLfloat getR() const { return r; }
+	GLfloat r() const { return mR; }
 
-	GLfloat getG() const { return g; }
+	GLfloat g() const { return mG; }
 
-	GLfloat getB() const { return b; }
+	GLfloat b() const { return mB; }
 
-	GLfloat getAlpha() const { return alpha; }
+	GLfloat a() const { return mAlpha; }
+
+	static Color interpolate(const Color& c1, const Color& c2, float factor);
 
 	static Color WHITE;
 	static Color BLACK;
@@ -33,12 +35,10 @@ public:
 	static Color GREEN;
 
 private:
-	GLfloat r;
-	GLfloat g;
-	GLfloat b;
-	GLfloat alpha;
+	GLfloat mR;
+	GLfloat mG;
+	GLfloat mB;
+	GLfloat mAlpha;
 };
-
-} /* namespace words */
 
 #endif /* OBJECTVIEW_COLOR_H_ */
