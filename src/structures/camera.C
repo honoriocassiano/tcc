@@ -45,7 +45,7 @@ void PerspectiveCamera::glInit(int w, int h) {
   float asp_angle = angle * 180/M_PI;
   if (aspect > 1) asp_angle /= aspect;
 
-  gluPerspective(asp_angle, aspect, 1, 100.0);
+  gluPerspective(asp_angle, aspect, 1, 100);
 }
 
 // ====================================================================

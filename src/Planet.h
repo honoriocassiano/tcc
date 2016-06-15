@@ -12,15 +12,12 @@
 
 class Planet: public CelestialBody {
 public:
-	Planet(GLfloat radius, int horizontal_sections, int vertical_sections);
+	Planet(GLfloat radius);
 	virtual ~Planet();
-
-	virtual void show();
 
 	float getRadius() const {
 		return mRadius;
 	}
-//	virtual void update(float time);
 
 	void update(const Time& dt) override;
 	void draw() override;
@@ -32,20 +29,6 @@ private:
 	Vec3f oldCenter;
 
 	GLfloat mRadius;
-	int h_sections;
-	int v_sections;
-
-	int vertex_size;
-	int index_size;
-
-	GLfloat step_circle_angle;
-	GLfloat step_height_angle;
-
-	GLuint vertex_id;
-	GLuint vertex_index_id;
-
-	GLfloat * vertex;
-	GLuint * vertex_index;
 
 	void subdivide();
 

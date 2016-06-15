@@ -9,10 +9,6 @@
 
 #include "MeshDrawer.h"
 
-#define DEBUG_POINTS 0
-#define DEBUG_INDEX 0
-#define DEBUG_GLEW 0
-
 #define X .525731112119133606
 #define Z .850650808352039932
 
@@ -32,89 +28,23 @@ int Planet::B = 2;
 
 GLfloat Planet::to_rad = M_PI / 180.0;
 
-Planet::Planet(GLfloat radius, int horizontal_sections, int vertical_sections) :
+Planet::Planet(GLfloat radius) :
 		CelestialBody(Vec3f()), mPendingUpdate(false) {
 	this->mRadius = radius;
-
-	this->h_sections = horizontal_sections;
-	this->v_sections = vertical_sections;
-
-	step_circle_angle = 360.0 / h_sections;
-	step_height_angle = 180.0 / v_sections;
-
-	this->vertex_size = h_sections * (v_sections + 1) * 3;
-	this->index_size = 6 * h_sections * v_sections;
-
-	this->vertex = new GLfloat[vertex_size];
-	this->vertex_index = new GLuint[index_size];
-
-	this->vertex_id = 0;
-	this->vertex_index_id = 0;
 
 	mTurbulenceDistortion = 0.2f;
 
 	makePoints();
 	makeTriangles();
 
-	for (int i = 0; i < 5; ++i) {
+	for (int i = 0; i < 1; ++i) {
 		subdivide();
 	}
 }
 
 Planet::~Planet() {
-	delete[] vertex_index;
-	delete[] vertex;
+
 }
-
-void Planet::show() {
-
-	std::cout << "Drawing Sphere\n";
-
-	makePoints();
-
-#if DEBUG_GLEW
-	std::cout << glewGetErrorString(glGetError()) << std::endl;
-#endif
-
-#if DEBUG_POINTS
-	for (int i = 0; i < vertex_size; i += 3) {
-		std::cout << "(x, y, z) => (" << vertex[i] << ", " << vertex[i + 1]
-		<< ", " << vertex[i + 2] << ")\n";
-	}
-
-	std::cout << "Number of Vertex: " << vertex_size / 3 << std::endl;
-#endif
-
-#if DEBUG_INDEX
-
-	for (int i = 0; i < index_size; i += 3) {
-		std::cout << "Triangle => (" << vertex_index[i] << ", "
-		<< vertex_index[i + 1] << ", " << vertex_index[i + 2]
-		<< ")\n";
-	}
-
-	std::cout << "Number of Index: " << index_size << std::endl;
-
-#endif
-
-	//update(0);
-}
-
-//void Planet::update(float time) {
-//	glPolygonMode( GL_FRONT_AND_BACK, GL_LINE);
-//
-////	glBindBuffer(GL_ARRAY_BUFFER, vertex_id);
-////	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vertex_index_id);
-//	glEnableClientState(GL_VERTEX_ARRAY);
-//	glVertexPointer(3, GL_FLOAT, 3 * sizeof(GLfloat), 0);
-//
-//	glDrawElements(GL_TRIANGLES, index_size,
-//	GL_UNSIGNED_INT, (void *) 0);
-//
-//	glDisableClientState(GL_VERTEX_ARRAY);
-////	glBindBuffer(GL_ARRAY_BUFFER, 0);
-////	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-//}
 
 void Planet::makePoints() {
 	for (int i = 0; i < 12; ++i) {
@@ -135,27 +65,11 @@ void Planet::makePoints() {
 
 		float positiveTurbulence = (turbulence * 0.5) + 0.5;
 
-//		positiveTurbulence = 1 - positiveTurbulence;
-
-//		float r = (0x7F * positiveTurbulence + 0x00 * (1 - positiveTurbulence))/255.0f;
-//		float g = (0xFF * positiveTurbulence + 0x80 * (1 - positiveTurbulence))/255.0f;
-//		float b = (0xD4 * positiveTurbulence + 0x00 * (1 - positiveTurbulence))/255.0f;
-
-		Color green(0x00 / 255.0f, 0x80 / 255.0f, 0x00 / 255.0f);
-		Color acqua(0xCD / 255.0f, 0x85 / 255.0f, 0x3F / 255.0f);
-
-//		float r = 0x00;
-//		float g = 0x00;
-//		float b = 0xFF;
-
-//		if(turbulence < 0) {
-//			printf("%f\n", turbulence);
-//		}
-
-//		printf("(%f, %f, %f)\n", r, g, b);
+//		Color green(0x00 / 255.0f, 0x80 / 255.0f, 0x00 / 255.0f);
+//		Color acqua(0xCD / 255.0f, 0x85 / 255.0f, 0x3F / 255.0f);
 
 		Vertex * v = mMesh->addVertex(position);
-		v->setColor(Color::interpolate(acqua, green, positiveTurbulence));
+//		v->setColor(Color::interpolate(acqua, green, positiveTurbulence));
 	}
 }
 
@@ -208,22 +122,16 @@ void Planet::subdivide() {
 		p12 += p12 * turbulence12 * mTurbulenceDistortion;
 		p20 += p20 * turbulence20 * mTurbulenceDistortion;
 
-//		float positiveTurbulence = (turbulence * 0.5) + 0.5;
-//
-//		float r = (0x7F * positiveTurbulence + 0x00 * (1 - positiveTurbulence))/255.0f;
-//		float g = (0xFF * positiveTurbulence + 0x80 * (1 - positiveTurbulence))/255.0f;
-//		float b = (0xD4 * positiveTurbulence + 0x00 * (1 - positiveTurbulence))/255.0f;
-
-		Color green(0x00 / 255.0f, 0x80 / 255.0f, 0x00 / 255.0f);
-		Color acqua(0xCD / 255.0f, 0x85 / 255.0f, 0x3F / 255.0f);
+//		Color green(0x00 / 255.0f, 0x80 / 255.0f, 0x00 / 255.0f);
+//		Color acqua(0xCD / 255.0f, 0x85 / 255.0f, 0x3F / 255.0f);
 
 		v01 = mMesh->addVertex(p01);
 		v12 = mMesh->addVertex(p12);
 		v20 = mMesh->addVertex(p20);
 
-		v01->setColor(Color::interpolate(acqua, green, (turbulence01 * 0.5) + 0.5));
-		v12->setColor(Color::interpolate(acqua, green, (turbulence12 * 0.5) + 0.5));
-		v20->setColor(Color::interpolate(acqua, green, (turbulence20 * 0.5) + 0.5));
+//		v01->setColor(Color::interpolate(acqua, green, (turbulence01 * 0.5) + 0.5));
+//		v12->setColor(Color::interpolate(acqua, green, (turbulence12 * 0.5) + 0.5));
+//		v20->setColor(Color::interpolate(acqua, green, (turbulence20 * 0.5) + 0.5));
 
 		mMesh->removeTriangle(t);
 
@@ -237,11 +145,13 @@ void Planet::subdivide() {
 void Planet::update(const Time& dt) {
 	float elapsed = dt.getAsSeconds();
 
+	/*
 	float sp = 0.1f;
 
 	const Vec3f speed(sp, sp, sp);
 
 	setCenter(getCenter() + (speed * elapsed));
+	*/
 }
 
 void Planet::draw() {

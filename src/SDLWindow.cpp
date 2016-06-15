@@ -29,7 +29,12 @@ SDLWindow::SDLWindow(int width, int height) :
 //	mCamera = new PerspectiveCamera(Vec3f(0, 0, -50), Vec3f(0, 0, 1),
 //			Vec3f(0, 1, 0), 20 * M_PI / 180.0);
 
-	mCamera = new PerspectiveCamera2(Vec3f(0, 0, -50), Vec3f(0, 0, 1),
+	Vec3f position(0, 0, -150);
+	Vec3f direction = Vec3f(0, 0, 0) - position;
+
+	direction.Normalize();
+
+	mCamera = new PerspectiveCamera2(position, direction,
 				Vec3f(0, 1, 0), 20 * M_PI / 180.0);
 
 	assert(initSDL());
@@ -86,11 +91,9 @@ void SDLWindow::run() {
 }
 
 void SDLWindow::update(const Time& dt) {
-	/*
 	for (CelestialBody* body : mBodies) {
 		body->update(dt);
 	}
-	*/
 }
 
 void SDLWindow::processRealtimeEvents() {

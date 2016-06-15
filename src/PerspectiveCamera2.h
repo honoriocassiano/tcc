@@ -19,7 +19,7 @@ public:
 	}
 
 	// GL NAVIGATION
-	void glInit(int w, int h);
+	void glInit(int w, int h) override;
 	void dollyCamera(float dist);
 	void truckCamera(float dx, float dy);
 	void rotateCamera(float rx, float ry);

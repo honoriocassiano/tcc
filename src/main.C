@@ -15,9 +15,16 @@ int main(int argc, char **argv) {
 
 	SDLWindow window(640, 480);
 
-	Planet* planet = new Planet(5, 150, 150);
+	Planet* planet = new Planet(5);
+	planet->setCenter(Vec3f(20, 20, 20));
+
+	Planet* sun = new Planet(10);
+	sun->setCenter(Vec3f(0, 0, 0));
+
+	planet->setOrbiter(sun);
 
 	window.addBody(planet);
+	window.addBody(sun);
 
 	window.run();
 
