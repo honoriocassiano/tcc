@@ -50,7 +50,7 @@ private:
 
 	SDL_Window * mWindow;
 
-	Camera* mCamera;
+	PerspectiveCamera2* mCamera;
 	Clock * mClock;
 	bool mIsRunning;
 	SDL_GLContext mGLContext;

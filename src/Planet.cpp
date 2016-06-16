@@ -145,6 +145,17 @@ void Planet::subdivide() {
 void Planet::update(const Time& dt) {
 	float elapsed = dt.getAsSeconds();
 
+	const CelestialBody* orbiter = getOrbiter();
+
+	const float speed = 0.5f;
+
+	if(orbiter) {
+		Vec3f vec = orbiter->getCenter() - getCenter();
+
+		vec.Normalize();
+
+		setCenter(getCenter() + (vec * (speed * elapsed)));
+	}
 	/*
 	float sp = 0.1f;
 

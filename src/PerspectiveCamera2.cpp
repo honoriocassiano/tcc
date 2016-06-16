@@ -112,3 +112,7 @@ void PerspectiveCamera2::rotateCamera(float rx, float ry) {
 	xAxis = getHorizontal() * 2 * screenHeight;
 	yAxis = getScreenUp() * 2 * screenHeight;
 }
+
+void PerspectiveCamera2::lookAt(const Vec3f& point) {
+	fprintf(stderr, "Function not implemented: \"%s\"\n", __PRETTY_FUNCTION__);
+}

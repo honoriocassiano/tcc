@@ -234,4 +234,10 @@ void SDLWindow::processEvents(const SDL_Event& e) {
 			mIsRunning = false;
 		}
 	}
+
+	if(e.type == SDL_KEYUP) {
+		if(e.key.keysym.sym == SDLK_c) {
+			mCamera->lookAt(Vec3f(0, 0, 0));
+		}
+	}
 }

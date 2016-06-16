@@ -25,7 +25,7 @@ public:
 	void setCenter(const Vec3f& position) {
 		mCenter = position;
 	}
-	const Vec3f& getCenter() {
+	const Vec3f getCenter() const {
 		return mCenter;
 	}
 

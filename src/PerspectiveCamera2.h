@@ -35,6 +35,8 @@ public:
 		printf("}\n");
 	}
 
+	void lookAt(const Vec3f& point);
+
 private:
 	PerspectiveCamera2() {
 		assert(0);
