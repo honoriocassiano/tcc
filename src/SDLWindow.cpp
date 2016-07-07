@@ -26,10 +26,8 @@ int HandleGLErrorWindow2() {
 SDLWindow::SDLWindow(int width, int height) :
 		mCamera(nullptr), mClock(new Clock()), mIsRunning(false), mWindow(nullptr), mWidth(
 				width), mHeight(height) {
-//	mCamera = new PerspectiveCamera(Vec3f(0, 0, -50), Vec3f(0, 0, 1),
-//			Vec3f(0, 1, 0), 20 * M_PI / 180.0);
 
-	Vec3f position(0, 0, -150);
+	Vec3f position(0, 1000, 100);
 	Vec3f direction = Vec3f(0, 0, 0) - position;
 
 	direction.Normalize();
@@ -100,9 +98,11 @@ void SDLWindow::processRealtimeEvents() {
 	const Uint8 *state = SDL_GetKeyboardState(nullptr);
 
 	if (state[SDL_SCANCODE_UP]) {
-		mCamera->dollyCamera(0.5f);
+//		mCamera->dollyCamera(0.5f);
+		mCamera->dollyCamera(2.0f);
 	} else if (state[SDL_SCANCODE_DOWN]) {
-		mCamera->dollyCamera(-0.5f);
+//		mCamera->dollyCamera(-0.5f);
+		mCamera->dollyCamera(-2.0f);
 	}
 
 	if (state[SDL_SCANCODE_LEFT]) {

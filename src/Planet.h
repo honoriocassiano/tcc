@@ -25,16 +25,17 @@ public:
 private:
 	static GLfloat to_rad;
 
-	Vec3f center;
-	Vec3f oldCenter;
-
 	GLfloat mRadius;
+
+	Vec3f mOrbitGravity;
 
 	void subdivide();
 
 	void makePoints();
 	void makeTriangles();
-	void updatePoints();
+	//void updatePoints();
+
+	void calculateOrbitGravity();
 
 	const static GLfloat vdata[12][3];
 	const static GLuint tindices[20][3];

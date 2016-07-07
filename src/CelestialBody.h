@@ -16,7 +16,7 @@
 class CelestialBody {
 public:
 	CelestialBody(const Vec3f& center) :
-			mCenter(center), mMesh(new Mesh()), mMass(0.0f), mOrbiter(nullptr) {
+			mCenter(center), mMesh(new Mesh()), mMass(0.0f), mOrbiter(nullptr), mSemiMajorAxis(0) {
 	}
 	virtual ~CelestialBody() {
 		delete mMesh;
@@ -47,10 +47,23 @@ public:
 
 	void setOrbiter(CelestialBody* orbiter) {
 		mOrbiter = orbiter;
+		if(orbiter) {
+			float distance = (mCenter - orbiter->getCenter()).Length();
+
+			mSemiMajorAxis = (distance / 2) * 1.2;
+		} else {
+			mSemiMajorAxis = 0.0f;
+		}
+	}
+
+	float getSemiMajorAxis() const {
+		return mSemiMajorAxis;
 	}
 
 	virtual void update(const Time& dt) = 0;
 	virtual void draw() = 0;
+
+private:
 
 protected:
 	Bag<Triangle*>* getTriangles() {
@@ -68,6 +81,7 @@ protected:
 	CelestialBody * mOrbiter;
 
 	float mMass;
+	float mSemiMajorAxis;
 };
 
 #endif /* SRC_CELESTIALBODY_H_ */

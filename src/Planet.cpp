@@ -4,13 +4,17 @@
 
 #include "vertex.h"
 #include "vectors.h"
+#include "matrix.h"
 
 #include "triangle.h"
 
 #include "MeshDrawer.h"
 
-#define X .525731112119133606
-#define Z .850650808352039932
+#include "Constants.h"
+#include "Scale.h"
+
+constexpr double X = .525731112119133606;
+constexpr double Z = .850650808352039932;
 
 const GLfloat Planet::vdata[12][3] = { { -X, 0.0, Z }, { X, 0.0, Z }, { -X, 0.0,
 		-Z }, { X, 0.0, -Z }, { 0.0, Z, X }, { 0.0, Z, -X }, { 0.0, -Z, X }, {
@@ -27,6 +31,16 @@ int Planet::A = 10;
 int Planet::B = 2;
 
 GLfloat Planet::to_rad = M_PI / 180.0;
+
+float calculateVelocity(float mass, float semiMajorAxis, const Vec3f& orbiter,
+		const Vec3f& planet) {
+
+	Vec3f r_v = planet - orbiter;
+
+	float r = r_v.Length();
+
+	return sqrtf(mass * (2 / r - 1 / semiMajorAxis));
+}
 
 Planet::Planet(GLfloat radius) :
 		CelestialBody(Vec3f()), mPendingUpdate(false) {
@@ -147,22 +161,27 @@ void Planet::update(const Time& dt) {
 
 	const CelestialBody* orbiter = getOrbiter();
 
-	const float speed = 0.5f;
+	if (orbiter) {
+		calculateOrbitGravity();
 
-	if(orbiter) {
-		Vec3f vec = orbiter->getCenter() - getCenter();
+		float velocity = calculateVelocity(getMass(), getSemiMajorAxis(),
+				orbiter->getCenter(), getCenter());
 
-		vec.Normalize();
+		Vec3f normal = (mCenter - orbiter->getCenter());
+		normal.Normalize();
 
-		setCenter(getCenter() + (vec * (speed * elapsed)));
+		Matrix matrix = Matrix::MakeYRotation(90 * to_rad);
+
+		matrix.Transform(normal);
+
+		Vec3f normalVelocity(normal * velocity);
+
+		Vec3f direction = (normalVelocity + mOrbitGravity) * dt.getAsSeconds()
+				* Scale::getTime();
+
+		setCenter(getCenter() + direction);
+
 	}
-	/*
-	float sp = 0.1f;
-
-	const Vec3f speed(sp, sp, sp);
-
-	setCenter(getCenter() + (speed * elapsed));
-	*/
 }
 
 void Planet::draw() {
@@ -188,5 +207,31 @@ void Planet::makeTriangles() {
 		Vertex * v2 = mMesh->getVertex(tindices[i][2]);
 
 		mMesh->addTriangle(v0, v2, v1);
+	}
+}
+
+void Planet::calculateOrbitGravity() {
+
+	if (getOrbiter()) {
+//		Vec3f vec = getCenter() - getOrbiter()->getCenter();
+		Vec3f vec = getOrbiter()->getCenter() - getCenter();
+
+		float r3 = pow(vec.Length(), 2.0);
+
+		vec.Normalize();
+
+		mOrbitGravity = vec * constant::G()
+				* ((getMass() * getOrbiter()->getMass()) / r3);
+
+		/*
+		printf("gravity size: %e, vector: (%e, %e, %e)\n",
+				mOrbitGravity.Length(), mOrbitGravity.x(), mOrbitGravity.y(),
+				mOrbitGravity.z());
+		*/
+
+//		printf("%e, %f, %lf\n", constant::G, Scale::get(),
+//				(constant::G * Scale::get()));
+//		printf("gravity size: %f, vector: (%f, %f, %f)\n", mOrbitGravity.Length(), mOrbitGravity.x(), mOrbitGravity.y(),
+//				mOrbitGravity.z());
 	}
 }
