@@ -39,7 +39,7 @@ float calculateVelocity(float mass, float semiMajorAxis, const Vec3f& orbiter,
 
 	float r = r_v.Length();
 
-	return sqrtf(mass * (2 / r - 1 / semiMajorAxis));
+	return sqrtf(mass * constant::G() * (2 / (r * Scale::getLength()) - 1 / (semiMajorAxis * Scale::getLength()) ));
 }
 
 Planet::Planet(GLfloat radius) :
@@ -216,7 +216,7 @@ void Planet::calculateOrbitGravity() {
 //		Vec3f vec = getCenter() - getOrbiter()->getCenter();
 		Vec3f vec = getOrbiter()->getCenter() - getCenter();
 
-		float r3 = pow(vec.Length(), 2.0);
+		float r3 = pow(vec.Length() * Scale::getLength(), 2.0);
 
 		vec.Normalize();
 

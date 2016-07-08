@@ -27,7 +27,7 @@ SDLWindow::SDLWindow(int width, int height) :
 		mCamera(nullptr), mClock(new Clock()), mIsRunning(false), mWindow(nullptr), mWidth(
 				width), mHeight(height) {
 
-	Vec3f position(0, 1000, 100);
+	Vec3f position(0, 1500, 100);
 	Vec3f direction = Vec3f(0, 0, 0) - position;
 
 	direction.Normalize();
