@@ -43,7 +43,7 @@ void Scale::setTime(float value) {
 
 Scale::Scale() {
 	m_length = 1000000;
-	m_time = 200;
+	m_time = 20000000;
 }
 
 Scale::~Scale() {
