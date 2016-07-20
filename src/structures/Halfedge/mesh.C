@@ -53,7 +53,7 @@ Vertex* Mesh::addVertex(const Vec3f &position) {
 	return v;
 }
 
-void Mesh::addTriangle(Vertex *a, Vertex *b, Vertex *c) {
+Triangle* Mesh::addTriangle(Vertex *a, Vertex *b, Vertex *c) {
 
 	// create the triangle
 	Triangle *t = new Triangle();
@@ -92,6 +92,8 @@ void Mesh::addTriangle(Vertex *a, Vertex *b, Vertex *c) {
 
 	// add the triangle to the master list
 	triangles->Add(t);
+
+	return t;
 }
 
 void Mesh::removeTriangle(Triangle *t) {
@@ -370,5 +372,29 @@ void Mesh::computeVerticesNormals() {
 	}
 
 	edges->EndIteration(iter);
+}
+
+void Mesh::printTriangles(int limit) {
+
+	auto it = triangles->StartIteration();
+	int i = 0;
+
+	while (Triangle *t = it->GetNext()) {
+
+		auto edge = t->getEdge();
+
+		auto p0 = edge->getVertex()->get();
+		auto p1 = edge->getNext()->getVertex()->get();
+		auto p2 = edge->getNext()->getNext()->getVertex()->get();
+
+		printf(
+				"%d - v0: (%.5f, %.5f, %.5f), v1: (%.5f, %.5f, %.5f), v2: (%.5f, %.5f, %.5f)\n",
+				i, p0.x(), p0.y(), p0.z(), p1.x(), p1.y(), p1.z(), p2.x(),
+				p2.y(), p2.z());
+
+		++i;
+	}
+
+	triangles->EndIteration(it);
 }
 // =================================================================

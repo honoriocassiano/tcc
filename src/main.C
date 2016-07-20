@@ -7,12 +7,15 @@
 
 #include "SDLWindow.h"
 
+#include "Patch.h"
+
 // =========================================
 // =========================================
 
 int main(int argc, char **argv) {
 	srand(time(NULL));
 
+	/*
 	SDLWindow window(640, 480);
 
 	Planet* planet1 = new Planet(5);
@@ -41,6 +44,35 @@ int main(int argc, char **argv) {
 	window.addBody(sun);
 
 	window.run();
+	*/
+
+	Patch* patch = new Patch();
+
+	Mesh* mesh = patch->getMesh();
+
+	auto v0 = mesh->addVertex(Vec3f(0, 0, 0));
+	auto v1 = mesh->addVertex(Vec3f(1, 0, 0));
+	auto v2 = mesh->addVertex(Vec3f(0, 1, 0));
+
+	auto tri = mesh->addTriangle(v0, v1, v2);
+
+	printf("before - triangles: %d, vertices: %d\n\n", mesh->numTriangles(), mesh->numVertices());
+
+	mesh->printTriangles();
+
+	BTTreeNode* node = new BTTreeNode(tri);
+
+	patch->Split(node);
+
+	printf("\nafter - triangles: %d, vertices: %d\n\n", mesh->numTriangles(), mesh->numVertices());
+
+	mesh->printTriangles();
+
+	patch->Split(node->getRightChild());
+
+	printf("\nafter - triangles: %d, vertices: %d\n\n", mesh->numTriangles(), mesh->numVertices());
+
+	mesh->printTriangles();
 
 	return 0;
 }

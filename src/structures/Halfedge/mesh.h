@@ -56,7 +56,7 @@ public:
   // =========
   // TRIANGLES
   int numTriangles() const { return triangles->Count(); }
-  void addTriangle(Vertex *a, Vertex *b, Vertex *c);
+  Triangle* addTriangle(Vertex *a, Vertex *b, Vertex *c);
   void removeTriangle(Triangle *t);
 
   // ===============
@@ -69,6 +69,8 @@ public:
   void Simplification(int target_tri_count);
 
   std::vector<Triangle*> getTrianglesByVertex(Edge * e);
+
+  void printTriangles(int limit = 1000);
 
   friend class CelestialBody;
   friend class MeshDrawer;
