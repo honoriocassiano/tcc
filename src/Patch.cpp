@@ -28,7 +28,8 @@ inline constexpr size_t RIGHT_CHILD(size_t index) {
 }
 
 Patch::Patch() :
-		mMesh(new Mesh()), mLeftNode(new BTTreeNode()), mRightNode(new BTTreeNode()), mLeftVariance{0.0f}, mRightVariance{0.0f} {
+		mWireframe(false), mMesh(new Mesh()), mLeftNode(new BTTreeNode()), mRightNode(
+				new BTTreeNode()), mLeftVariance { 0.0f }, mRightVariance { 0.0f } {
 
 	mLeftNode->mBaseNeighbor = mRightNode;
 	mRightNode->mBaseNeighbor = mLeftNode;
@@ -39,6 +40,10 @@ Patch::Patch() :
 	auto ne = mMesh->addVertex(Vec3f(5, 5, 0));
 	auto se = mMesh->addVertex(Vec3f(5, 0, 0));
 	//***********************************
+
+//	auto nw = mMesh->addVertex(Vec3f(0, 100, 0));
+//	auto ne = mMesh->addVertex(Vec3f(100, 100, 0));
+//	auto se = mMesh->addVertex(Vec3f(100, 0, 0));
 
 	mLeftNode->mTriangle = mMesh->addTriangle(sw, ne, nw);
 	mRightNode->mTriangle = mMesh->addTriangle(sw, se, ne);
@@ -187,7 +192,7 @@ float Patch::recursiveComputeVariance(float* currentVariance, size_t index,
 	//************************************
 	//************************************
 	if (index < (1 << VARIANCE_DEPTH)) {
-		currentVariance[index] = variance;
+		currentVariance[index] = 1 + variance;
 	}
 	//************************************
 	//************************************
@@ -240,7 +245,8 @@ void Patch::recursiveTessellate(BTTreeNode* node, float* currentVariance,
 		// TODO Check this value (mapSize: 5)
 		triVariance = ((float) currentVariance[index] * 5 * 2) / distance;
 
-		Log("triVariance: %.5f\n", triVariance);
+//		Log("%s triVariance: %.5f\n", (node == mLeftNode ? "LEFT" : "RIGHT"),
+//				triVariance);
 	}
 
 	// TODO Implement this condition
@@ -251,13 +257,16 @@ void Patch::recursiveTessellate(BTTreeNode* node, float* currentVariance,
 		if (node->mLeftChild
 				&& ((fabsf(left.x() - right.x()) >= 0.1)
 						|| (fabsf(left.y() - right.y()) >= 0.1))) {
-
+//				&& ((fabsf(left.x() - right.x()) >= 0.1)
+//						|| (fabsf(left.y() - right.y()) >= 0.1))) {
 			recursiveTessellate(node->mLeftChild, currentVariance,
 					LEFT_CHILD(index), apex, left, center, cameraPosition);
 			recursiveTessellate(node->mRightChild, currentVariance,
 					RIGHT_CHILD(index), right, apex, center, cameraPosition);
 		}
 	}
+
+//	Log("triVariance: %.5f, frameVariance: %.5f\n", triVariance, frameVariance);
 }
 
 void Patch::tessellate(const Vec3f& cameraPosition) {
