@@ -10,6 +10,19 @@
 #include <stdio.h>
 
 #include "structures/Halfedge/edge.h"
+#include "Perlin.h"
+
+inline constexpr size_t POW2(size_t num) {
+	return 1 << num;
+}
+
+inline constexpr size_t LEFT_CHILD(size_t index) {
+	return (index << 1) + 1;
+}
+
+inline constexpr size_t RIGHT_CHILD(size_t index) {
+	return (index << 1) + 2;
+}
 
 Patch::Patch() :
 		mMesh(new Mesh()) {
