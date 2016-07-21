@@ -121,7 +121,7 @@ float Perlin::grad(int hash, float x, float y, float z) {
 }
 
 float Perlin::generate(float x, float y, float z) {
-	if(!shuffled) {
+	if (!shuffled) {
 		shuffle();
 	}
 
@@ -179,4 +179,16 @@ float Perlin::generate(float x, float y, float z) {
 	a8_5 = lerp(v, lerp(u, a8, a7), lerp(u, a6, a5));
 	a4_1 = lerp(v, lerp(u, a4, a3), lerp(u, a2, a1));
 	return lerp(w, a8_5, a4_1);
+}
+
+float Perlin::generate(const Vec3f& position) {
+
+	return Perlin::generate(position.x(), position.y(), position.z());
+}
+
+float Perlin::generateTurbulence(int octaves, int A, int B,
+		const Vec3f& position) {
+
+	return Perlin::generateTurbulence(octaves, A, B, position.x(), position.y(),
+			position.z());
 }
