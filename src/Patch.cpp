@@ -13,6 +13,8 @@
 
 #include "Debug.h"
 
+#include "Utils.h"
+
 inline constexpr size_t POW2(size_t num) {
 	return 1 << num;
 }
@@ -242,7 +244,7 @@ void Patch::recursiveTessellate(BTTreeNode* node, float* currentVariance,
 	}
 
 	// TODO Implement this condition
-	if (index >= POW2(VARIANCE_DEPTH) /* || (TriVariance > gFrameVariance) */) {
+	if (index >= POW2(VARIANCE_DEPTH) || (triVariance > frameVariance)) {
 		split(node);
 
 		// TODO Check this condition: just x and y will be tested?
