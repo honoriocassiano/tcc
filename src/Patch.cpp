@@ -9,8 +9,9 @@
 
 #include <stdio.h>
 
-#include "structures/Halfedge/edge.h"
 #include "Perlin.h"
+#include "MeshDrawer.h"
+#include "structures/Halfedge/edge.h"
 
 inline constexpr size_t POW2(size_t num) {
 	return 1 << num;
@@ -25,12 +26,24 @@ inline constexpr size_t RIGHT_CHILD(size_t index) {
 }
 
 Patch::Patch() :
-		mMesh(new Mesh()) {
+		mMesh(new Mesh()), mLeftNode(new BTTreeNode()), mRightNode(new BTTreeNode()) {
 
+	mLeftNode->mBaseNeighbor = mRightNode;
+	mRightNode->mBaseNeighbor = mLeftNode;
+
+	auto sw = mMesh->addVertex(Vec3f(0, 0, 0));
+	auto nw = mMesh->addVertex(Vec3f(0, 100, 0));
+	auto ne = mMesh->addVertex(Vec3f(100, 100, 0));
+	auto se = mMesh->addVertex(Vec3f(100, 0, 0));
+
+	mLeftNode->mTriangle = mMesh->addTriangle(sw, ne, nw);
+	mRightNode->mTriangle = mMesh->addTriangle(sw, se, ne);
 }
 
 Patch::~Patch() {
-
+	delete mMesh;
+	delete mLeftNode;
+	delete mRightNode;
 }
 
 void Patch::split(BTTreeNode* node) {
@@ -300,4 +313,8 @@ void Patch::tessellate(const Vec3f& cameraPosition) {
 			cameraPosition);
 //	recursiveComputeVariance(left, Perlin::generate(left), right,
 //			Perlin::generate(right), apex, Perlin::generate(apex));
+}
+
+void Patch::render() {
+	MeshDrawer::draw(mMesh);
 }

@@ -20,12 +20,14 @@ public:
 
 	void split(BTTreeNode* node);
 
-	Mesh* getMesh() {
+	const Mesh* getMesh() const {
 		return mMesh;
 	}
 
 	void computeVariance();
 	void tessellate(const Vec3f& cameraPosition);
+
+	void render();
 
 private:
 	float recursiveComputeVariance(float* currentVariance, size_t index,
