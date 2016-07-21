@@ -237,8 +237,8 @@ void Patch::recursiveTessellate(BTTreeNode* node, float* currentVariance,
 	if (index < POW2(VARIANCE_DEPTH)) {
 		float distance = (cameraPosition - center).Length();
 
-		triVariance = ((float) currentVariance[index] * /* TODO Map size * */2)
-				/ distance;
+		// TODO Check this value (mapSize: 5)
+		triVariance = ((float) currentVariance[index] * 5 * 2) / distance;
 
 		Log("triVariance: %.5f\n", triVariance);
 	}
