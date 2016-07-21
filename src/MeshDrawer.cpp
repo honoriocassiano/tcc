@@ -14,6 +14,8 @@
 #include "triangle.h"
 #include "vertex.h"
 
+#include "Perlin.h"
+
 int HandleGLError() {
 	GLenum error;
 	int i = 0;
@@ -74,26 +76,39 @@ void MeshDrawer::draw(Mesh* mesh, bool wireframe) {
 		Vec3f n_a = va->getNormal();
 		Vec3f n_b = vb->getNormal();
 		Vec3f n_c = vc->getNormal();
-		//InsertNormal(a, b, c);
-
-		//Vec3f normal = t->getNormal();
-		//glNormal3f(normal.x(), normal.y(), normal.z());
 
 //		printf("(%f, %f, %f)\n", va->getColor().r(), va->getColor().g(), va->getColor().b());
 
+		//***************************************
+		constexpr float maxHeight = 5.0f;
+
 		glColor3f(va->getColor().r(), va->getColor().g(), va->getColor().b());
 		glNormal3f(n_a.x(), n_a.y(), n_a.z());
-		glVertex3f(a.x(), a.y(), a.z());
+		glVertex3f(a.x(), a.y(), Perlin::generate(a));
 
 //		glColor3f(n_b.r(), n_b.g(), n_b.b());
 		glColor3f(vb->getColor().r(), vb->getColor().g(), vb->getColor().b());
 		glNormal3f(n_b.x(), n_b.y(), n_b.z());
-		glVertex3f(b.x(), b.y(), b.z());
+		glVertex3f(b.x(), b.y(),  Perlin::generate(b));
 
 //		glColor3f(n_c.r(), n_c.g(), n_c.b());
 		glColor3f(vc->getColor().r(), vc->getColor().g(), vc->getColor().b());
 		glNormal3f(n_c.x(), n_c.y(), n_c.z());
-		glVertex3f(c.x(), c.y(), c.z());
+		glVertex3f(c.x(), c.y(),  Perlin::generate(c));
+//		glColor3f(va->getColor().r(), va->getColor().g(), va->getColor().b());
+//		glNormal3f(n_a.x(), n_a.y(), n_a.z());
+//		glVertex3f(a.x(), a.y(), a.z());
+//
+////		glColor3f(n_b.r(), n_b.g(), n_b.b());
+//		glColor3f(vb->getColor().r(), vb->getColor().g(), vb->getColor().b());
+//		glNormal3f(n_b.x(), n_b.y(), n_b.z());
+//		glVertex3f(b.x(), b.y(), b.z());
+//
+////		glColor3f(n_c.r(), n_c.g(), n_c.b());
+//		glColor3f(vc->getColor().r(), vc->getColor().g(), vc->getColor().b());
+//		glNormal3f(n_c.x(), n_c.y(), n_c.z());
+//		glVertex3f(c.x(), c.y(), c.z());
+		//***************************************
 	}
 	mesh->triangles->EndIteration(iter);
 	glEnd();
