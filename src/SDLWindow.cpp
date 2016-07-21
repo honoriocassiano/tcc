@@ -8,8 +8,9 @@
 #include "SDLWindow.h"
 
 #include <algorithm>
-#include <stdio.h>
 #include <assert.h>
+
+#include "Debug.h"
 
 //******************************************************
 Landscape* landscape = new Landscape();
@@ -25,7 +26,7 @@ int HandleGLErrorWindow2() {
 	GLenum error;
 	int i = 0;
 	while ((error = glGetError()) != GL_NO_ERROR) {
-		printf("GL ERROR(%d):  %s\n", i, gluErrorString(error));
+		Error("Not rectangle!\n");
 		i++;
 	}
 	if (i == 0)
@@ -79,7 +80,7 @@ void SDLWindow::run() {
 
 	//******************************************************
 	//	while (mIsRunning) {
-	while (mIsRunning && (globalI < 100)) {
+	while (mIsRunning && (globalI < 10)) {
 		//******************************************************
 		SDL_Event e;
 
@@ -100,7 +101,7 @@ void SDLWindow::run() {
 		//******************************************************
 		const Patch* p = landscape->getPatch();
 
-		printf("%3d - vertices: %d, triangles: %d\n", globalI, p->getMesh()->numVertices(), p->getMesh()->numTriangles());
+		Log("%2d - vertices: %d, triangles: %d\n", globalI, p->getMesh()->numVertices(), p->getMesh()->numTriangles());
 
 		++globalI;
 		//******************************************************
@@ -180,7 +181,7 @@ void SDLWindow::display() {
 
 bool SDLWindow::initSDL() {
 	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-		fprintf(stderr, "Error initializing SDL: %s\n", SDL_GetError());
+		Error("Error initializing SDL: %s\n", SDL_GetError());
 		return false;
 	}
 
@@ -188,7 +189,7 @@ bool SDLWindow::initSDL() {
 	SDL_WINDOWPOS_UNDEFINED, mWidth, mHeight, SDL_WINDOW_OPENGL);
 
 	if (!mWindow) {
-		fprintf(stderr, "Error creating window: %s\n", SDL_GetError());
+		Error("Error creating window: %s\n", SDL_GetError());
 		return false;
 	}
 

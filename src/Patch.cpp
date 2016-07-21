@@ -7,11 +7,11 @@
 
 #include "Patch.h"
 
-#include <stdio.h>
-
 #include "Perlin.h"
 #include "MeshDrawer.h"
 #include "structures/Halfedge/edge.h"
+
+#include "Debug.h"
 
 inline constexpr size_t POW2(size_t num) {
 	return 1 << num;
@@ -26,7 +26,7 @@ inline constexpr size_t RIGHT_CHILD(size_t index) {
 }
 
 Patch::Patch() :
-		mMesh(new Mesh()), mLeftNode(new BTTreeNode()), mRightNode(new BTTreeNode()) {
+		mMesh(new Mesh()), mLeftNode(new BTTreeNode()), mRightNode(new BTTreeNode()), mLeftVariance{0.0f}, mRightVariance{0.0f} {
 
 	mLeftNode->mBaseNeighbor = mRightNode;
 	mRightNode->mBaseNeighbor = mLeftNode;
@@ -65,7 +65,7 @@ void Patch::split(BTTreeNode* node) {
 	Edge* hypOpposite = node->mTriangle->getHypotenuseOpposite();
 
 	if (!hypOpposite) {
-		fprintf(stderr, "Not rectangle!\n");
+		Error("Not rectangle!\n");
 		exit(-1);
 	}
 
@@ -267,6 +267,8 @@ void Patch::recursiveTessellate(BTTreeNode* node, float* currentVariance,
 
 		triVariance = ((float) currentVariance[index] * /* TODO Map size * */2)
 				/ distance;
+
+		Log("triVariance: %.5f\n", triVariance);
 	}
 
 	// TODO Implement this condition
