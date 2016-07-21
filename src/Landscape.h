@@ -21,6 +21,8 @@ public:
 	virtual ~Landscape();
 
 	void render();
+	void computeVariance();
+
 
 	void tessellate(const Vec3f& cameraPosition);
 

@@ -32,6 +32,10 @@ void Landscape::render() {
 	}
 }
 
+void Landscape::computeVariance() {
+	mPatch->computeVariance();
+}
+
 // TODO Check this method
 void Landscape::tessellate(const Vec3f& cameraPosition) {
 	mPatch->tessellate(cameraPosition);
