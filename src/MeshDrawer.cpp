@@ -34,7 +34,7 @@ MeshDrawer::~MeshDrawer() {
 
 }
 
-void MeshDrawer::draw(Mesh* mesh) {
+void MeshDrawer::draw(Mesh* mesh, bool wireframe) {
 	mesh->computeFaceNormals();
 	mesh->computeVerticesNormals();
 
@@ -51,6 +51,12 @@ void MeshDrawer::draw(Mesh* mesh) {
 	// the edges will always win.
 	glEnable(GL_POLYGON_OFFSET_FILL);
 	glPolygonOffset(1.1, 4.0);
+
+	if (wireframe) {
+		glPolygonMode( GL_FRONT_AND_BACK, GL_LINE);
+	} else {
+		glPolygonMode( GL_FRONT, GL_FILL);
+	}
 
 	// draw the triangles
 //	glColor3f(1, 1, 1);

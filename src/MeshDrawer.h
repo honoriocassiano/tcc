@@ -15,7 +15,7 @@ public:
 	MeshDrawer();
 	virtual ~MeshDrawer();
 
-	static void draw(Mesh * mesh);
+	static void draw(Mesh * mesh, bool wireframe = false);
 };
 
 #endif /* SRC_MESHDRAWER_H_ */
