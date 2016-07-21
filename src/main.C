@@ -1,6 +1,5 @@
-#include <stdio.h>
 
-#include "argparser.h"
+#include "Debug.h"
 
 #include <GL/glut.h>
 #include "Planet.h"
@@ -96,11 +95,11 @@ int main(int argc, char **argv) {
 	}
 	*/
 
-	printf("Started!\n");
+	Log("Started\n");
 
 	window.run();
 
-	printf("Finished!\n");
+	Log("Finished!\n");
 
 	return 0;
 }
