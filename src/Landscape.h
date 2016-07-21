@@ -13,7 +13,7 @@
 
 constexpr size_t POOL_SIZE = 1000;
 
-constexpr size_t maxTriangles = 100;
+static constexpr size_t maxTriangles = 100;
 
 static float frameVariance = 10.0f;
 
