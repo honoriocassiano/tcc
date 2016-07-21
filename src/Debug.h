@@ -8,6 +8,8 @@
 #ifndef SRC_DEBUG_H_
 #define SRC_DEBUG_H_
 
+#define DEBUG 1
+
 #include <stdio.h>
 #include <string.h>
 
@@ -21,12 +23,19 @@
 
 #define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
 
+#if DEBUG
 #define Log(args...) \
 		printf(ANSI_COLOR_CYAN "[%s : %d] ", __FILENAME__, __LINE__); \
-		printf(ANSI_COLOR_RESET args);
+		printf(ANSI_COLOR_RESET args); \
 
 #define Error(args...) \
-		fprintf(stderr, ANSI_COLOR_RED "[%s : %d] s", __FILENAME__, __LINE__); \
+		fprintf(stderr, ANSI_COLOR_RED "[%s : %d] ", __FILENAME__, __LINE__); \
 		fprintf(stderr, ANSI_COLOR_RESET args);
+
+#else
+	#define Log(args...)
+	#define Error(args...)
+
+#endif
 
 #endif /* SRC_DEBUG_H_ */
