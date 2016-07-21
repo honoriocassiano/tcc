@@ -49,12 +49,14 @@ Patch::~Patch() {
 void Patch::split(BTTreeNode* node) {
 
 	// We are already split, no need to do it again.
-	if (node->mLeftChild)
+	if (node->mLeftChild) {
 		return;
+	}
 
 	// If this triangle is not in a proper diamond, force split our base neighbor
-	if (node->mBaseNeighbor && (node->mBaseNeighbor->mBaseNeighbor != node))
+	if (node->mBaseNeighbor && (node->mBaseNeighbor->mBaseNeighbor != node)) {
 		split(node->mBaseNeighbor);
+	}
 
 	Vertex* mid = nullptr;
 
@@ -87,58 +89,66 @@ void Patch::split(BTTreeNode* node) {
 	//*****************************************************
 
 	// If creation failed, just exit.
-	if (!node->mLeftChild)
+	if (!node->mLeftChild) {
 		return;
+	}
 
-// Fill in the information we can get from the parent (neighbor pointers)
-	node->mLeftChild->mBaseNeighbor = node->mRightNeighbor;
-	node->mLeftChild->mRightNeighbor = node->mRightChild;
+	// Fill in the information we can get from the parent (neighbor pointers)
+	node->mLeftChild->mBaseNeighbor = node->mLeftNeighbor;
+	node->mLeftChild->mLeftNeighbor = node->mRightChild;
 
 	node->mRightChild->mBaseNeighbor = node->mRightNeighbor;
 	node->mRightChild->mRightNeighbor = node->mLeftChild;
 
-// Link our Left Neighbor to the new children
-	if (node->mRightNeighbor != nullptr) {
-		if (node->mRightNeighbor->mBaseNeighbor == node)
+	// Link our Left Neighbor to the new children
+	if (node->mLeftNeighbor != nullptr) {
+		if (node->mLeftNeighbor->mBaseNeighbor == node) {
+			node->mLeftNeighbor->mBaseNeighbor = node->mLeftChild;
 
-			node->mRightNeighbor->mBaseNeighbor = node->mLeftChild;
+		} else if (node->mLeftNeighbor->mLeftNeighbor == node) {
+			node->mLeftNeighbor->mLeftNeighbor = node->mLeftChild;
 
-		else if (node->mRightNeighbor->mRightNeighbor == node)
+		} else if (node->mLeftNeighbor->mRightNeighbor == node) {
+			node->mLeftNeighbor->mRightNeighbor = node->mLeftChild;
 
-			node->mRightNeighbor->mRightNeighbor = node->mLeftChild;
-
-		else if (node->mRightNeighbor->mRightNeighbor == node)
-
-			node->mRightNeighbor->mRightNeighbor = node->mLeftChild;
-		else
-			; // Illegal Left Neighbor!
+		} else {
+			Error("Illegal Left Neighbor!\n");
+		}
 	}
 
-// Link our Right Neighbor to the new children
+	// Link our Right Neighbor to the new children
 	if (node->mRightNeighbor != nullptr) {
-		if (node->mRightNeighbor->mBaseNeighbor == node)
+		if (node->mRightNeighbor->mBaseNeighbor == node) {
 			node->mRightNeighbor->mBaseNeighbor = node->mRightChild;
-		else if (node->mRightNeighbor->mRightNeighbor == node)
+
+		} else if (node->mRightNeighbor->mRightNeighbor == node) {
 			node->mRightNeighbor->mRightNeighbor = node->mRightChild;
-		else if (node->mRightNeighbor->mRightNeighbor == node)
-			node->mRightNeighbor->mRightNeighbor = node->mRightChild;
-		else
-			; // Illegal Right Neighbor!
+
+		} else if (node->mRightNeighbor->mLeftNeighbor == node) {
+			node->mRightNeighbor->mLeftNeighbor = node->mRightChild;
+
+		} else {
+			Error("Illegal Right Neighbor!\n");
+		}
 	}
 
-// Link our Base Neighbor to the new children
+	// Link our Base Neighbor to the new children
 	if (node->mBaseNeighbor != nullptr) {
+
 		if (node->mBaseNeighbor->mLeftChild) {
+
 			node->mBaseNeighbor->mLeftChild->mRightNeighbor = node->mRightChild;
-			node->mBaseNeighbor->mRightChild->mRightNeighbor = node->mLeftChild;
+			node->mBaseNeighbor->mRightChild->mLeftNeighbor = node->mLeftChild;
+
 			node->mLeftChild->mRightNeighbor = node->mBaseNeighbor->mRightChild;
-			node->mRightChild->mRightNeighbor = node->mBaseNeighbor->mLeftChild;
-		} else
-			split(node->mBaseNeighbor); // Base Neighbor (in a diamond with us) was not split yet, so do that now.
+			node->mRightChild->mLeftNeighbor = node->mBaseNeighbor->mLeftChild;
+		} else {
+			split(node->mBaseNeighbor); // Base Neighbor (in a diamond with us) was not split yet, so do that now.}
+		}
 	} else {
 		// An edge triangle, trivial case.
 		node->mLeftChild->mRightNeighbor = nullptr;
-		node->mRightChild->mRightNeighbor = nullptr;
+		node->mRightChild->mLeftNeighbor = nullptr;
 	}
 }
 
