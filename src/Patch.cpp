@@ -31,10 +31,12 @@ Patch::Patch() :
 	mLeftNode->mBaseNeighbor = mRightNode;
 	mRightNode->mBaseNeighbor = mLeftNode;
 
+	//***********************************
 	auto sw = mMesh->addVertex(Vec3f(0, 0, 0));
-	auto nw = mMesh->addVertex(Vec3f(0, 100, 0));
-	auto ne = mMesh->addVertex(Vec3f(100, 100, 0));
-	auto se = mMesh->addVertex(Vec3f(100, 0, 0));
+	auto nw = mMesh->addVertex(Vec3f(0, 5, 0));
+	auto ne = mMesh->addVertex(Vec3f(5, 5, 0));
+	auto se = mMesh->addVertex(Vec3f(5, 0, 0));
+	//***********************************
 
 	mLeftNode->mTriangle = mMesh->addTriangle(sw, ne, nw);
 	mRightNode->mTriangle = mMesh->addTriangle(sw, se, ne);
