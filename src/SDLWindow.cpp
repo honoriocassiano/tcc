@@ -79,8 +79,8 @@ void SDLWindow::run() {
 	mClock->start();
 
 	//******************************************************
-	//	while (mIsRunning) {
-	while (mIsRunning && (globalI < 10)) {
+	while (mIsRunning) {
+//	while (mIsRunning && (globalI < 10)) {
 		//******************************************************
 		SDL_Event e;
 
