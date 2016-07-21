@@ -62,13 +62,13 @@ int main(int argc, char **argv) {
 
 	BTTreeNode* node = new BTTreeNode(tri);
 
-	patch->Split(node);
+	patch->split(node);
 
 	printf("\nafter - triangles: %d, vertices: %d\n\n", mesh->numTriangles(), mesh->numVertices());
 
 	mesh->printTriangles();
 
-	patch->Split(node->getRightChild());
+	patch->split(node->getRightChild());
 
 	printf("\nafter - triangles: %d, vertices: %d\n\n", mesh->numTriangles(), mesh->numVertices());
 

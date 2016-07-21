@@ -33,7 +33,7 @@ Patch::~Patch() {
 
 }
 
-void Patch::Split(BTTreeNode* node) {
+void Patch::split(BTTreeNode* node) {
 
 	// We are already split, no need to do it again.
 	if (node->mLeftChild)
@@ -41,7 +41,7 @@ void Patch::Split(BTTreeNode* node) {
 
 	// If this triangle is not in a proper diamond, force split our base neighbor
 	if (node->mBaseNeighbor && (node->mBaseNeighbor->mBaseNeighbor != node))
-		Split(node->mBaseNeighbor);
+		split(node->mBaseNeighbor);
 
 	Vertex* mid = nullptr;
 
@@ -121,7 +121,7 @@ void Patch::Split(BTTreeNode* node) {
 			node->mLeftChild->mRightNeighbor = node->mBaseNeighbor->mRightChild;
 			node->mRightChild->mRightNeighbor = node->mBaseNeighbor->mLeftChild;
 		} else
-			Split(node->mBaseNeighbor); // Base Neighbor (in a diamond with us) was not split yet, so do that now.
+			split(node->mBaseNeighbor); // Base Neighbor (in a diamond with us) was not split yet, so do that now.
 	} else {
 		// An edge triangle, trivial case.
 		node->mLeftChild->mRightNeighbor = nullptr;
