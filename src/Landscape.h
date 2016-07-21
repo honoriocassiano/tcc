@@ -10,10 +10,7 @@
 
 #include "BTTreeNode.h"
 #include "Patch.h"
-
-static constexpr size_t maxTriangles = 100;
-
-static float frameVariance = 10.0f;
+#include "Utils.h"
 
 class Landscape {
 public:
@@ -31,7 +28,6 @@ public:
 
 private:
 	Patch* mPatch;
-
 };
 
 #endif /* SRC_LANDSCAPE_H_ */
