@@ -128,3 +128,176 @@ void Patch::split(BTTreeNode* node) {
 		node->mRightChild->mRightNeighbor = nullptr;
 	}
 }
+
+/*
+ float Patch::recursivelyComputeVariance(BTTreeNode* node) {
+
+ auto hypOpposite = node->mTriangle->getHypotenuseOpposite();
+
+ float variance = 0.0f;
+
+ if (hypOpposite) {
+
+ auto rightVertex = hypOpposite->getNext()->getVertex();
+ auto leftVertex = hypOpposite->getNext()->getNext()->getVertex();
+
+ auto hypMiddle = (hypOpposite->getNext()->getVertex()->get()
+ + hypOpposite->getNext()->getNext()->getVertex()->get()) * 0.5;
+
+ variance = (Perlin::generate(leftVertex->get().x(),
+ leftVertex->get().y(), leftVertex->get().z())
+ + Perlin::generate(rightVertex->get().x(),
+ rightVertex->get().y(), rightVertex->get().z())) * 0.5;
+
+ float noise = Perlin::generate(hypMiddle.x(), hypMiddle.y(),
+ hypMiddle.z())
+ - (Perlin::generate(leftVertex->get().x(),
+ leftVertex->get().y(), leftVertex->get().z())
+ + Perlin::generate(rightVertex->get().x(),
+ rightVertex->get().y(), rightVertex->get().z()))
+ * 0.5;
+
+ variance = fabsf(noise - variance);
+
+ if (fabsf(leftVertex->get().x() - rightVertex->get().x()) >= 0.1
+ || fabsf(leftVertex->get().y() - rightVertex->get().y())
+ > 0.1) {
+
+ variance = max(variance, 0.0f);
+ variance = max(variance, 0.0f);
+ }
+ }
+ return variance;
+ }
+ */
+
+float Patch::recursiveComputeVariance(float* currentVariance, size_t index,
+		const Vec3f& left, float nLeft, const Vec3f& right, float nRight,
+		const Vec3f& apex, float nApex) {
+
+	float variance = 0.0f;
+
+	auto center = (left + right) * 0.5;
+
+	variance = (nLeft + nRight) / 2;
+
+	float nCenter = Perlin::generate(center.x(), center.y(), center.z());
+
+	variance = fabsf(nCenter - variance);
+
+	// TODO Check this condition: just x and y will be tested?
+	if (fabsf(left.x() - right.x()) >= 0.1
+			|| fabsf(left.y() - right.y()) > 0.1) {
+
+		variance = max(variance,
+				recursiveComputeVariance(currentVariance, LEFT_CHILD(index),
+						apex, nApex, left, nLeft, center, nCenter));
+		variance = max(variance,
+				recursiveComputeVariance(currentVariance, RIGHT_CHILD(index),
+						right, nRight, apex, nApex, center, nCenter));
+	}
+
+	//************************************
+	//************************************
+	//************************************
+	//************************************
+	if (index < (1 << VARIANCE_DEPTH)) {
+		currentVariance[index] = variance;
+	}
+	//************************************
+	//************************************
+	//************************************
+	//************************************
+
+	return variance;
+}
+
+void Patch::computeVariance() {
+
+	// Left node
+	auto hypotenuseOpposite = mLeftNode->mTriangle->getHypotenuseOpposite();
+
+	auto apex = hypotenuseOpposite->getVertex()->get();
+	auto right = hypotenuseOpposite->getNext()->getVertex()->get();
+	auto left = hypotenuseOpposite->getNext()->getNext()->getVertex()->get();
+
+	recursiveComputeVariance(mLeftVariance, 0, left, Perlin::generate(left),
+			right, Perlin::generate(right), apex, Perlin::generate(apex));
+
+	// Right node
+	hypotenuseOpposite = mRightNode->mTriangle->getHypotenuseOpposite();
+
+	apex = hypotenuseOpposite->getVertex()->get();
+	right = hypotenuseOpposite->getNext()->getVertex()->get();
+	left = hypotenuseOpposite->getNext()->getNext()->getVertex()->get();
+
+	apex.Set(apex.x(), apex.y(), Perlin::generate(apex));
+	right.Set(right.x(), right.y(), Perlin::generate(right));
+	left.Set(left.x(), left.y(), Perlin::generate(left));
+
+	recursiveComputeVariance(mRightVariance, 0, left, Perlin::generate(left),
+			right, Perlin::generate(right), apex, Perlin::generate(apex));
+//	recursivelyComputeVariance(mRightNode);
+}
+
+void Patch::recursiveTessellate(BTTreeNode* node, float* currentVariance,
+		size_t index, const Vec3f& left, const Vec3f& right, const Vec3f& apex,
+		const Vec3f& cameraPosition) {
+
+	float triVariance;
+
+	auto center = (left + right) * 0.5;
+
+	// TODO Implement this condition
+	if (index < POW2(VARIANCE_DEPTH)) {
+		float distance = (cameraPosition - center).Length();
+
+		triVariance = ((float) currentVariance[index] * /* TODO Map size * */2)
+				/ distance;
+	}
+
+	// TODO Implement this condition
+	if (index >= POW2(VARIANCE_DEPTH) /* || (TriVariance > gFrameVariance) */) {
+		split(node);
+
+		// TODO Check this condition: just x and y will be tested?
+		if (node->mLeftChild
+				&& ((fabsf(left.x() - right.x()) >= 0.1)
+						|| (fabsf(left.y() - right.y()) >= 0.1))) {
+
+			recursiveTessellate(node->mLeftChild, currentVariance,
+					LEFT_CHILD(index), apex, left, center, cameraPosition);
+			recursiveTessellate(node->mRightChild, currentVariance,
+					RIGHT_CHILD(index), right, apex, center, cameraPosition);
+		}
+	}
+}
+
+void Patch::tessellate(const Vec3f& cameraPosition) {
+	auto hypotenuseOpposite = mLeftNode->mTriangle->getHypotenuseOpposite();
+
+	auto apex = hypotenuseOpposite->getVertex()->get();
+	auto right = hypotenuseOpposite->getNext()->getVertex()->get();
+	auto left = hypotenuseOpposite->getNext()->getNext()->getVertex()->get();
+
+//	recursiveComputeVariance(left, Perlin::generate(left), right,
+//			Perlin::generate(right), apex, Perlin::generate(apex));
+	recursiveTessellate(mLeftNode, mLeftVariance, 0, left, right, apex,
+			cameraPosition);
+
+	// Right node
+	hypotenuseOpposite = mRightNode->mTriangle->getHypotenuseOpposite();
+
+	apex = hypotenuseOpposite->getVertex()->get();
+	right = hypotenuseOpposite->getNext()->getVertex()->get();
+	left = hypotenuseOpposite->getNext()->getNext()->getVertex()->get();
+
+	apex.Set(apex.x(), apex.y(), Perlin::generate(apex));
+	right.Set(right.x(), right.y(), Perlin::generate(right));
+	left.Set(left.x(), left.y(), Perlin::generate(left));
+
+	recursiveTessellate(mRightNode, mRightVariance, 0, left, right, apex,
+			cameraPosition);
+//	recursiveComputeVariance(left, Perlin::generate(left), right,
+//			Perlin::generate(right), apex, Perlin::generate(apex));
+}
