@@ -15,7 +15,7 @@ constexpr size_t POOL_SIZE = 1000;
 
 constexpr size_t maxTriangles = 100;
 
-static float frameVariance = 1.0f;
+static float frameVariance = 10.0f;
 
 class Landscape {
 public:
