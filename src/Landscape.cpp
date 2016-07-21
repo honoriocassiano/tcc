@@ -7,6 +7,8 @@
 
 #include "Landscape.h"
 
+#include "Debug.h"
+
 Landscape::Landscape() :
 		mPatch(new Patch()) {
 
@@ -23,7 +25,8 @@ void Landscape::render() {
 	int numTriangles = mPatch->getMesh()->numTriangles();
 
 	if (numTriangles <= maxTriangles) {
-//		printf("%d, %lu, %e\n", numTriangles, maxTriangles, frameVariance);
+//		Log("%f.5\n", (numTriangles - (float)maxTriangles) / (float)maxTriangles);
+
 		frameVariance +=  (numTriangles - (float)maxTriangles) / (float)maxTriangles;
 	}
 
@@ -42,5 +45,8 @@ void Landscape::toggleWireframe() {
 
 // TODO Check this method
 void Landscape::tessellate(const Vec3f& cameraPosition) {
+
+	Log("(%.5f, %.5f, %.5f)\n", cameraPosition.x(), cameraPosition.y(), cameraPosition.z());
+
 	mPatch->tessellate(cameraPosition);
 }
