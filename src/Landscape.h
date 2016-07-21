@@ -23,6 +23,7 @@ public:
 	void render();
 	void computeVariance();
 
+	void toggleWireframe();
 
 	void tessellate(const Vec3f& cameraPosition);
 

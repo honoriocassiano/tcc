@@ -36,6 +36,10 @@ void Landscape::computeVariance() {
 	mPatch->computeVariance();
 }
 
+void Landscape::toggleWireframe() {
+	mPatch->toggleWireframe();
+}
+
 // TODO Check this method
 void Landscape::tessellate(const Vec3f& cameraPosition) {
 	mPatch->tessellate(cameraPosition);
