@@ -27,6 +27,8 @@ public:
 	void computeVariance();
 	void tessellate(const Vec3f& cameraPosition);
 
+	void toggleWireframe();
+
 	void render();
 
 private:
@@ -40,6 +42,8 @@ private:
 			const Vec3f& right, const Vec3f& apex, const Vec3f& cameraPosition);
 
 private:
+	bool mWireframe;
+
 	Mesh* mMesh;
 
 	BTTreeNode* mLeftNode;
