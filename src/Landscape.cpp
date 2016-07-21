@@ -7,7 +7,8 @@
 
 #include "Landscape.h"
 
-Landscape::Landscape() : mPatch(new Patch()) {
+Landscape::Landscape() :
+		mPatch(new Patch()) {
 
 }
 
@@ -17,15 +18,16 @@ Landscape::~Landscape() {
 
 void Landscape::render() {
 
-	int numTriangles = mPatch->getMesh()->numTriangles();
-
 	mPatch->render();
 
-	if(numTriangles <= maxTriangles) {
-		frameVariance += ((float)(numTriangles - maxTriangles))/ maxTriangles;
+	int numTriangles = mPatch->getMesh()->numTriangles();
+
+	if (numTriangles <= maxTriangles) {
+//		printf("%d, %lu, %e\n", numTriangles, maxTriangles, frameVariance);
+		frameVariance +=  (numTriangles - (float)maxTriangles) / (float)maxTriangles;
 	}
 
-	if(frameVariance < 0) {
+	if (frameVariance < 0) {
 		frameVariance = 0;
 	}
 }
