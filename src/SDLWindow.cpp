@@ -14,7 +14,9 @@
 
 //******************************************************
 Landscape* landscape = new Landscape();
-Vec3f position(0.5, 0.5, 0);
+//Vec3f position(0.5, 0.5, 10);
+//Vec3f position(2.5, 2.5, 100);
+const Vec3f position(1, 15, 50);
 int globalI = 0;
 
 Landscape* getLandscape() {
@@ -38,8 +40,9 @@ SDLWindow::SDLWindow(int width, int height) :
 		mCamera(nullptr), mClock(new Clock()), mIsRunning(false), mWindow(
 				nullptr), mWidth(width), mHeight(height) {
 
-	Vec3f position(0, 1500, 100);
-	Vec3f direction = Vec3f(0, 0, 0) - position;
+//	Vec3f position(0, 1500, 100);
+//	Vec3f direction = Vec3f(0, 0, 0) - position;
+	Vec3f direction = Vec3f(2.5, 2.5, 0) - position;
 
 	direction.Normalize();
 
@@ -101,7 +104,8 @@ void SDLWindow::run() {
 		//******************************************************
 		const Patch* p = landscape->getPatch();
 
-		Log("%2d - vertices: %d, triangles: %d\n", globalI, p->getMesh()->numVertices(), p->getMesh()->numTriangles());
+		Log("%2d - vertices: %d, triangles: %d\n", globalI,
+				p->getMesh()->numVertices(), p->getMesh()->numTriangles());
 
 		++globalI;
 		//******************************************************
@@ -112,7 +116,9 @@ void SDLWindow::run() {
 
 void SDLWindow::update(const Time& dt) {
 	//******************************************************
-	landscape->tessellate(position);
+	landscape->computeVariance();
+	//landscape->tessellate(position);
+	landscape->tessellate(mCamera->getPosition());
 	//	for (CelestialBody* body : mBodies) {
 	//		body->update(dt);
 	//	}
