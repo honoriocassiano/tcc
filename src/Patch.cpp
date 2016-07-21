@@ -154,48 +154,6 @@ void Patch::split(BTTreeNode* node) {
 	}
 }
 
-/*
- float Patch::recursivelyComputeVariance(BTTreeNode* node) {
-
- auto hypOpposite = node->mTriangle->getHypotenuseOpposite();
-
- float variance = 0.0f;
-
- if (hypOpposite) {
-
- auto rightVertex = hypOpposite->getNext()->getVertex();
- auto leftVertex = hypOpposite->getNext()->getNext()->getVertex();
-
- auto hypMiddle = (hypOpposite->getNext()->getVertex()->get()
- + hypOpposite->getNext()->getNext()->getVertex()->get()) * 0.5;
-
- variance = (Perlin::generate(leftVertex->get().x(),
- leftVertex->get().y(), leftVertex->get().z())
- + Perlin::generate(rightVertex->get().x(),
- rightVertex->get().y(), rightVertex->get().z())) * 0.5;
-
- float noise = Perlin::generate(hypMiddle.x(), hypMiddle.y(),
- hypMiddle.z())
- - (Perlin::generate(leftVertex->get().x(),
- leftVertex->get().y(), leftVertex->get().z())
- + Perlin::generate(rightVertex->get().x(),
- rightVertex->get().y(), rightVertex->get().z()))
- * 0.5;
-
- variance = fabsf(noise - variance);
-
- if (fabsf(leftVertex->get().x() - rightVertex->get().x()) >= 0.1
- || fabsf(leftVertex->get().y() - rightVertex->get().y())
- > 0.1) {
-
- variance = max(variance, 0.0f);
- variance = max(variance, 0.0f);
- }
- }
- return variance;
- }
- */
-
 float Patch::recursiveComputeVariance(float* currentVariance, size_t index,
 		const Vec3f& left, float nLeft, const Vec3f& right, float nRight,
 		const Vec3f& apex, float nApex) {
