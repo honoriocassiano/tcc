@@ -18,6 +18,8 @@ public:
 	virtual ~PerspectiveCamera2(void) {
 	}
 
+	const Vec3f& getPosition() const { return center; }
+
 	// GL NAVIGATION
 	void glInit(int w, int h) override;
 	void dollyCamera(float dist);
