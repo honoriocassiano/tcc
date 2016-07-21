@@ -30,51 +30,33 @@ void Patch::Split(BTTreeNode* node) {
 	if (node->mBaseNeighbor && (node->mBaseNeighbor->mBaseNeighbor != node))
 		Split(node->mBaseNeighbor);
 
-	// Create children and link into mesh
-	//	//tri->mLeftChild = Landscape::AllocateTri();
-	//	tri->mRightChild = Landscape::AllocateTri();
-
-	//*****************************************************
-
-	Edge* firstEdge = node->mTriangle->getEdge();
-	Edge* currentEdge = firstEdge;
-
 	Vertex* mid = nullptr;
 
 	Vertex* v0 = nullptr;
 	Vertex* v1 = nullptr;
 	Vertex* v2 = nullptr;
 
-	do {
-		v0 = currentEdge->getVertex();
-		v1 = currentEdge->getNext()->getVertex();
-		v2 = currentEdge->getNext()->getNext()->getVertex();
+	Edge* hypOpposite = node->mTriangle->getHypotenuseOpposite();
 
-		// Verifica se os vetores fazem um ângulo reto
-		if ((v1->get() - v0->get()).Dot3(v2->get() - v1->get()) == 0.0) {
-
-			// Cria um novo vetor a partir da hipotenusa
-			mid = mMesh->addVertex((v2->get() + v0->get()) * 0.5);
-
-			node->mLeftChild = new BTTreeNode();
-			node->mRightChild = new BTTreeNode();
-
-			mMesh->removeTriangle(node->mTriangle);
-
-			node->mLeftChild->mTriangle = mMesh->addTriangle(mid, v1, v0);
-			node->mRightChild->mTriangle = mMesh->addTriangle(mid, v2, v1);
-			break;
-		} else {
-			currentEdge = currentEdge->getNext();
-		}
-	} while (currentEdge != firstEdge);
-
-	if (!mid) {
-		fprintf(stderr, "Not isoceles!\n");
+	if (!hypOpposite) {
+		fprintf(stderr, "Not rectangle!\n");
 		exit(-1);
 	}
 
+	v0 = hypOpposite->getVertex();
+	v1 = hypOpposite->getNext()->getVertex();
+	v2 = hypOpposite->getNext()->getNext()->getVertex();
 
+	// Create new vertex on hypotenuse middle point
+	mid = mMesh->addVertex((v2->get() + v0->get()) * 0.5);
+
+	node->mLeftChild = new BTTreeNode();
+	node->mRightChild = new BTTreeNode();
+
+	mMesh->removeTriangle(node->mTriangle);
+
+	node->mLeftChild->mTriangle = mMesh->addTriangle(mid, v1, v0);
+	node->mRightChild->mTriangle = mMesh->addTriangle(mid, v2, v1);
 
 	//*****************************************************
 
@@ -82,14 +64,14 @@ void Patch::Split(BTTreeNode* node) {
 	if (!node->mLeftChild)
 		return;
 
-	// Fill in the information we can get from the parent (neighbor pointers)
+// Fill in the information we can get from the parent (neighbor pointers)
 	node->mLeftChild->mBaseNeighbor = node->mRightNeighbor;
 	node->mLeftChild->mRightNeighbor = node->mRightChild;
 
 	node->mRightChild->mBaseNeighbor = node->mRightNeighbor;
 	node->mRightChild->mRightNeighbor = node->mLeftChild;
 
-	// Link our Left Neighbor to the new children
+// Link our Left Neighbor to the new children
 	if (node->mRightNeighbor != nullptr) {
 		if (node->mRightNeighbor->mBaseNeighbor == node)
 
@@ -106,7 +88,7 @@ void Patch::Split(BTTreeNode* node) {
 			; // Illegal Left Neighbor!
 	}
 
-	// Link our Right Neighbor to the new children
+// Link our Right Neighbor to the new children
 	if (node->mRightNeighbor != nullptr) {
 		if (node->mRightNeighbor->mBaseNeighbor == node)
 			node->mRightNeighbor->mBaseNeighbor = node->mRightChild;
@@ -118,7 +100,7 @@ void Patch::Split(BTTreeNode* node) {
 			; // Illegal Right Neighbor!
 	}
 
-	// Link our Base Neighbor to the new children
+// Link our Base Neighbor to the new children
 	if (node->mBaseNeighbor != nullptr) {
 		if (node->mBaseNeighbor->mLeftChild) {
 			node->mBaseNeighbor->mLeftChild->mRightNeighbor = node->mRightChild;

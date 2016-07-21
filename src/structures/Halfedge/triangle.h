@@ -29,6 +29,36 @@ public:
 		c = (*t)[2]->getIndex();
 	}
 
+	// Return edge what contains vertex opposite to hypotenuse
+	Edge* getHypotenuseOpposite() {
+		Edge* currentEdge = edge;
+
+		Vertex* mid = nullptr;
+
+		Vertex* v0 = nullptr;
+		Vertex* v1 = nullptr;
+		Vertex* v2 = nullptr;
+
+		do {
+			v0 = currentEdge->getVertex();
+			v1 = currentEdge->getNext()->getVertex();
+			v2 = currentEdge->getNext()->getNext()->getVertex();
+
+			auto v01 = v1->get() - v0->get();
+			auto v12 = v2->get() - v1->get();
+
+			// TODO Check this comment
+			// Check if the vectors are "ortoghonals"
+			if (v01.Dot3(v12) == 0.0) {
+				return currentEdge;
+			} else {
+				currentEdge = currentEdge->getNext();
+			}
+		} while (currentEdge != edge);
+
+		return nullptr;
+	}
+
 	// =========
 	// ACCESSORS
 	Vertex* operator[](int i) const {
