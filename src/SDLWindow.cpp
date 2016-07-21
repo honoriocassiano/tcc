@@ -264,8 +264,20 @@ void SDLWindow::processEvents(const SDL_Event& e) {
 	}
 
 	if (e.type == SDL_KEYUP) {
-		if (e.key.keysym.sym == SDLK_c) {
+		switch (e.key.keysym.sym) {
+
+		case SDLK_c: {
 			mCamera->lookAt(Vec3f(0, 0, 0));
+			break;
+		}
+
+		case SDLK_w: {
+			landscape->toggleWireframe();
+			break;
+		}
+
+		default:
+			break;
 		}
 	}
 }
