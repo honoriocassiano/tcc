@@ -16,7 +16,8 @@ public:
 	// ========================
 	// CONSTRUCTOR & DESTRUCTOR
 	Triangle() {
-		edge = NULL;
+		edge = nullptr;
+		hypotenuseOpposite = nullptr;
 	}
 	~Triangle() {
 	}
@@ -31,32 +32,35 @@ public:
 
 	// Return edge what contains vertex opposite to hypotenuse
 	Edge* getHypotenuseOpposite() {
-		Edge* currentEdge = edge;
+		if (!hypotenuseOpposite) {
+			Edge* currentEdge = edge;
 
-		Vertex* mid = nullptr;
+			Vertex* mid = nullptr;
 
-		Vertex* v0 = nullptr;
-		Vertex* v1 = nullptr;
-		Vertex* v2 = nullptr;
+			Vertex* v0 = nullptr;
+			Vertex* v1 = nullptr;
+			Vertex* v2 = nullptr;
 
-		do {
-			v0 = currentEdge->getVertex();
-			v1 = currentEdge->getNext()->getVertex();
-			v2 = currentEdge->getNext()->getNext()->getVertex();
+			do {
+				v0 = currentEdge->getVertex();
+				v1 = currentEdge->getNext()->getVertex();
+				v2 = currentEdge->getNext()->getNext()->getVertex();
 
-			auto v01 = v1->get() - v0->get();
-			auto v12 = v2->get() - v1->get();
+				auto v01 = v1->get() - v0->get();
+				auto v12 = v2->get() - v1->get();
 
-			// TODO Check this comment
-			// Check if the vectors are "ortoghonals"
-			if (v01.Dot3(v12) == 0.0) {
-				return currentEdge;
-			} else {
-				currentEdge = currentEdge->getNext();
-			}
-		} while (currentEdge != edge);
+				// TODO Check this comment
+				// Check if the vectors are "ortoghonals"
+				if (v01.Dot3(v12) == 0.0) {
+					hypotenuseOpposite = currentEdge;
+					break;
+				} else {
+					currentEdge = currentEdge->getNext();
+				}
+			} while (currentEdge != edge);
+		}
 
-		return nullptr;
+		return hypotenuseOpposite;
 	}
 
 	// =========
@@ -78,6 +82,8 @@ public:
 	void setEdge(Edge *e) {
 		assert(edge == NULL);
 		edge = e;
+
+		hypotenuseOpposite = nullptr;
 	}
 
 	const Vec3f& getNormal() {
@@ -102,7 +108,7 @@ protected:
 	// REPRESENTATION
 	Edge *edge;
 	Vec3f normal;
-
+	Edge *hypotenuseOpposite;
 };
 
 // ===========================================================
