@@ -11,6 +11,16 @@
 #include <stdio.h>
 #include <assert.h>
 
+//******************************************************
+Landscape* landscape = new Landscape();
+Vec3f position(0.5, 0.5, 0);
+int globalI = 0;
+
+Landscape* getLandscape() {
+	return landscape;
+}
+//******************************************************
+
 int HandleGLErrorWindow2() {
 	GLenum error;
 	int i = 0;
@@ -24,16 +34,16 @@ int HandleGLErrorWindow2() {
 }
 
 SDLWindow::SDLWindow(int width, int height) :
-		mCamera(nullptr), mClock(new Clock()), mIsRunning(false), mWindow(nullptr), mWidth(
-				width), mHeight(height) {
+		mCamera(nullptr), mClock(new Clock()), mIsRunning(false), mWindow(
+				nullptr), mWidth(width), mHeight(height) {
 
 	Vec3f position(0, 1500, 100);
 	Vec3f direction = Vec3f(0, 0, 0) - position;
 
 	direction.Normalize();
 
-	mCamera = new PerspectiveCamera2(position, direction,
-				Vec3f(0, 1, 0), 20 * M_PI / 180.0);
+	mCamera = new PerspectiveCamera2(position, direction, Vec3f(0, 1, 0),
+			20 * M_PI / 180.0);
 
 	assert(initSDL());
 	assert(initOpenGL());
@@ -67,7 +77,10 @@ void SDLWindow::run() {
 
 	mClock->start();
 
-	while (mIsRunning) {
+	//******************************************************
+	//	while (mIsRunning) {
+	while (mIsRunning && (globalI < 100)) {
+		//******************************************************
 		SDL_Event e;
 
 		processRealtimeEvents();
@@ -83,15 +96,26 @@ void SDLWindow::run() {
 		mClock->restart();
 
 		display();
+
+		//******************************************************
+		const Patch* p = landscape->getPatch();
+
+		printf("%3d - vertices: %d, triangles: %d\n", globalI, p->getMesh()->numVertices(), p->getMesh()->numTriangles());
+
+		++globalI;
+		//******************************************************
 	}
 
 	close();
 }
 
 void SDLWindow::update(const Time& dt) {
-	for (CelestialBody* body : mBodies) {
-		body->update(dt);
-	}
+	//******************************************************
+	landscape->tessellate(position);
+	//	for (CelestialBody* body : mBodies) {
+	//		body->update(dt);
+	//	}
+	//******************************************************
 }
 
 void SDLWindow::processRealtimeEvents() {
@@ -143,9 +167,12 @@ void SDLWindow::display() {
 
 	HandleGLErrorWindow2();
 
-	for (CelestialBody* body : mBodies) {
-		body->draw();
-	}
+	//******************************************************
+	//	for (CelestialBody* body : mBodies) {
+	//		body->draw();
+	//	}
+	landscape->render();
+	//******************************************************
 
 	// Trocar buffers
 	SDL_GL_SwapWindow(mWindow);
@@ -235,8 +262,8 @@ void SDLWindow::processEvents(const SDL_Event& e) {
 		}
 	}
 
-	if(e.type == SDL_KEYUP) {
-		if(e.key.keysym.sym == SDLK_c) {
+	if (e.type == SDL_KEYUP) {
+		if (e.key.keysym.sym == SDLK_c) {
 			mCamera->lookAt(Vec3f(0, 0, 0));
 		}
 	}

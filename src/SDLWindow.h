@@ -21,6 +21,12 @@
 
 #include "PerspectiveCamera2.h"
 
+//******************************************************
+#include "Landscape.h"
+
+Landscape* getLandscape();
+//******************************************************
+
 class SDLWindow {
 public:
 	SDLWindow(int width, int height);

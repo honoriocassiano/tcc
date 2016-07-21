@@ -8,6 +8,7 @@
 #include "SDLWindow.h"
 
 #include "Patch.h"
+#include "Landscape.h"
 
 // =========================================
 // =========================================
@@ -46,6 +47,7 @@ int main(int argc, char **argv) {
 	window.run();
 	*/
 
+	/*
 	Patch* patch = new Patch();
 
 	Mesh* mesh = patch->getMesh();
@@ -73,6 +75,32 @@ int main(int argc, char **argv) {
 	printf("\nafter - triangles: %d, vertices: %d\n\n", mesh->numTriangles(), mesh->numVertices());
 
 	mesh->printTriangles();
+	*/
+
+	SDLWindow window(640, 480);
+
+	/*
+	Landscape* landscape = new Landscape();
+
+	Vec3f position(0.5, 0.5, -10);
+
+	int i = 0;
+
+	printf("Started!\n");
+
+	while(i < 100) {
+		landscape->tessellate(position);
+		landscape->render();
+
+		++i;
+	}
+	*/
+
+	printf("Started!\n");
+
+	window.run();
+
+	printf("Finished!\n");
 
 	return 0;
 }
