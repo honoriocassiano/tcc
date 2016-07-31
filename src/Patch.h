@@ -18,6 +18,7 @@ public:
 	Patch(float minDistance);
 	virtual ~Patch();
 
+	void merge(BTTreeNode* node);
 	void split(BTTreeNode* node);
 
 	const Mesh* getMesh() const {

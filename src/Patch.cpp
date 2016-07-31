@@ -56,6 +56,43 @@ Patch::~Patch() {
 	delete mRightNode;
 }
 
+void Patch::merge(BTTreeNode* node) {
+	if (!node->mLeftChild) {
+		return;
+	}
+
+	// TODO Verificar essa condição
+	/*
+	 if(node->mBaseNeighbor && (node->mBaseNeighbor->mBaseNeighbor != node)) {
+	 merge(node->mBaseNeighbor);
+	 }
+	 */
+
+	Edge* hypOppositeLeft =
+			node->mLeftChild->mTriangle->getHypotenuseOpposite();
+
+	Vertex* mid = hypOppositeLeft->getNext()->getVertex();
+
+	Vertex* v0 = hypOppositeLeft->getVertex();
+	Vertex* v1 = hypOppositeLeft->getNext()->getNext()->getVertex();
+	Vertex* v2 =
+			hypOppositeLeft->getNext()->getOpposite()->getNext()->getVertex();
+
+	//Log("mid: %p, v0: %p, v1: %p, v2: %p\n", mid, v0, v1, v2);
+	Log("mid: %s, v0: %s, v1: %s, v2: %s\n", mid->get().str().c_str(),
+			v0->get().str().c_str(), v1->get().str().c_str(),
+			v2->get().str().c_str());
+
+	// Delete children
+	mMesh->removeTriangle(node->mLeftChild->mTriangle);
+	mMesh->removeTriangle(node->mRightChild->mTriangle);
+
+	node->mLeftChild->mTriangle = nullptr;
+	node->mRightChild->mTriangle = nullptr;
+
+	node->mTriangle = mMesh->addTriangle(v0, v1, v2);
+}
+
 void Patch::split(BTTreeNode* node) {
 
 	// We are already split, no need to do it again.
