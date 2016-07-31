@@ -85,8 +85,14 @@ void Patch::split(BTTreeNode* node) {
 	v1 = hypOpposite->getNext()->getVertex();
 	v2 = hypOpposite->getNext()->getNext()->getVertex();
 
+	if ((mid = mMesh->getChildVertex(v2, v0)) == nullptr) {
+		// Create new vertex on hypotenuse middle point
+		mid = mMesh->addVertex((v2->get() + v0->get()) * 0.5);
+
+		mMesh->setParentsChild(v2, v0, mid);
+	}
+
 	// Create new vertex on hypotenuse middle point
-	mid = mMesh->addVertex((v2->get() + v0->get()) * 0.5);
 
 	node->mLeftChild = new BTTreeNode();
 	node->mRightChild = new BTTreeNode();
