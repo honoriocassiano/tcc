@@ -13,7 +13,7 @@
 #include "Debug.h"
 
 //******************************************************
-Landscape* landscape = new Landscape();
+Landscape* landscape = new Landscape(0.5f);
 //Vec3f position(0.5, 0.5, 10);
 //Vec3f position(2.5, 2.5, 100);
 const Vec3f position(1, 15, 50);

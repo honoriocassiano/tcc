@@ -27,9 +27,10 @@ inline constexpr size_t RIGHT_CHILD(size_t index) {
 	return (index << 1) + 2;
 }
 
-Patch::Patch() :
-		mWireframe(false), mMesh(new Mesh()), mLeftNode(new BTTreeNode()), mRightNode(
-				new BTTreeNode()), mLeftVariance { 0.0f }, mRightVariance { 0.0f } {
+Patch::Patch(float minDistance) :
+		mWireframe(false), mMinDistance(minDistance), mMesh(new Mesh()), mLeftNode(
+				new BTTreeNode()), mRightNode(new BTTreeNode()), mLeftVariance {
+				0.0f }, mRightVariance { 0.0f } {
 
 	mLeftNode->mBaseNeighbor = mRightNode;
 	mRightNode->mBaseNeighbor = mLeftNode;
@@ -255,10 +256,8 @@ void Patch::recursiveTessellate(BTTreeNode* node, float* currentVariance,
 
 		// TODO Check this condition: just x and y will be tested?
 		if (node->mLeftChild
-				&& ((fabsf(left.x() - right.x()) >= 0.1)
-						|| (fabsf(left.y() - right.y()) >= 0.1))) {
-//				&& ((fabsf(left.x() - right.x()) >= 0.1)
-//						|| (fabsf(left.y() - right.y()) >= 0.1))) {
+				&& ((fabsf(left.x() - right.x()) >= mMinDistance)
+						|| (fabsf(left.y() - right.y()) >= mMinDistance))) {
 			recursiveTessellate(node->mLeftChild, currentVariance,
 					LEFT_CHILD(index), apex, left, center, cameraPosition);
 			recursiveTessellate(node->mRightChild, currentVariance,

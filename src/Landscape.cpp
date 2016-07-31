@@ -9,8 +9,8 @@
 
 #include "Debug.h"
 
-Landscape::Landscape() :
-		mPatch(new Patch()) {
+Landscape::Landscape(float minDistance) :
+		mPatch(new Patch(minDistance)) {
 
 }
 

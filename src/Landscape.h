@@ -14,7 +14,7 @@
 
 class Landscape {
 public:
-	Landscape();
+	Landscape(float minDistance);
 	virtual ~Landscape();
 
 	void render();

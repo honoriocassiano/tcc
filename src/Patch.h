@@ -15,7 +15,7 @@ constexpr size_t VARIANCE_DEPTH = 9;
 
 class Patch {
 public:
-	Patch();
+	Patch(float minDistance);
 	virtual ~Patch();
 
 	void split(BTTreeNode* node);
