@@ -14,6 +14,9 @@ using namespace std;
 #include <math.h>
 #include <assert.h>
 
+#include <string>
+#include <sstream>
+
 class Matrix;
 
 // ====================================================================
@@ -309,6 +312,14 @@ public:
   void Write(FILE *F = stdout) const {
     fprintf (F, "%f %f %f\n",data[0],data[1],data[2]); }
 
+  const std::string str() const {
+	  std::stringstream ss;
+
+	  ss << "(" << x() << ", " << y() << ", " << z() << ")";
+
+	  return ss.str();
+  }
+
 private:
 
   friend class Matrix;
@@ -505,7 +516,7 @@ public:
   // INPUT / OUTPUT
   void Write(FILE *F = stdout) const {
     fprintf (F, "%f %f %f %f\n",data[0],data[1],data[2],data[3]); }
-  
+
 private:
 
   friend class Matrix;
