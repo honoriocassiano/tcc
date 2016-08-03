@@ -31,7 +31,7 @@ public:
 	}
 
 	// Return edge what contains vertex opposite to hypotenuse
-	Edge* getHypotenuseOpposite() {
+	Edge* getHypotenuse() {
 		if (!hypotenuseOpposite) {
 			Edge* currentEdge = edge;
 
