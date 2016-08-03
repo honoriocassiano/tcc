@@ -62,11 +62,10 @@ void Patch::merge(BTTreeNode* node) {
 	}
 
 	// TODO Verificar essa condição
-	/*
-	 if(node->mBaseNeighbor && (node->mBaseNeighbor->mBaseNeighbor != node)) {
-	 merge(node->mBaseNeighbor);
-	 }
-	 */
+
+	if (node->mBaseNeighbor && (node->mBaseNeighbor->mBaseNeighbor != node)) {
+		merge(node->mBaseNeighbor);
+	}
 
 	Edge* hypOppositeLeft =
 			node->mLeftChild->mTriangle->getHypotenuseOpposite();
@@ -87,10 +86,33 @@ void Patch::merge(BTTreeNode* node) {
 	mMesh->removeTriangle(node->mLeftChild->mTriangle);
 	mMesh->removeTriangle(node->mRightChild->mTriangle);
 
+	node->mLeftNeighbor = node->mLeftChild->mBaseNeighbor;
+	node->mRightNeighbor = node->mRightChild->mBaseNeighbor;
+
 	node->mLeftChild->mTriangle = nullptr;
 	node->mRightChild->mTriangle = nullptr;
 
 	node->mTriangle = mMesh->addTriangle(v0, v1, v2);
+
+	if (!node->mTriangle) {
+		return;
+	}
+
+	delete node->mLeftChild;
+	delete node->mRightChild;
+
+	node->mLeftChild = nullptr;
+	node->mRightChild = nullptr;
+
+	if (node->mBaseNeighbor->mBaseNeighbor == node) {
+		if (node->mBaseNeighbor->mLeftChild) {
+			merge(node->mBaseNeighbor);
+		}
+	}
+
+	Log("Triangle %p - leftn: %p\trightn: %p\tbase: %p\tleftc: %p\trightc: %p\n",
+			node, node->mLeftNeighbor, node->mRightNeighbor, node->mBaseNeighbor, node->mLeftChild,
+			node->mRightChild);
 }
 
 void Patch::split(BTTreeNode* node) {
@@ -130,6 +152,9 @@ void Patch::split(BTTreeNode* node) {
 	}
 
 	// Create new vertex on hypotenuse middle point
+//	mid = mMesh->addVertex((v2->get() + v0->get()) * 0.5);
+//
+//	mMesh->setParentsChild(v2, v0, mid);
 
 	node->mLeftChild = new BTTreeNode();
 	node->mRightChild = new BTTreeNode();
