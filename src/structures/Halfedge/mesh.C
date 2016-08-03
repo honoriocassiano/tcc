@@ -4,6 +4,8 @@
 
 #include <string.h>
 
+#include "Debug.h"
+
 #include "mesh.h"
 #include "edge.h"
 #include "vertex.h"
@@ -51,6 +53,14 @@ Vertex* Mesh::addVertex(const Vec3f &position) {
 	else
 		bbox->Extend(position);
 	return v;
+}
+
+void Mesh::removeVertex(Vertex* vertex) {
+	vertices->Remove(vertex);
+
+	delete vertex;
+
+	vertex = NULL;
 }
 
 Triangle* Mesh::addTriangle(Vertex *a, Vertex *b, Vertex *c) {
@@ -131,6 +141,17 @@ Vertex* Mesh::getChildVertex(Vertex *p1, Vertex *p2) const {
 
 void Mesh::setParentsChild(Vertex *p1, Vertex *p2, Vertex *child) {
 	vertex_parents->Add(new VertexParent(p1, p2, child));
+}
+
+Vertex* Mesh::deleteParentsChildRelation(Vertex *p1, Vertex *p2) {
+	VertexParent *vp = vertex_parents->GetReorder(p1->getIndex(),
+			p2->getIndex());
+	if (vp == NULL)
+		return NULL;
+
+	vertex_parents->Remove(vp);
+
+	return vp->get();
 }
 
 // =======================================================================
@@ -387,7 +408,7 @@ void Mesh::printTriangles(int limit) {
 		auto p1 = edge->getNext()->getVertex()->get();
 		auto p2 = edge->getNext()->getNext()->getVertex()->get();
 
-		printf(
+		Log(
 				"%d - v0: (%.5f, %.5f, %.5f), v1: (%.5f, %.5f, %.5f), v2: (%.5f, %.5f, %.5f)\n",
 				i, p0.x(), p0.y(), p0.z(), p1.x(), p1.y(), p1.z(), p2.x(),
 				p2.y(), p2.z());

@@ -35,8 +35,14 @@ public:
   // VERTICES
   int numVertices() const { return vertices->Count(); }
   Vertex* addVertex(const Vec3f &pos);
+
+  void removeVertex(Vertex *vertex);
   // this creates a relationship between 3 vertices (2 parents, 1 child)
   void setParentsChild(Vertex *p1, Vertex *p2, Vertex *child);
+
+  // Delete the relation between parents and child and return child
+  Vertex* deleteParentsChildRelation(Vertex *p1, Vertex *p2);
+
   // this accessor will find a child vertex (if it exists) when given
   // two parent vertices
   Vertex* getChildVertex(Vertex *p1, Vertex *p2) const;
