@@ -45,6 +45,8 @@ private:
 private:
 	bool mWireframe;
 
+	float mMinDistance;
+
 	Mesh* mMesh;
 
 	BTTreeNode* mLeftNode;
