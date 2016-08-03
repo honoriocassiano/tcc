@@ -26,6 +26,7 @@ public:
  
   // =========
   // ACCESSORS
+  // Return destination vertex
   Vertex* getVertex() const { assert (vertex != NULL); return vertex; }
   Edge* getNext() const { assert (next != NULL); return next; }
   Triangle* getTriangle() const { assert (triangle != NULL); return triangle; }
