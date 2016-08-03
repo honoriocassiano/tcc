@@ -61,26 +61,33 @@ void Patch::merge(BTTreeNode* node) {
 		return;
 	}
 
-	// TODO Verificar essa condição
-
 	if (node->mBaseNeighbor && (node->mBaseNeighbor->mBaseNeighbor != node)) {
 		merge(node->mBaseNeighbor);
 	}
 
-	Edge* hypOppositeLeft =
-			node->mLeftChild->mTriangle->getHypotenuseOpposite();
+	auto extra = node->mLeftChild->mTriangle->getEdge();
 
-	Vertex* mid = hypOppositeLeft->getNext()->getVertex();
+	do {
+		if (extra->getOpposite()
+				&& extra->getOpposite()->getTriangle()
+						== node->mRightChild->mTriangle) {
+			break;
+		} else {
+			extra = extra->getNext();
+		}
+	} while (extra != node->mLeftChild->mTriangle->getEdge());
 
-	Vertex* v0 = hypOppositeLeft->getVertex();
-	Vertex* v1 = hypOppositeLeft->getNext()->getNext()->getVertex();
+	Vertex* v0 = extra->getNext()->getVertex();
+	Vertex* v1 = extra->getVertex();
 	Vertex* v2 =
-			hypOppositeLeft->getNext()->getOpposite()->getNext()->getVertex();
+			extra->getOpposite()->getNext()->getVertex();
 
-	//Log("mid: %p, v0: %p, v1: %p, v2: %p\n", mid, v0, v1, v2);
-	Log("mid: %s, v0: %s, v1: %s, v2: %s\n", mid->get().str().c_str(),
-			v0->get().str().c_str(), v1->get().str().c_str(),
-			v2->get().str().c_str());
+
+	Vertex* mid = mMesh->getChildVertex(v2, v0);
+
+	if(mid == extra->getVertex()) {
+		v1 = extra->getNext()->getNext()->getVertex();
+	}
 
 	// Delete children
 	mMesh->removeTriangle(node->mLeftChild->mTriangle);
@@ -105,14 +112,17 @@ void Patch::merge(BTTreeNode* node) {
 	node->mRightChild = nullptr;
 
 	if (node->mBaseNeighbor->mBaseNeighbor == node) {
+		// Base not merged
 		if (node->mBaseNeighbor->mLeftChild) {
 			merge(node->mBaseNeighbor);
+		} else {
+			// Remove parents-child relation
+			mMesh->deleteParentsChildRelation(v0, v2);
+
+			// Delete the middle vertex
+			mMesh->removeVertex(mid);
 		}
 	}
-
-	Log("Triangle %p - leftn: %p\trightn: %p\tbase: %p\tleftc: %p\trightc: %p\n",
-			node, node->mLeftNeighbor, node->mRightNeighbor, node->mBaseNeighbor, node->mLeftChild,
-			node->mRightChild);
 }
 
 void Patch::split(BTTreeNode* node) {
@@ -133,7 +143,7 @@ void Patch::split(BTTreeNode* node) {
 	Vertex* v1 = nullptr;
 	Vertex* v2 = nullptr;
 
-	Edge* hypOpposite = node->mTriangle->getHypotenuseOpposite();
+	Edge* hypOpposite = node->mTriangle->getHypotenuse();
 
 	if (!hypOpposite) {
 		Error("Not rectangle!\n");
@@ -150,11 +160,6 @@ void Patch::split(BTTreeNode* node) {
 
 		mMesh->setParentsChild(v2, v0, mid);
 	}
-
-	// Create new vertex on hypotenuse middle point
-//	mid = mMesh->addVertex((v2->get() + v0->get()) * 0.5);
-//
-//	mMesh->setParentsChild(v2, v0, mid);
 
 	node->mLeftChild = new BTTreeNode();
 	node->mRightChild = new BTTreeNode();
@@ -274,7 +279,7 @@ float Patch::recursiveComputeVariance(float* currentVariance, size_t index,
 void Patch::computeVariance() {
 
 	// Left node
-	auto hypotenuseOpposite = mLeftNode->mTriangle->getHypotenuseOpposite();
+	auto hypotenuseOpposite = mLeftNode->mTriangle->getHypotenuse();
 
 	auto apex = hypotenuseOpposite->getVertex()->get();
 	auto right = hypotenuseOpposite->getNext()->getVertex()->get();
@@ -284,7 +289,7 @@ void Patch::computeVariance() {
 			right, Perlin::generate(right), apex, Perlin::generate(apex));
 
 	// Right node
-	hypotenuseOpposite = mRightNode->mTriangle->getHypotenuseOpposite();
+	hypotenuseOpposite = mRightNode->mTriangle->getHypotenuse();
 
 	apex = hypotenuseOpposite->getVertex()->get();
 	right = hypotenuseOpposite->getNext()->getVertex()->get();
@@ -337,7 +342,7 @@ void Patch::recursiveTessellate(BTTreeNode* node, float* currentVariance,
 }
 
 void Patch::tessellate(const Vec3f& cameraPosition) {
-	auto hypotenuseOpposite = mLeftNode->mTriangle->getHypotenuseOpposite();
+	auto hypotenuseOpposite = mLeftNode->mTriangle->getHypotenuse();
 
 	auto apex = hypotenuseOpposite->getVertex()->get();
 	auto right = hypotenuseOpposite->getNext()->getVertex()->get();
@@ -349,7 +354,7 @@ void Patch::tessellate(const Vec3f& cameraPosition) {
 			cameraPosition);
 
 	// Right node
-	hypotenuseOpposite = mRightNode->mTriangle->getHypotenuseOpposite();
+	hypotenuseOpposite = mRightNode->mTriangle->getHypotenuse();
 
 	apex = hypotenuseOpposite->getVertex()->get();
 	right = hypotenuseOpposite->getNext()->getVertex()->get();
