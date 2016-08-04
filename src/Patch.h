@@ -8,11 +8,10 @@
 #ifndef SRC_PATCH_H_
 #define SRC_PATCH_H_
 
+#include "PriorityQueue.h"
 #include "BTTreeNode.h"
 #include "structures/Halfedge/mesh.h"
 
-#include <queue>
-#include <vector>
 
 constexpr size_t VARIANCE_DEPTH = 9;
 
@@ -83,12 +82,16 @@ private:
 	float m_LeftVariance[1 << VARIANCE_DEPTH];
 	float m_RightVariance[1 << VARIANCE_DEPTH];
 
-	std::priority_queue<BTTreeNode*, std::vector<BTTreeNode*>,
-				struct NodeGreater> m_SplitQueue;
+//	std::priority_queue<BTTreeNode*, std::vector<BTTreeNode*>,
+//				struct NodeGreater> m_SplitQueue;
+//
+//
+//	std::priority_queue<Diamond, std::vector<Diamond>,
+//				struct DiamondLess> m_MergeQueue;
 
+	PriorityQueue<BTTreeNode*, struct NodeGreater> m_SplitQueue;
 
-	std::priority_queue<Diamond, std::vector<Diamond>,
-				struct DiamondLess> m_MergeQueue;
+	PriorityQueue<Diamond, struct DiamondLess> m_MergeQueue;
 
 //	std::priority_queue<BTTreeNode*, std::vector<BTTreeNode*>,
 //			struct NodeGreater> m_SplitQueue;

@@ -1,12 +1,14 @@
 #include "Debug.h"
 
 #include <GL/glut.h>
+#include "PriorityQueue.h"
 #include "Planet.h"
 
 #include "SDLWindow.h"
 
 #include "Patch.h"
 #include "Landscape.h"
+
 
 // =========================================
 // =========================================
