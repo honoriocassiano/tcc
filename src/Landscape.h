@@ -24,7 +24,8 @@ public:
 
 	void tessellate(const Vec3f& cameraPosition);
 
-	const Patch* getPatch() const { return mPatch; }
+	Patch* getPatch() { return mPatch; }
+	//const Patch* getPatch() const { return mPatch; }
 
 private:
 	Patch* mPatch;

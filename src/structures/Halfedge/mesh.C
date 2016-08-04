@@ -409,7 +409,7 @@ void Mesh::printTriangles(int limit) {
 		auto p2 = edge->getNext()->getNext()->getVertex()->get();
 
 		Log(
-				"%d - v0: (%.5f, %.5f, %.5f), v1: (%.5f, %.5f, %.5f), v2: (%.5f, %.5f, %.5f)\n",
+				"%d - v0: (%.5f, %.5f, %.5f), v1: (%.5f, %.5f, %.5f), v2: (%.5f, %.5f, %.5f)",
 				i, p0.x(), p0.y(), p0.z(), p1.x(), p1.y(), p1.z(), p2.x(),
 				p2.y(), p2.z());
 

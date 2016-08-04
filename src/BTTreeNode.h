@@ -11,15 +11,23 @@
 #include "structures/Halfedge/triangle.h"
 
 class Patch;
+class Landscape;
 
 class BTTreeNode {
 public:
 	BTTreeNode(Triangle* triangle = nullptr);
 	virtual ~BTTreeNode();
 
+	float getPriority() const { return mPriority; }
+	void setPriority( float priority ) { mPriority = priority; }
+
+	BTTreeNode* getLeftChild() { return mLeftChild; }
 	BTTreeNode* getRightChild() { return mRightChild; }
 
 private:
+
+	float mPriority;
+
 	BTTreeNode* mBaseNeighbor;
 
 	BTTreeNode* mRightChild;

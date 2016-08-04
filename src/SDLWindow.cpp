@@ -16,7 +16,7 @@
 Landscape* landscape = new Landscape(0.5f);
 //Vec3f position(0.5, 0.5, 10);
 //Vec3f position(2.5, 2.5, 100);
-const Vec3f position(1, 15, 50);
+const Vec3f position(100, 0, 40);
 int globalI = 0;
 
 Landscape* getLandscape() {
@@ -102,7 +102,8 @@ void SDLWindow::run() {
 		display();
 
 		//******************************************************
-		const Patch* p = landscape->getPatch();
+		//const Patch* p = landscape->getPatch();
+		Patch* p = landscape->getPatch();
 
 		Log("%2d - vertices: %d, triangles: %d\n", globalI,
 				p->getMesh()->numVertices(), p->getMesh()->numTriangles());

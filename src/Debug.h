@@ -27,10 +27,12 @@
 #define Log(args...) \
 		printf(ANSI_COLOR_CYAN "[%s : %d] ", __FILENAME__, __LINE__); \
 		printf(ANSI_COLOR_RESET args); \
+		printf("\n");
 
 #define Error(args...) \
 		fprintf(stderr, ANSI_COLOR_RED "[%s : %d] ", __FILENAME__, __LINE__); \
-		fprintf(stderr, ANSI_COLOR_RESET args);
+		fprintf(stderr, ANSI_COLOR_RESET args); \
+		fprintf(stderr, "\n");
 
 #else
 	#define Log(args...)

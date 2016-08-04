@@ -27,33 +27,55 @@ inline constexpr size_t RIGHT_CHILD(size_t index) {
 	return (index << 1) + 2;
 }
 
-Patch::Patch(float minDistance) :
-		mWireframe(false), mMinDistance(minDistance), mMesh(new Mesh()), mLeftNode(
-				new BTTreeNode()), mRightNode(new BTTreeNode()), mLeftVariance {
-				0.0f }, mRightVariance { 0.0f } {
+typedef struct _Diamond {
+	BTTreeNode* m_Node;
+	BTTreeNode* m_Base;
+	float m_Priority;
 
-	mLeftNode->mBaseNeighbor = mRightNode;
-	mRightNode->mBaseNeighbor = mLeftNode;
+	_Diamond(BTTreeNode* node, BTTreeNode* base, float priority) :
+			m_Node(node), m_Base(base), m_Priority(priority) {
+
+	}
+} Diamond;
+
+// true - after
+// false - before
+bool NodeGreater::operator()(const BTTreeNode* lhs,
+		const BTTreeNode* rhs) const {
+	return lhs->getPriority() > rhs->getPriority();
+}
+
+bool DiamondLess::operator()(const Diamond &lhs, const Diamond &rhs) const {
+	return lhs.m_Priority < rhs.m_Priority;
+}
+
+Patch::Patch(float minDistance) :
+		m_Wireframe(false), m_MinDistance(minDistance), m_Mesh(new Mesh()), m_LeftNode(
+				new BTTreeNode()), m_RightNode(new BTTreeNode()), m_LeftVariance {
+				0.0f }, m_RightVariance { 0.0f } {
+
+	m_LeftNode->mBaseNeighbor = m_RightNode;
+	m_RightNode->mBaseNeighbor = m_LeftNode;
 
 	//***********************************
-	auto sw = mMesh->addVertex(Vec3f(0, 0, 0));
-	auto nw = mMesh->addVertex(Vec3f(0, 5, 0));
-	auto ne = mMesh->addVertex(Vec3f(5, 5, 0));
-	auto se = mMesh->addVertex(Vec3f(5, 0, 0));
+	auto sw = m_Mesh->addVertex(Vec3f(0, 0, 0));
+	auto nw = m_Mesh->addVertex(Vec3f(0, 5, 0));
+	auto ne = m_Mesh->addVertex(Vec3f(5, 5, 0));
+	auto se = m_Mesh->addVertex(Vec3f(5, 0, 0));
 	//***********************************
 
 //	auto nw = mMesh->addVertex(Vec3f(0, 100, 0));
 //	auto ne = mMesh->addVertex(Vec3f(100, 100, 0));
 //	auto se = mMesh->addVertex(Vec3f(100, 0, 0));
 
-	mLeftNode->mTriangle = mMesh->addTriangle(sw, ne, nw);
-	mRightNode->mTriangle = mMesh->addTriangle(sw, se, ne);
+	m_LeftNode->mTriangle = m_Mesh->addTriangle(sw, ne, nw);
+	m_RightNode->mTriangle = m_Mesh->addTriangle(sw, se, ne);
 }
 
 Patch::~Patch() {
-	delete mMesh;
-	delete mLeftNode;
-	delete mRightNode;
+	delete m_Mesh;
+	delete m_LeftNode;
+	delete m_RightNode;
 }
 
 void Patch::merge(BTTreeNode* node) {
@@ -79,19 +101,17 @@ void Patch::merge(BTTreeNode* node) {
 
 	Vertex* v0 = extra->getNext()->getVertex();
 	Vertex* v1 = extra->getVertex();
-	Vertex* v2 =
-			extra->getOpposite()->getNext()->getVertex();
+	Vertex* v2 = extra->getOpposite()->getNext()->getVertex();
 
+	Vertex* mid = m_Mesh->getChildVertex(v2, v0);
 
-	Vertex* mid = mMesh->getChildVertex(v2, v0);
-
-	if(mid == extra->getVertex()) {
+	if (mid == extra->getVertex()) {
 		v1 = extra->getNext()->getNext()->getVertex();
 	}
 
 	// Delete children
-	mMesh->removeTriangle(node->mLeftChild->mTriangle);
-	mMesh->removeTriangle(node->mRightChild->mTriangle);
+	m_Mesh->removeTriangle(node->mLeftChild->mTriangle);
+	m_Mesh->removeTriangle(node->mRightChild->mTriangle);
 
 	node->mLeftNeighbor = node->mLeftChild->mBaseNeighbor;
 	node->mRightNeighbor = node->mRightChild->mBaseNeighbor;
@@ -99,7 +119,7 @@ void Patch::merge(BTTreeNode* node) {
 	node->mLeftChild->mTriangle = nullptr;
 	node->mRightChild->mTriangle = nullptr;
 
-	node->mTriangle = mMesh->addTriangle(v0, v1, v2);
+	node->mTriangle = m_Mesh->addTriangle(v0, v1, v2);
 
 	if (!node->mTriangle) {
 		return;
@@ -117,10 +137,10 @@ void Patch::merge(BTTreeNode* node) {
 			merge(node->mBaseNeighbor);
 		} else {
 			// Remove parents-child relation
-			mMesh->deleteParentsChildRelation(v0, v2);
+			m_Mesh->deleteParentsChildRelation(v0, v2);
 
 			// Delete the middle vertex
-			mMesh->removeVertex(mid);
+			m_Mesh->removeVertex(mid);
 		}
 	}
 }
@@ -146,7 +166,7 @@ void Patch::split(BTTreeNode* node) {
 	Edge* hypOpposite = node->mTriangle->getHypotenuse();
 
 	if (!hypOpposite) {
-		Error("Not rectangle!\n");
+		Error("Not rectangle!");
 		exit(-1);
 	}
 
@@ -154,20 +174,20 @@ void Patch::split(BTTreeNode* node) {
 	v1 = hypOpposite->getNext()->getVertex();
 	v2 = hypOpposite->getNext()->getNext()->getVertex();
 
-	if ((mid = mMesh->getChildVertex(v2, v0)) == nullptr) {
+	if ((mid = m_Mesh->getChildVertex(v2, v0)) == nullptr) {
 		// Create new vertex on hypotenuse middle point
-		mid = mMesh->addVertex((v2->get() + v0->get()) * 0.5);
+		mid = m_Mesh->addVertex((v2->get() + v0->get()) * 0.5);
 
-		mMesh->setParentsChild(v2, v0, mid);
+		m_Mesh->setParentsChild(v2, v0, mid);
 	}
 
 	node->mLeftChild = new BTTreeNode();
 	node->mRightChild = new BTTreeNode();
 
-	mMesh->removeTriangle(node->mTriangle);
+	m_Mesh->removeTriangle(node->mTriangle);
 
-	node->mLeftChild->mTriangle = mMesh->addTriangle(mid, v1, v0);
-	node->mRightChild->mTriangle = mMesh->addTriangle(mid, v2, v1);
+	node->mLeftChild->mTriangle = m_Mesh->addTriangle(mid, v1, v0);
+	node->mRightChild->mTriangle = m_Mesh->addTriangle(mid, v2, v1);
 
 	//*****************************************************
 
@@ -195,7 +215,7 @@ void Patch::split(BTTreeNode* node) {
 			node->mLeftNeighbor->mRightNeighbor = node->mLeftChild;
 
 		} else {
-			Error("Illegal Left Neighbor!\n");
+			Error("Illegal Left Neighbor!");
 		}
 	}
 
@@ -211,7 +231,7 @@ void Patch::split(BTTreeNode* node) {
 			node->mRightNeighbor->mLeftNeighbor = node->mRightChild;
 
 		} else {
-			Error("Illegal Right Neighbor!\n");
+			Error("Illegal Right Neighbor!");
 		}
 	}
 
@@ -235,73 +255,253 @@ void Patch::split(BTTreeNode* node) {
 	}
 }
 
-float Patch::recursiveComputeVariance(float* currentVariance, size_t index,
+float Patch::recursiveComputeVariance(BTTreeNode* currentNode,
 		const Vec3f& left, float nLeft, const Vec3f& right, float nRight,
 		const Vec3f& apex, float nApex) {
 
-	float variance = 0.0f;
-
 	auto center = (left + right) * 0.5;
 
-	variance = (nLeft + nRight) / 2;
+//	float nCenter = Perlin::generate(center.x(), center.y(), center.z());
+	float nCenter = Perlin::generate(center.x(), center.y());
 
-	float nCenter = Perlin::generate(center.x(), center.y(), center.z());
-
-	variance = fabsf(nCenter - variance);
+	float priority = fabsf(nCenter - ((nLeft + nRight) / 2));
 
 	// TODO Check this condition: just x and y will be tested?
-	if (fabsf(left.x() - right.x()) >= 0.1
-			|| fabsf(left.y() - right.y()) > 0.1) {
+//	if (fabsf(left.x() - right.x()) >= 0.1
+//			|| fabsf(left.y() - right.y()) > 0.1) {
+	if (fabsf(left.x() - right.x()) >= m_MinDistance
+			|| fabsf(left.y() - right.y()) >= m_MinDistance
+			|| fabsf(left.z() - right.z()) >= m_MinDistance) {
 
-		variance = max(variance,
-				recursiveComputeVariance(currentVariance, LEFT_CHILD(index),
-						apex, nApex, left, nLeft, center, nCenter));
-		variance = max(variance,
-				recursiveComputeVariance(currentVariance, RIGHT_CHILD(index),
-						right, nRight, apex, nApex, center, nCenter));
+		BTTreeNode* leftChild = currentNode ? currentNode->mLeftChild : nullptr;
+		BTTreeNode* rightChild =
+				currentNode ? currentNode->mRightChild : nullptr;
+
+		priority += max(
+				recursiveComputeVariance(leftChild, apex, nApex, left, nLeft,
+						center, nCenter),
+				recursiveComputeVariance(rightChild, right, nRight, apex, nApex,
+						center, nCenter));
+//		variance += max(
+//				recursiveComputeVariance(currentVariance, LEFT_CHILD(index),
+//						apex, nApex, left, nLeft, center, nCenter),
+//				recursiveComputeVariance(currentVariance, RIGHT_CHILD(index),
+//						right, nRight, apex, nApex, center, nCenter));
 	}
 
-	//************************************
-	//************************************
-	//************************************
-	//************************************
-	if (index < (1 << VARIANCE_DEPTH)) {
-		currentVariance[index] = 1 + variance;
+	if (currentNode) {
+		currentNode->setPriority(priority);
 	}
-	//************************************
-	//************************************
-	//************************************
-	//************************************
 
-	return variance;
+	return priority;
+}
+
+/*
+ float Patch::recursiveComputeVariance(float* currentVariance, size_t index,
+ const Vec3f& left, float nLeft, const Vec3f& right, float nRight,
+ const Vec3f& apex, float nApex) {
+
+ float variance = 0.0f;
+
+ auto center = (left + right) * 0.5;
+
+ //variance = (nLeft + nRight) / 2;
+
+ float nCenter = Perlin::generate(center.x(), center.y(), center.z());
+
+ float variance = fabsf(nCenter - variance);
+
+ // TODO Check this condition: just x and y will be tested?
+ //	if (fabsf(left.x() - right.x()) >= 0.1
+ //			|| fabsf(left.y() - right.y()) > 0.1) {
+ if (fabsf(left.x() - right.x()) >= mMinDistance
+ || fabsf(left.y() - right.y()) >= mMinDistance
+ || fabsf(left.z() - right.z()) >= mMinDistance) {
+
+ variance += max(
+ recursiveComputeVariance(currentVariance, LEFT_CHILD(index),
+ apex, nApex, left, nLeft, center, nCenter),
+ recursiveComputeVariance(currentVariance, RIGHT_CHILD(index),
+ right, nRight, apex, nApex, center, nCenter));
+ //		variance = max(variance,
+ //				recursiveComputeVariance(currentVariance, LEFT_CHILD(index),
+ //						apex, nApex, left, nLeft, center, nCenter));
+ //		variance = max(variance,
+ //				recursiveComputeVariance(currentVariance, RIGHT_CHILD(index),
+ //						right, nRight, apex, nApex, center, nCenter));
+ }
+
+ //************************************
+ //************************************
+ //************************************
+ //************************************
+ //	if (index < (1 << VARIANCE_DEPTH)) {
+ //		currentVariance[index] = 1 + variance;
+ //	}
+ //************************************
+ //************************************
+ //************************************
+ //************************************
+
+ return variance;
+ }
+ */
+
+/*
+ float Patch::recursivelyComputeVariance(BTTreeNode* node) {
+ auto hypotenuse = node->mTriangle->getHypotenuse();
+
+ auto apex = hypotenuse->getVertex()->get();
+ auto right = hypotenuse->getNext()->getVertex()->get();
+ auto left = hypotenuse->getNext()->getNext()->getVertex()->get();
+
+ auto center = (left + right) * 0.5;
+
+ float variance = fabs(
+ Perlin::generate(center)
+ - (Perlin::generate(left) + Perlin::generate(right) * 0.5));
+
+ if (fabsf(left.x() - right.x()) > mMinDistance
+ || fabsf(left.y() - right.y()) > mMinDistance
+ || fabsf(left.z() - right.z()) > mMinDistance) {
+
+ }
+
+ return 0;
+ }
+ */
+
+// TODO Fix it (x and y coordinates)
+// Link: http://stackoverflow.com/questions/1560492/how-to-tell-whether-a-point-is-to-the-right-or-left-side-of-a-line
+//bool isLeft(const Vec2f& line1, const Vec2f& line2, const Vec2f& point) {
+//	return ((line2.x() - line1.x()) * (point.y() - line1.y())
+//			- (line2.y() - line1.y()) * (point.x() - line1.x())) > 0;
+//}
+bool isLeft(const Vec2f& reference, const Vec2f& vec) {
+	auto dot = reference.x() * (-vec.y()) + reference.y() * vec.x();
+
+	return dot < 0;
 }
 
 void Patch::computeVariance() {
 
 	// Left node
-	auto hypotenuseOpposite = mLeftNode->mTriangle->getHypotenuse();
+	auto hypotenuse = m_LeftNode->mTriangle->getHypotenuse();
 
-	auto apex = hypotenuseOpposite->getVertex()->get();
-	auto right = hypotenuseOpposite->getNext()->getVertex()->get();
-	auto left = hypotenuseOpposite->getNext()->getNext()->getVertex()->get();
+//	auto apex = hypotenuseOpposite->getVertex()->get();
+//	auto right = hypotenuseOpposite->getNext()->getVertex()->get();
+//	auto left = hypotenuseOpposite->getNext()->getNext()->getVertex()->get();
 
-	recursiveComputeVariance(mLeftVariance, 0, left, Perlin::generate(left),
-			right, Perlin::generate(right), apex, Perlin::generate(apex));
+	auto apex = hypotenuse->getNext()->getVertex();
+	auto right = hypotenuse->getVertex();
+	auto left = hypotenuse->getNext()->getNext()->getVertex();
+
+	auto apexPosition = apex->get();
+	auto rightPosition = right->get();
+	auto leftPosition = left->get();
+
+	auto mid = (leftPosition + rightPosition) * 0.5;
+
+	// TODO Fix it: x and y coordinates
+	// Check if right is on left side
+
+	if (isLeft(Vec2f(apexPosition.x() - mid.x(), apexPosition.y() - mid.y()),
+			Vec2f(rightPosition.x() - mid.x(), rightPosition.y() - mid.y()))) {
+
+		swap(left, right);
+
+		rightPosition = right->get();
+		leftPosition = left->get();
+	}
+
+//	recursiveComputeVariance(mLeftVariance, 0, left, Perlin::generate(left),
+//			right, Perlin::generate(right), apex, Perlin::generate(apex));
+
+//	recursiveComputeVariance(mLeftNode, left, Perlin::generate(left), right,
+//			Perlin::generate(right), apex, Perlin::generate(apex));
+	recursiveComputeVariance(m_LeftNode, leftPosition,
+			Perlin::generate(leftPosition.x(), leftPosition.y()), rightPosition,
+			Perlin::generate(rightPosition.x(), rightPosition.y()),
+			apexPosition, Perlin::generate(apexPosition.x(), apexPosition.y()));
 
 	// Right node
-	hypotenuseOpposite = mRightNode->mTriangle->getHypotenuse();
+//	hypotenuse = mRightNode->mTriangle->getHypotenuse();
+//
+//	apexPosition = hypotenuse->getVertex()->get();
+//	rightPosition = hypotenuse->getNext()->getVertex()->get();
+//	leftPosition = hypotenuse->getNext()->getNext()->getVertex()->get();
 
-	apex = hypotenuseOpposite->getVertex()->get();
-	right = hypotenuseOpposite->getNext()->getVertex()->get();
-	left = hypotenuseOpposite->getNext()->getNext()->getVertex()->get();
+//	Log("HERE! %p, %s\n", hypotenuse, hypotenuse->getVertex()->get().str().c_str());
 
-	apex.Set(apex.x(), apex.y(), Perlin::generate(apex));
-	right.Set(right.x(), right.y(), Perlin::generate(right));
-	left.Set(left.x(), left.y(), Perlin::generate(left));
+	hypotenuse = m_RightNode->mTriangle->getHypotenuse();
 
-	recursiveComputeVariance(mRightVariance, 0, left, Perlin::generate(left),
-			right, Perlin::generate(right), apex, Perlin::generate(apex));
-//	recursivelyComputeVariance(mRightNode);
+	apex = hypotenuse->getNext()->getVertex();
+
+	// Invert left and right
+	swap(right, left);
+
+	apexPosition = apex->get();
+	rightPosition = right->get();
+	leftPosition = left->get();
+
+	// TODO Set Vertex position here
+//	apex.Set(apex.x(), apex.y(), Perlin::generate(apex));
+//	right.Set(right.x(), right.y(), Perlin::generate(right));
+//	left.Set(left.x(), left.y(), Perlin::generate(left));
+
+//	recursiveComputeVariance(mRightVariance, 0, left, Perlin::generate(left),
+//			right, Perlin::generate(right), apex, Perlin::generate(apex));
+
+//	recursiveComputeVariance(mRightNode, left, Perlin::generate(left), right,
+//			Perlin::generate(right), apex, Perlin::generate(apex));
+	recursiveComputeVariance(m_RightNode, leftPosition,
+			Perlin::generate(leftPosition.x(), leftPosition.y()), rightPosition,
+			Perlin::generate(rightPosition.x(), rightPosition.y()),
+			apexPosition, Perlin::generate(apexPosition.x(), apexPosition.y()));
+
+	//********************************************************
+	// Check if is the first time
+	if (m_SplitQueue.size() == 0) {
+		m_SplitQueue.push(m_LeftNode);
+
+		m_MergeQueue.push(
+				Diamond(m_LeftNode, m_RightNode,
+						max(m_LeftNode->getPriority(),
+								m_RightNode->getPriority())));
+	}
+	//********************************************************
+}
+
+void Patch::processGeometry() {
+	while(/* TODO First size/accuracy condition here || */ m_SplitQueue.top()->getPriority() > m_MergeQueue.top().m_Priority ) {
+		// Condition to merge
+		if(/* TODO Accuracy condition here */ false) {
+			auto lower = m_MergeQueue.top();
+
+			merge(lower.m_Node);
+
+			// Update queues
+			// Remove children
+			m_SplitQueue.pop();
+			m_SplitQueue.pop();
+
+			m_MergeQueue.pop();
+
+			// TODO See algorithm
+
+		} else {
+			auto higher = m_SplitQueue.top();
+
+			split(higher);
+
+			m_SplitQueue.pop();
+
+			m_SplitQueue.push(higher->mLeftChild);
+			m_SplitQueue.push(higher->mRightChild);
+
+
+		}
+	}
 }
 
 void Patch::recursiveTessellate(BTTreeNode* node, float* currentVariance,
@@ -329,8 +529,8 @@ void Patch::recursiveTessellate(BTTreeNode* node, float* currentVariance,
 
 		// TODO Check this condition: just x and y will be tested?
 		if (node->mLeftChild
-				&& ((fabsf(left.x() - right.x()) >= mMinDistance)
-						|| (fabsf(left.y() - right.y()) >= mMinDistance))) {
+				&& ((fabsf(left.x() - right.x()) >= m_MinDistance)
+						|| (fabsf(left.y() - right.y()) >= m_MinDistance))) {
 			recursiveTessellate(node->mLeftChild, currentVariance,
 					LEFT_CHILD(index), apex, left, center, cameraPosition);
 			recursiveTessellate(node->mRightChild, currentVariance,
@@ -342,7 +542,7 @@ void Patch::recursiveTessellate(BTTreeNode* node, float* currentVariance,
 }
 
 void Patch::tessellate(const Vec3f& cameraPosition) {
-	auto hypotenuse = mLeftNode->mTriangle->getHypotenuse();
+	auto hypotenuse = m_LeftNode->mTriangle->getHypotenuse();
 
 	auto apex = hypotenuse->getNext()->getVertex()->get();
 	auto right = hypotenuse->getNext()->getNext()->getVertex()->get();
@@ -351,11 +551,11 @@ void Patch::tessellate(const Vec3f& cameraPosition) {
 
 //	recursiveComputeVariance(left, Perlin::generate(left), right,
 //			Perlin::generate(right), apex, Perlin::generate(apex));
-	recursiveTessellate(mLeftNode, mLeftVariance, 0, left, right, apex,
+	recursiveTessellate(m_LeftNode, m_LeftVariance, 0, left, right, apex,
 			cameraPosition);
 
 	// Right node
-	hypotenuse = mRightNode->mTriangle->getHypotenuse();
+	hypotenuse = m_RightNode->mTriangle->getHypotenuse();
 
 	apex = hypotenuse->getNext()->getVertex()->get();
 	right = hypotenuse->getNext()->getNext()->getVertex()->get();
@@ -365,16 +565,17 @@ void Patch::tessellate(const Vec3f& cameraPosition) {
 	right.Set(right.x(), right.y(), Perlin::generate(right));
 	left.Set(left.x(), left.y(), Perlin::generate(left));
 
-	recursiveTessellate(mRightNode, mRightVariance, 0, left, right, apex,
+	recursiveTessellate(m_RightNode, m_RightVariance, 0, left, right, apex,
 			cameraPosition);
 //	recursiveComputeVariance(left, Perlin::generate(left), right,
 //			Perlin::generate(right), apex, Perlin::generate(apex));
 }
 
 void Patch::render() {
-	MeshDrawer::draw(mMesh, mWireframe);
+	MeshDrawer::draw(m_Mesh, m_Wireframe);
 }
 
 void Patch::toggleWireframe() {
-	mWireframe = !mWireframe;
+	m_Wireframe = !m_Wireframe;
 }
+

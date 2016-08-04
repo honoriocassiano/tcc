@@ -1,4 +1,3 @@
-
 #include "Debug.h"
 
 #include <GL/glut.h>
@@ -16,125 +15,158 @@ int main(int argc, char **argv) {
 	srand(time(NULL));
 
 	/*
-	SDLWindow window(640, 480);
+	 SDLWindow window(640, 480);
 
-	Planet* planet1 = new Planet(5);
-	planet1->setCenter(Vec3f(50, 0, 0));
-	planet1->setMass(5);
+	 Planet* planet1 = new Planet(5);
+	 planet1->setCenter(Vec3f(50, 0, 0));
+	 planet1->setMass(5);
 
-	Planet* planet2 = new Planet(5);
-	planet2->setCenter(Vec3f(100, 0, 0));
-	planet2->setMass(5);
+	 Planet* planet2 = new Planet(5);
+	 planet2->setCenter(Vec3f(100, 0, 0));
+	 planet2->setMass(5);
 
-	Planet* planet3 = new Planet(5);
-	planet3->setCenter(Vec3f(200, 0, 0));
-	planet3->setMass(5);
+	 Planet* planet3 = new Planet(5);
+	 planet3->setCenter(Vec3f(200, 0, 0));
+	 planet3->setMass(5);
 
-	Planet* sun = new Planet(10);
-	sun->setCenter(Vec3f(0, 0, 0));
-	sun->setMass(10000);
+	 Planet* sun = new Planet(10);
+	 sun->setCenter(Vec3f(0, 0, 0));
+	 sun->setMass(10000);
 
-	planet1->setOrbiter(sun);
-	planet2->setOrbiter(sun);
-	planet3->setOrbiter(sun);
+	 planet1->setOrbiter(sun);
+	 planet2->setOrbiter(sun);
+	 planet3->setOrbiter(sun);
 
-	window.addBody(planet1);
-	window.addBody(planet2);
-	window.addBody(planet3);
-	window.addBody(sun);
+	 window.addBody(planet1);
+	 window.addBody(planet2);
+	 window.addBody(planet3);
+	 window.addBody(sun);
 
-	window.run();
-	*/
+	 window.run();
+	 */
 
-	/*
-	Patch* patch = new Patch();
+	Patch* patch = new Patch(1.0);
 
 	Mesh* mesh = patch->getMesh();
 
-	auto v0 = mesh->addVertex(Vec3f(0, 0, 0));
-	auto v1 = mesh->addVertex(Vec3f(1, 0, 0));
-	auto v2 = mesh->addVertex(Vec3f(0, 1, 0));
+//	auto v0 = mesh->addVertex(Vec3f(0, 0, 0));
+//	auto v1 = mesh->addVertex(Vec3f(1, 0, 0));
+//	auto v2 = mesh->addVertex(Vec3f(0, 1, 0));
+//
+//	auto tri = mesh->addTriangle(v0, v1, v2);
 
-	auto tri = mesh->addTriangle(v0, v1, v2);
-
-	printf("before - triangles: %d, vertices: %d\n\n", mesh->numTriangles(), mesh->numVertices());
-
-	mesh->printTriangles();
-
-	BTTreeNode* node = new BTTreeNode(tri);
-
-	patch->split(node);
-
-	printf("\nafter - triangles: %d, vertices: %d\n\n", mesh->numTriangles(), mesh->numVertices());
+	Log("original - triangles: %d, vertices: %d", mesh->numTriangles(),
+			mesh->numVertices());
 
 	mesh->printTriangles();
 
-	patch->split(node->getRightChild());
+//	BTTreeNode* node = new BTTreeNode(tri);
+	BTTreeNode* left = patch->getLeft();
+	BTTreeNode* right = patch->getRight();
 
-	printf("\nafter - triangles: %d, vertices: %d\n\n", mesh->numTriangles(), mesh->numVertices());
+	patch->computeVariance();
 
-	mesh->printTriangles();
-	*/
+	Log("left: %p, priority: %f", left, left->getPriority());
+	Log("right: %p, priority: %f", right, right->getPriority());
 
-	SDLWindow window(640, 480);
+	patch->split(right);
+	patch->computeVariance();
+	Log("SPLIT!");
+
+//	Log("split - triangles: %d, vertices: %d", mesh->numTriangles(),
+//				mesh->numVertices());
+
+	Log("left: %p, priority: %f", left, left->getPriority());
+	Log("right: %p, priority: %f", right, right->getPriority());
+
+	Log("right-l: %p, priority: %f", right->getLeftChild(),
+			right->getLeftChild()->getPriority());
+	Log("right-r: %p, priority: %f", right->getRightChild(),
+			right->getRightChild()->getPriority());
+
+	patch->merge(right);
+	patch->computeVariance();
+
+	Log("MERGE!");
+//	Log("merge - triangles: %d, vertices: %d", mesh->numTriangles(),
+//					mesh->numVertices());
+
+	Log("left: %p, priority: %f", left, left->getPriority());
+	Log("right: %p, priority: %f", right, right->getPriority());
 
 	/*
-	Landscape* landscape = new Landscape();
+	 patch->split(node);
 
-	Vec3f position(0.5, 0.5, -10);
+	 Log("split - triangles: %d, vertices: %d\n\n", mesh->numTriangles(), mesh->numVertices());
 
-	int i = 0;
+	 mesh->printTriangles();
 
-	printf("Started!\n");
+	 patch->merge(node);
 
-	while(i < 100) {
-		landscape->tessellate(position);
-		landscape->render();
+	 Log("merge - triangles: %d, vertices: %d\n\n", mesh->numTriangles(), mesh->numVertices());
 
-		++i;
-	}
-	*/
+	 mesh->printTriangles();
+	 */
 
-	Log("Started\n");
+	/*
+	 SDLWindow window(640, 480);
 
-	window.run();
 
+	 //	Landscape* landscape = new Landscape();
+	 //
+	 //	Vec3f position(0.5, 0.5, -10);
+	 //
+	 //	int i = 0;
+	 //
+	 //	printf("Started!\n");
+	 //
+	 //	while(i < 100) {
+	 //		landscape->tessellate(position);
+	 //		landscape->render();
+	 //
+	 //		++i;
+	 //	}
+
+
+	 Log("Started\n");
+
+	 window.run();
+	 */
 	Log("Finished!\n");
 
 	return 0;
 }
 
-
 /*
-int main(int argc, char *argv[]) {
-	//srand48(0);
-	srand(time(NULL));
+ int main(int argc, char *argv[]) {
+ //srand48(0);
+ srand(time(NULL));
 
-	glutInit(&argc, argv);
+ glutInit(&argc, argv);
 
-	ArgParser *args = new ArgParser(argc, argv);
+ ArgParser *args = new ArgParser(argc, argv);
 
-	Planet* sphere = new Planet(5, 150, 150);
+ Planet* sphere = new Planet(5, 150, 150);
 
-	// mesh->Load(args->input_file);
+ // mesh->Load(args->input_file);
 
-	// mesh->LoopSubdivision();
+ // mesh->LoopSubdivision();
 
-	// sphere->setCenter(Vec3f(5, -1, 2));
+ // sphere->setCenter(Vec3f(5, -1, 2));
 
-	//GLCanvas glcanvas;
-	Window window;
+ //GLCanvas glcanvas;
+ Window window;
 
-	window.addBody(sphere);
+ window.addBody(sphere);
 
-	window.initialize(args, sphere->getMesh());
-	//glcanvas.initialize(args, sphere->getMesh());
+ window.initialize(args, sphere->getMesh());
+ //glcanvas.initialize(args, sphere->getMesh());
 
-	//delete args;
+ //delete args;
 
-	return 0;
-}
-*/
+ return 0;
+ }
+ */
 
 // =========================================
 // =========================================

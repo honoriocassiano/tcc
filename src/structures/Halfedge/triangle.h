@@ -7,6 +7,8 @@
 
 #include "vertex.h"
 
+#include "Debug.h"
+
 // ===========================================================
 
 class Triangle {
@@ -17,7 +19,7 @@ public:
 	// CONSTRUCTOR & DESTRUCTOR
 	Triangle() {
 		edge = nullptr;
-		hypotenuseOpposite = nullptr;
+		hypotenuse = nullptr;
 	}
 	~Triangle() {
 	}
@@ -32,7 +34,7 @@ public:
 
 	// Return edge what contains vertex opposite to hypotenuse
 	Edge* getHypotenuse() {
-		if (!hypotenuseOpposite) {
+		if (!hypotenuse) {
 			Edge* currentEdge = edge;
 
 			Vertex* mid = nullptr;
@@ -46,13 +48,14 @@ public:
 				v1 = currentEdge->getNext()->getVertex();
 				v2 = currentEdge->getNext()->getNext()->getVertex();
 
-				auto v01 = v1->get() - v0->get();
+				auto v01 = v0->get() - v1->get();
 				auto v12 = v2->get() - v1->get();
 
 				// TODO Check this comment
 				// Check if the vectors are "ortoghonals"
 				if (v01.Dot3(v12) == 0.0) {
-					hypotenuseOpposite = currentEdge;
+					hypotenuse = currentEdge;
+
 					break;
 				} else {
 					currentEdge = currentEdge->getNext();
@@ -60,7 +63,7 @@ public:
 			} while (currentEdge != edge);
 		}
 
-		return hypotenuseOpposite;
+		return hypotenuse;
 	}
 
 	// =========
@@ -83,7 +86,7 @@ public:
 		assert(edge == NULL);
 		edge = e;
 
-		hypotenuseOpposite = nullptr;
+		hypotenuse = nullptr;
 	}
 
 	const Vec3f& getNormal() {
@@ -97,6 +100,20 @@ public:
 	// delete it, create a new copy with the changes, and re-add it.
 	// This will ensure the edges get updated appropriately.
 
+	/*
+	 float getOrientation(const Vec3f& viewPoint) {
+	 //(B - A) x (C - A)
+
+	 auto v0 = (*this)[0]->get();
+	 auto v1 = (*this)[1]->get();
+	 auto v2 = (*this)[2]->get();
+
+	 Vec3f::Cross3(normal, v1 - v0, v2 - v0);
+
+
+	 }
+	 */
+
 protected:
 
 	// don't use this constructor
@@ -108,7 +125,7 @@ protected:
 	// REPRESENTATION
 	Edge *edge;
 	Vec3f normal;
-	Edge *hypotenuseOpposite;
+	Edge *hypotenuse;
 };
 
 // ===========================================================

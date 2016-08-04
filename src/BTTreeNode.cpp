@@ -8,7 +8,7 @@
 #include "BTTreeNode.h"
 
 BTTreeNode::BTTreeNode(Triangle* triangle) :
-		mBaseNeighbor(nullptr), mRightChild(nullptr), mLeftChild(nullptr), mRightNeighbor(
+		mPriority(0), mBaseNeighbor(nullptr), mRightChild(nullptr), mLeftChild(nullptr), mRightNeighbor(
 				nullptr), mLeftNeighbor(nullptr), mTriangle(triangle) {
 
 }

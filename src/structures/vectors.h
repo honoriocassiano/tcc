@@ -256,7 +256,6 @@ public:
     Vec3f v2; CopyScale(v2,v1,f); return v2; } 
   friend Vec3f operator*(const Vec3f &v1, const Vec3f &v2) {
     Vec3f v3; Mult(v3,v1,v2); return v3; }
-  
         
   // OPERATIONS
   float Dot3(const Vec3f &V) const {
