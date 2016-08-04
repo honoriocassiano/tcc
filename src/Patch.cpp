@@ -342,11 +342,12 @@ void Patch::recursiveTessellate(BTTreeNode* node, float* currentVariance,
 }
 
 void Patch::tessellate(const Vec3f& cameraPosition) {
-	auto hypotenuseOpposite = mLeftNode->mTriangle->getHypotenuse();
+	auto hypotenuse = mLeftNode->mTriangle->getHypotenuse();
 
-	auto apex = hypotenuseOpposite->getVertex()->get();
-	auto right = hypotenuseOpposite->getNext()->getVertex()->get();
-	auto left = hypotenuseOpposite->getNext()->getNext()->getVertex()->get();
+	auto apex = hypotenuse->getNext()->getVertex()->get();
+	auto right = hypotenuse->getNext()->getNext()->getVertex()->get();
+	auto left = hypotenuse->getVertex()->get();
+	//auto left = hypotenuse->getNext()->getNext()->getVertex()->get();
 
 //	recursiveComputeVariance(left, Perlin::generate(left), right,
 //			Perlin::generate(right), apex, Perlin::generate(apex));
@@ -354,11 +355,11 @@ void Patch::tessellate(const Vec3f& cameraPosition) {
 			cameraPosition);
 
 	// Right node
-	hypotenuseOpposite = mRightNode->mTriangle->getHypotenuse();
+	hypotenuse = mRightNode->mTriangle->getHypotenuse();
 
-	apex = hypotenuseOpposite->getVertex()->get();
-	right = hypotenuseOpposite->getNext()->getVertex()->get();
-	left = hypotenuseOpposite->getNext()->getNext()->getVertex()->get();
+	apex = hypotenuse->getNext()->getVertex()->get();
+	right = hypotenuse->getNext()->getNext()->getVertex()->get();
+	left = hypotenuse->getVertex()->get();
 
 	apex.Set(apex.x(), apex.y(), Perlin::generate(apex));
 	right.Set(right.x(), right.y(), Perlin::generate(right));
