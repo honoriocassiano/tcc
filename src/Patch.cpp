@@ -36,6 +36,11 @@ typedef struct _Diamond {
 			m_Node(node), m_Base(base), m_Priority(priority) {
 
 	}
+
+	friend bool operator==(const Diamond& lhs, const Diamond& rhs) {
+		return (lhs.m_Node == rhs.m_Node) && (lhs.m_Base == rhs.m_Base);
+	}
+
 } Diamond;
 
 // true - after
