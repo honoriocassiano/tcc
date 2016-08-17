@@ -48,6 +48,20 @@ int main(int argc, char **argv) {
 	 */
 
 	Patch* patch = new Patch(1.0);
+	Mesh* mesh = patch->getMesh();
+
+	Log("original - triangles: %d, vertices: %d", mesh->numTriangles(),
+			mesh->numVertices());
+
+	patch->processGeometry();
+
+	Log("after process - triangles: %d, vertices: %d", mesh->numTriangles(),
+			mesh->numVertices());
+
+	//********************************************
+	/*
+
+	Patch* patch = new Patch(1.0);
 
 	Mesh* mesh = patch->getMesh();
 
@@ -95,6 +109,9 @@ int main(int argc, char **argv) {
 
 	Log("left: %p, priority: %f", left, left->getPriority());
 	Log("right: %p, priority: %f", right, right->getPriority());
+
+	*/
+	//********************************************
 
 	/*
 	 patch->split(node);

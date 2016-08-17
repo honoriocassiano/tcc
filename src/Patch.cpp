@@ -30,11 +30,17 @@ inline constexpr size_t RIGHT_CHILD(size_t index) {
 typedef struct _Diamond {
 	BTTreeNode* m_Node;
 	BTTreeNode* m_Base;
+	//bool m_PriorityOnNode;
 	float m_Priority;
 
-	_Diamond(BTTreeNode* node, BTTreeNode* base, float priority) :
-			m_Node(node), m_Base(base), m_Priority(priority) {
+	//_Diamond(BTTreeNode* node, BTTreeNode* base, float priority) :
+	_Diamond(BTTreeNode* node, BTTreeNode* base) :
+			m_Node(node), m_Base(base), m_Priority(m_Node->getPriority()) {
 
+		if (m_Base != nullptr
+				&& m_Base->getPriority() > m_Node->getPriority()) {
+			m_Priority = m_Base->getPriority();
+		}
 	}
 
 	friend bool operator==(const Diamond& lhs, const Diamond& rhs) {
@@ -63,10 +69,14 @@ Patch::Patch(float minDistance) :
 	m_RightNode->mBaseNeighbor = m_LeftNode;
 
 	//***********************************
+//	auto sw = m_Mesh->addVertex(Vec3f(0, 0, 0));
+//	auto nw = m_Mesh->addVertex(Vec3f(0, 5, 0));
+//	auto ne = m_Mesh->addVertex(Vec3f(5, 5, 0));
+//	auto se = m_Mesh->addVertex(Vec3f(5, 0, 0));
 	auto sw = m_Mesh->addVertex(Vec3f(0, 0, 0));
-	auto nw = m_Mesh->addVertex(Vec3f(0, 5, 0));
-	auto ne = m_Mesh->addVertex(Vec3f(5, 5, 0));
-	auto se = m_Mesh->addVertex(Vec3f(5, 0, 0));
+	auto nw = m_Mesh->addVertex(Vec3f(0, 1, 0));
+	auto ne = m_Mesh->addVertex(Vec3f(1, 1, 0));
+	auto se = m_Mesh->addVertex(Vec3f(1, 0, 0));
 	//***********************************
 
 //	auto nw = mMesh->addVertex(Vec3f(0, 100, 0));
@@ -133,6 +143,11 @@ void Patch::merge(BTTreeNode* node) {
 	delete node->mLeftChild;
 	delete node->mRightChild;
 
+	//**********************************************
+	m_SplitQueue.remove(node->mLeftChild);
+	m_SplitQueue.remove(node->mRightChild);
+	//**********************************************
+
 	node->mLeftChild = nullptr;
 	node->mRightChild = nullptr;
 
@@ -148,6 +163,10 @@ void Patch::merge(BTTreeNode* node) {
 			m_Mesh->removeVertex(mid);
 		}
 	}
+
+	//**********************************************
+	m_SplitQueue.push(node);
+	//**********************************************
 }
 
 void Patch::split(BTTreeNode* node) {
@@ -271,22 +290,25 @@ float Patch::recursiveComputeVariance(BTTreeNode* currentNode,
 
 	float priority = fabsf(nCenter - ((nLeft + nRight) / 2));
 
+	float mmax = 0;
+
 	// TODO Check this condition: just x and y will be tested?
 //	if (fabsf(left.x() - right.x()) >= 0.1
 //			|| fabsf(left.y() - right.y()) > 0.1) {
-	if (fabsf(left.x() - right.x()) >= m_MinDistance
-			|| fabsf(left.y() - right.y()) >= m_MinDistance
-			|| fabsf(left.z() - right.z()) >= m_MinDistance) {
+	if (fabsf(left.x() - right.x()) > m_MinDistance
+			|| fabsf(left.y() - right.y()) > m_MinDistance) {
+		//|| fabsf(left.z() - right.z()) >= m_MinDistance) {
 
 		BTTreeNode* leftChild = currentNode ? currentNode->mLeftChild : nullptr;
 		BTTreeNode* rightChild =
 				currentNode ? currentNode->mRightChild : nullptr;
 
-		priority += max(
+		mmax = max(
 				recursiveComputeVariance(leftChild, apex, nApex, left, nLeft,
 						center, nCenter),
 				recursiveComputeVariance(rightChild, right, nRight, apex, nApex,
 						center, nCenter));
+
 //		variance += max(
 //				recursiveComputeVariance(currentVariance, LEFT_CHILD(index),
 //						apex, nApex, left, nLeft, center, nCenter),
@@ -296,6 +318,10 @@ float Patch::recursiveComputeVariance(BTTreeNode* currentNode,
 
 	if (currentNode) {
 		currentNode->setPriority(priority);
+
+		Log("center: %f, max: %f", nCenter, mmax);
+		//Log("recursion: %d", (recursion / 2) + 1);
+		Log("priority: %f", priority);
 	}
 
 	return priority;
@@ -424,6 +450,9 @@ void Patch::computeVariance() {
 
 //	recursiveComputeVariance(mLeftNode, left, Perlin::generate(left), right,
 //			Perlin::generate(right), apex, Perlin::generate(apex));
+
+	Log("LEFT!");
+
 	recursiveComputeVariance(m_LeftNode, leftPosition,
 			Perlin::generate(leftPosition.x(), leftPosition.y()), rightPosition,
 			Perlin::generate(rightPosition.x(), rightPosition.y()),
@@ -459,6 +488,9 @@ void Patch::computeVariance() {
 
 //	recursiveComputeVariance(mRightNode, left, Perlin::generate(left), right,
 //			Perlin::generate(right), apex, Perlin::generate(apex));
+
+	Log("RIGHT!");
+
 	recursiveComputeVariance(m_RightNode, leftPosition,
 			Perlin::generate(leftPosition.x(), leftPosition.y()), rightPosition,
 			Perlin::generate(rightPosition.x(), rightPosition.y()),
@@ -466,44 +498,76 @@ void Patch::computeVariance() {
 
 	//********************************************************
 	// Check if is the first time
-	if (m_SplitQueue.size() == 0) {
-		m_SplitQueue.push(m_LeftNode);
+	/*
+	 if (m_SplitQueue.size() == 0) {
+	 m_SplitQueue.push(m_LeftNode);
 
-		m_MergeQueue.push(
-				Diamond(m_LeftNode, m_RightNode,
-						max(m_LeftNode->getPriority(),
-								m_RightNode->getPriority())));
-	}
+	 m_MergeQueue.push(
+	 Diamond(m_LeftNode, m_RightNode,
+	 max(m_LeftNode->getPriority(),
+	 m_RightNode->getPriority())));
+	 }
+	 */
 	//********************************************************
 }
 
 void Patch::processGeometry() {
-	while(/* TODO First size/accuracy condition here || */ m_SplitQueue.top()->getPriority() > m_MergeQueue.top().m_Priority ) {
+
+	if (m_SplitQueue.size() == 0) {
+		m_SplitQueue.push(m_LeftNode);
+	}
+
+	computeVariance();
+
+	auto mergePriority =
+			m_MergeQueue.size() > 0 ? m_MergeQueue.top().m_Priority : 0;
+
+	while (/* TODO First size/accuracy condition here || */m_SplitQueue.top()->getPriority()
+			> mergePriority) {
 		// Condition to merge
-		if(/* TODO Accuracy condition here */ false) {
-			auto lower = m_MergeQueue.top();
+		//if (/* TODO Accuracy condition here */false) {
+		//if(m_SplitQueue.top()->getPriority() > 1.0) {
+		if (mergePriority > 0.0) {
+			/*
+			 auto lower = m_MergeQueue.top();
 
-			merge(lower.m_Node);
+			 merge(lower.m_Node);
 
-			// Update queues
-			// Remove children
-			m_SplitQueue.pop();
-			m_SplitQueue.pop();
+			 // Update queues
+			 // Remove children
+			 m_SplitQueue.pop();
+			 m_SplitQueue.pop();
+
+			 m_MergeQueue.pop();
+			 */
+			Diamond lower = m_MergeQueue.top();
 
 			m_MergeQueue.pop();
+
+			merge(lower.m_Base);
 
 			// TODO See algorithm
 
 		} else {
-			auto higher = m_SplitQueue.top();
 
-			split(higher);
+			BTTreeNode* higher = m_SplitQueue.top();
 
 			m_SplitQueue.pop();
 
+			split(higher);
+
+			// Add children to split queue
 			m_SplitQueue.push(higher->mLeftChild);
 			m_SplitQueue.push(higher->mRightChild);
 
+			// Add base children to split queue
+			if (higher->mBaseNeighbor) {
+				m_SplitQueue.push(higher->mBaseNeighbor->mLeftChild);
+				m_SplitQueue.push(higher->mBaseNeighbor->mRightChild);
+			}
+
+			// Add diamond to merge queue
+			m_MergeQueue.push(Diamond(higher, higher->mBaseNeighbor));
 
 		}
 	}

@@ -17,7 +17,7 @@ public:
 	PriorityQueue();
 	virtual ~PriorityQueue();
 
-	void remove(const T& element);
+	bool remove(const T& element);
 };
 
 #include "PriorityQueue.cpp"

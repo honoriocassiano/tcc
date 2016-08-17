@@ -21,19 +21,25 @@ PriorityQueue<T, Compare>::~PriorityQueue() {
 }
 
 template<class T, typename Compare>
-void PriorityQueue<T, Compare>::remove(const T& element) {
+bool PriorityQueue<T, Compare>::remove(const T& element) {
+
+	bool removed = false;
 
 	auto it = this->c.begin();
 
 	while(it != this->c.end()) {
 
 		if(element == *it) {
-			this->c.remove(it);
+			this->c.erase(it);
+
+			removed = true;
 			break;
 		}
 
-		it = it.next();
+		it++;
 	}
+
+	return removed;
 }
 
 #endif
