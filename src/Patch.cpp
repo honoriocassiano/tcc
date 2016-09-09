@@ -15,6 +15,8 @@
 
 #include "Utils.h"
 
+#include <float.h>
+
 inline constexpr size_t POW2(size_t num) {
 	return 1 << num;
 }
@@ -61,9 +63,10 @@ bool DiamondLess::operator()(const Diamond &lhs, const Diamond &rhs) const {
 }
 
 Patch::Patch(float minDistance) :
-		m_Wireframe(false), m_MinDistance(minDistance), m_Mesh(new Mesh()), m_LeftNode(
-				new BTTreeNode()), m_RightNode(new BTTreeNode()), m_LeftVariance {
-				0.0f }, m_RightVariance { 0.0f } {
+		m_Wireframe(false), m_MinDistance(minDistance), m_CurrentMinDistance(
+		FLT_MAX), m_Mesh(new Mesh()), m_LeftNode(new BTTreeNode()), m_RightNode(
+				new BTTreeNode()), m_FrameVariance(50.0f), m_LeftVariance { 0.0f }, m_RightVariance {
+				0.0f } {
 
 	m_LeftNode->mBaseNeighbor = m_RightNode;
 	m_RightNode->mBaseNeighbor = m_LeftNode;
@@ -220,6 +223,14 @@ void Patch::split(BTTreeNode* node) {
 		return;
 	}
 
+	{
+		float distance = min((v1->get() - v0->get()).Length(), (mid->get() - v0->get()).Length());
+
+		if(distance < m_CurrentMinDistance) {
+			m_CurrentMinDistance = distance;
+		}
+	}
+
 	// Fill in the information we can get from the parent (neighbor pointers)
 	node->mLeftChild->mBaseNeighbor = node->mLeftNeighbor;
 	node->mLeftChild->mLeftNeighbor = node->mRightChild;
@@ -317,11 +328,19 @@ float Patch::recursiveComputeVariance(BTTreeNode* currentNode,
 	}
 
 	if (currentNode) {
+
+		float mind = min(fabsf(left.x() - right.x()),
+				fabsf(left.y() - right.y()));
+
+		if (mind < m_CurrentMinDistance) {
+			m_CurrentMinDistance = mind;
+		}
+
 		currentNode->setPriority(priority);
 
-		Log("center: %f, max: %f", nCenter, mmax);
+//		Log("center: %f, max: %f", nCenter, mmax);
 		//Log("recursion: %d", (recursion / 2) + 1);
-		Log("priority: %f", priority);
+//		Log("priority: %f", priority);
 	}
 
 	return priority;
@@ -511,23 +530,45 @@ void Patch::computeVariance() {
 	//********************************************************
 }
 
-void Patch::processGeometry() {
+void Patch::processGeometry(const Vec3f& cameraPosition,
+		const Vec3f& cameraDirection) {
 
 	if (m_SplitQueue.size() == 0) {
 		m_SplitQueue.push(m_LeftNode);
 	}
 
+	m_CurrentMinDistance = FLT_MAX;
 	computeVariance();
+
+	auto distance = (Vec3f(0, 0, 0) - cameraPosition).Length() / 2.0f;
+
+	if (m_Mesh->numVertices() != DESIRED_TRIANGLES) {
+		m_FrameVariance += (m_Mesh->numVertices() - DESIRED_TRIANGLES)
+				/ (float) DESIRED_TRIANGLES;
+
+		if (m_FrameVariance < 0) {
+			m_FrameVariance = 0;
+		}
+	}
 
 	auto mergePriority =
 			m_MergeQueue.size() > 0 ? m_MergeQueue.top().m_Priority : 0;
 
-	while (/* TODO First size/accuracy condition here || */m_SplitQueue.top()->getPriority()
-			> mergePriority) {
+	//while (/* TODO First size/accuracy condition here || */m_SplitQueue.top()->getPriority()
+	while (	//(m_Mesh->numVertices() != DESIRED_TRIANGLES)||
+	/* TODO Check this condition */
+	((m_CurrentMinDistance > m_MinDistance)
+			&& (distance != m_CurrentMinDistance))
+			|| (m_SplitQueue.top()->getPriority() > mergePriority)) {
 		// Condition to merge
 		//if (/* TODO Accuracy condition here */false) {
 		//if(m_SplitQueue.top()->getPriority() > 1.0) {
-		if (mergePriority > 0.0) {
+
+		Log("BBB: %d, %f",
+				(m_CurrentMinDistance > m_MinDistance), m_CurrentMinDistance);
+						//&& (distance != m_CurrentMinDistance));
+
+		if (distance > m_CurrentMinDistance) {
 			/*
 			 auto lower = m_MergeQueue.top();
 
@@ -540,15 +581,23 @@ void Patch::processGeometry() {
 
 			 m_MergeQueue.pop();
 			 */
-			Diamond lower = m_MergeQueue.top();
+			Log("AAA");
 
-			m_MergeQueue.pop();
+			if (m_MergeQueue.size() > 0) {
 
-			merge(lower.m_Base);
+				Diamond lower = m_MergeQueue.top();
+
+				m_MergeQueue.pop();
+
+				merge(lower.m_Base);
+			} else {
+				break;
+			}
 
 			// TODO See algorithm
 
 		} else {
+			Log("AAA");
 
 			BTTreeNode* higher = m_SplitQueue.top();
 

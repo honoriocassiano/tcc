@@ -9,6 +9,8 @@
 #include "Patch.h"
 #include "Landscape.h"
 
+#include "Object.h"
+#include "Quadtree.h"
 
 // =========================================
 // =========================================
@@ -47,16 +49,38 @@ int main(int argc, char **argv) {
 	 window.run();
 	 */
 
-	Patch* patch = new Patch(1.0);
-	Mesh* mesh = patch->getMesh();
+	Quadtree* tree = new Quadtree(0, 0, 50, 50, 0, 20);
 
-	Log("original - triangles: %d, vertices: %d", mesh->numTriangles(),
-			mesh->numVertices());
+	Log("%d", tree->getMesh()->numVertices());
 
-	patch->processGeometry();
+	tree->subdivide(Intercardinal::NW);
 
-	Log("after process - triangles: %d, vertices: %d", mesh->numTriangles(),
-			mesh->numVertices());
+	Log("%d", tree->getMesh()->numVertices());
+
+	delete tree;
+	/*
+	tree->AddObject(new Object(25, 25, 1, 1));
+
+	for (int i = 0; i < 20; ++i) {
+		Log("%d: %lu", i, tree->GetObjectsAt(i, i).size());
+	}
+	*/
+
+//	Patch* patch = new Patch(0.25);
+//	Mesh* mesh = patch->getMesh();
+//
+//	Log("original - triangles: %d, vertices: %d", mesh->numTriangles(),
+//			mesh->numVertices());
+//
+//	patch->processGeometry(Vec3f(0, 0, 0.5), Vec3f(0, 0, -1));
+//
+//	Log("after process 1 - triangles: %d, vertices: %d", mesh->numTriangles(),
+//			mesh->numVertices());
+//
+//	patch->processGeometry(Vec3f(0, 0, 2.0), Vec3f(0, 0, -1));
+//
+//	Log("after process 2 - triangles: %d, vertices: %d", mesh->numTriangles(),
+//			mesh->numVertices());
 
 	//********************************************
 	/*

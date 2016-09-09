@@ -12,8 +12,8 @@
 #include "BTTreeNode.h"
 #include "structures/Halfedge/mesh.h"
 
-
 constexpr size_t VARIANCE_DEPTH = 9;
+constexpr int DESIRED_TRIANGLES = 1000;
 
 typedef struct _Diamond Diamond;
 
@@ -54,7 +54,7 @@ public:
 
 	void render();
 
-	void processGeometry();
+	void processGeometry(const Vec3f& cameraPosition, const Vec3f& cameraDirection);
 
 private:
 //	float recursiveComputeVariance(float* currentVariance, size_t index,
@@ -72,12 +72,15 @@ private:
 private:
 	bool m_Wireframe;
 
+	float m_CurrentMinDistance;
 	float m_MinDistance;
 
 	Mesh* m_Mesh;
 
 	BTTreeNode* m_LeftNode;
 	BTTreeNode* m_RightNode;
+
+	float m_FrameVariance;
 
 	float m_LeftVariance[1 << VARIANCE_DEPTH];
 	float m_RightVariance[1 << VARIANCE_DEPTH];
