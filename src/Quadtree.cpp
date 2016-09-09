@@ -4,6 +4,7 @@
 #include "Debug.h"
 
 using namespace std;
+using namespace directions;
 
 void Quadtree::subdivide(Intercardinal point) {
 	switch (point) {
@@ -16,6 +17,16 @@ void Quadtree::subdivide(Intercardinal point) {
 		auto leftMiddle = mesh->addVertex(
 				(vertices[Intercardinal::NW]->get()
 						+ vertices[Intercardinal::SW]->get()) * 0.5);
+
+		//*******************************************************
+		mesh->removeTriangle(triangles[Cardinal::N]);
+		mesh->removeTriangle(triangles[Cardinal::W]);
+
+		triangles[Cardinal::N] = mesh->addTriangle(topMiddle,
+				vertices[Intercardinal::NE], middle);
+		triangles[Cardinal::W] = mesh->addTriangle(vertices[Intercardinal::SW],
+				leftMiddle, middle);
+		//*******************************************************
 
 		children[0] = new Quadtree(vertices[0], topMiddle, leftMiddle, middle,
 				level + 1, maxLevel, mesh, this);
@@ -62,7 +73,8 @@ void Quadtree::subdivide(Intercardinal point) {
 				(vertices[Intercardinal::NE]->get()
 						+ vertices[Intercardinal::SE]->get()) * 0.5);
 
-		children[3] = new Quadtree(middle, rightMiddle, bottomMiddle, vertices[3], level + 1, maxLevel, mesh, this);
+		children[3] = new Quadtree(middle, rightMiddle, bottomMiddle,
+				vertices[3], level + 1, maxLevel, mesh, this);
 
 		break;
 	}

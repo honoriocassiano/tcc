@@ -13,6 +13,7 @@ using namespace std;
 class Quadtree;
 class Object;
 
+namespace directions {
 	enum Intercardinal : int {
 		NW = 0,
 		NE,
@@ -20,13 +21,21 @@ class Object;
 		SE
 	};
 
+	enum Cardinal : int {
+		N = 0,
+		E,
+		S,
+		W
+	};
+}
+
 class Quadtree {
 public:
 	Quadtree(float x, float y, float width, float height, int level,
 			int maxLevel);
 	~Quadtree();
 
-	void subdivide(Intercardinal point);
+	void subdivide(directions::Intercardinal point);
 
 	inline Mesh* getMesh() { return mesh; }
 

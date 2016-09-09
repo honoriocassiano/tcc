@@ -53,7 +53,7 @@ int main(int argc, char **argv) {
 
 	Log("%d", tree->getMesh()->numVertices());
 
-	tree->subdivide(Intercardinal::NW);
+	tree->subdivide(directions::Intercardinal::NW);
 
 	Log("%d", tree->getMesh()->numVertices());
 
