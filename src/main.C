@@ -49,13 +49,21 @@ int main(int argc, char **argv) {
 	 window.run();
 	 */
 
-	Quadtree* tree = new Quadtree(0, 0, 50, 50, 0, 20);
+	Quadtree* tree = new Quadtree(0, 0, 1, 1, 0, 20);
 
-	Log("%d", tree->getMesh()->numVertices());
+	Log("%d, %d", tree->getMesh()->numTriangles(), tree->getMesh()->numVertices());
 
-	tree->subdivide(directions::Intercardinal::NW);
+	auto direction = directions::Intercardinal::SE;
 
-	Log("%d", tree->getMesh()->numVertices());
+	tree->subdivide(direction);
+
+	Log("%d, %d", tree->getMesh()->numTriangles(), tree->getMesh()->numVertices());
+
+	tree->merge(direction);
+
+	Log("%d, %d", tree->getMesh()->numTriangles(), tree->getMesh()->numVertices());
+
+	tree->getMesh()->printTriangles(8);
 
 	delete tree;
 	/*

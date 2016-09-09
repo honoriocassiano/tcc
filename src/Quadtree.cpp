@@ -7,6 +7,12 @@ using namespace std;
 using namespace directions;
 
 void Quadtree::subdivide(Intercardinal point) {
+
+	if (children[point]) {
+		Error("Unsplitable quadtree!");
+		return;
+	}
+
 	switch (point) {
 	case Intercardinal::NW: {
 
@@ -18,15 +24,15 @@ void Quadtree::subdivide(Intercardinal point) {
 				(vertices[Intercardinal::NW]->get()
 						+ vertices[Intercardinal::SW]->get()) * 0.5);
 
-		//*******************************************************
 		mesh->removeTriangle(triangles[Cardinal::N]);
+
 		mesh->removeTriangle(triangles[Cardinal::W]);
 
 		triangles[Cardinal::N] = mesh->addTriangle(topMiddle,
 				vertices[Intercardinal::NE], middle);
+
 		triangles[Cardinal::W] = mesh->addTriangle(vertices[Intercardinal::SW],
 				leftMiddle, middle);
-		//*******************************************************
 
 		children[0] = new Quadtree(vertices[0], topMiddle, leftMiddle, middle,
 				level + 1, maxLevel, mesh, this);
@@ -43,6 +49,16 @@ void Quadtree::subdivide(Intercardinal point) {
 				(vertices[Intercardinal::NE]->get()
 						+ vertices[Intercardinal::SE]->get()) * 0.5);
 
+		mesh->removeTriangle(triangles[Cardinal::N]);
+
+		mesh->removeTriangle(triangles[Cardinal::E]);
+
+		triangles[Cardinal::N] = mesh->addTriangle(vertices[Intercardinal::NW],
+				topMiddle, middle);
+
+		triangles[Cardinal::E] = mesh->addTriangle(rightMiddle,
+				vertices[Intercardinal::SE], middle);
+
 		children[1] = new Quadtree(topMiddle, vertices[1], middle, rightMiddle,
 				level + 1, maxLevel, mesh, this);
 
@@ -57,6 +73,16 @@ void Quadtree::subdivide(Intercardinal point) {
 		auto leftMiddle = mesh->addVertex(
 				(vertices[Intercardinal::NW]->get()
 						+ vertices[Intercardinal::SW]->get()) * 0.5);
+
+		mesh->removeTriangle(triangles[Cardinal::S]);
+
+		mesh->removeTriangle(triangles[Cardinal::W]);
+
+		triangles[Cardinal::S] = mesh->addTriangle(vertices[Intercardinal::SE],
+				bottomMiddle, middle);
+
+		triangles[Cardinal::W] = mesh->addTriangle(leftMiddle,
+				vertices[Intercardinal::NW], middle);
 
 		children[2] = new Quadtree(leftMiddle, middle, vertices[2],
 				bottomMiddle, level + 1, maxLevel, mesh, this);
@@ -73,11 +99,124 @@ void Quadtree::subdivide(Intercardinal point) {
 				(vertices[Intercardinal::NE]->get()
 						+ vertices[Intercardinal::SE]->get()) * 0.5);
 
+		mesh->removeTriangle(triangles[Cardinal::S]);
+
+		mesh->removeTriangle(triangles[Cardinal::E]);
+
+		triangles[Cardinal::S] = mesh->addTriangle(bottomMiddle,
+				vertices[Intercardinal::SW], middle);
+
+		triangles[Cardinal::E] = mesh->addTriangle(vertices[Intercardinal::NE],
+				rightMiddle, middle);
+
 		children[3] = new Quadtree(middle, rightMiddle, bottomMiddle,
 				vertices[3], level + 1, maxLevel, mesh, this);
 
 		break;
 	}
+
+	}
+}
+
+void Quadtree::merge(directions::Intercardinal point) {
+	if (!children[point]) {
+		Error("Unmergeable quadtree!");
+		return;
+	}
+
+	switch (point) {
+
+	case Intercardinal::NW: {
+
+		auto topMiddle = children[point]->getVertices()[Intercardinal::NE];
+		auto leftMiddle = children[point]->getVertices()[Intercardinal::SW];
+
+		delete children[point];
+
+		children[point] = nullptr;
+
+		mesh->removeTriangle(triangles[Cardinal::N]);
+		mesh->removeTriangle(triangles[Cardinal::W]);
+
+		triangles[Cardinal::N] = mesh->addTriangle(vertices[Intercardinal::NW],
+				vertices[Intercardinal::NE], middle);
+		triangles[Cardinal::W] = mesh->addTriangle(vertices[Intercardinal::SW],
+				vertices[Intercardinal::NW], middle);
+
+		mesh->removeVertex(topMiddle);
+		mesh->removeVertex(leftMiddle);
+
+		break;
+	}
+
+	case Intercardinal::NE: {
+
+		auto topMiddle = children[point]->getVertices()[Intercardinal::NW];
+		auto rightMiddle = children[point]->getVertices()[Intercardinal::SE];
+
+		delete children[point];
+
+		children[point] = nullptr;
+
+		mesh->removeTriangle(triangles[Cardinal::N]);
+		mesh->removeTriangle(triangles[Cardinal::E]);
+
+		triangles[Cardinal::N] = mesh->addTriangle(vertices[Intercardinal::NW],
+				vertices[Intercardinal::NE], middle);
+		triangles[Cardinal::E] = mesh->addTriangle(vertices[Intercardinal::NE],
+				vertices[Intercardinal::SE], middle);
+
+		mesh->removeVertex(topMiddle);
+		mesh->removeVertex(rightMiddle);
+
+		break;
+	}
+
+	case Intercardinal::SW: {
+
+		auto bottomMiddle = children[point]->getVertices()[Intercardinal::SE];
+		auto leftMiddle = children[point]->getVertices()[Intercardinal::NW];
+
+		delete children[point];
+
+		children[point] = nullptr;
+
+		mesh->removeTriangle(triangles[Cardinal::S]);
+		mesh->removeTriangle(triangles[Cardinal::W]);
+
+		triangles[Cardinal::S] = mesh->addTriangle(vertices[Intercardinal::SE],
+				vertices[Intercardinal::SW], middle);
+		triangles[Cardinal::W] = mesh->addTriangle(vertices[Intercardinal::SW],
+				vertices[Intercardinal::NW], middle);
+
+		mesh->removeVertex(bottomMiddle);
+		mesh->removeVertex(leftMiddle);
+
+		break;
+	}
+
+	case Intercardinal::SE: {
+
+			auto bottomMiddle = children[point]->getVertices()[Intercardinal::SW];
+			auto rightMiddle = children[point]->getVertices()[Intercardinal::NE];
+
+			delete children[point];
+
+			children[point] = nullptr;
+
+			mesh->removeTriangle(triangles[Cardinal::S]);
+			mesh->removeTriangle(triangles[Cardinal::E]);
+
+			triangles[Cardinal::S] = mesh->addTriangle(vertices[Intercardinal::SE],
+					vertices[Intercardinal::SW], middle);
+			triangles[Cardinal::E] = mesh->addTriangle(vertices[Intercardinal::NE],
+					vertices[Intercardinal::SE], middle);
+
+			mesh->removeVertex(bottomMiddle);
+			mesh->removeVertex(rightMiddle);
+
+			break;
+		}
 
 	}
 }
@@ -94,6 +233,11 @@ Quadtree::Quadtree(Vertex* nw, Vertex* ne, Vertex* sw, Vertex* se, int _level,
 			(nw->get().y() + sw->get().y()) * 0.5f, 0);
 
 	middle = mesh->addVertex(m);
+
+	triangles[0] = mesh->addTriangle(vertices[0], vertices[1], middle);
+	triangles[1] = mesh->addTriangle(vertices[1], vertices[3], middle);
+	triangles[2] = mesh->addTriangle(vertices[3], vertices[2], middle);
+	triangles[3] = mesh->addTriangle(vertices[2], vertices[0], middle);
 }
 
 Quadtree::Quadtree(float _x, float _y, float _width, float _height, int _level,
@@ -116,9 +260,9 @@ Quadtree::Quadtree(float _x, float _y, float _width, float _height, int _level,
 	vertices[3] = mesh->addVertex(Vec3f(x + width, y, 0));
 
 	triangles[0] = mesh->addTriangle(vertices[0], vertices[1], middle);
-	triangles[1] = mesh->addTriangle(vertices[1], vertices[2], middle);
-	triangles[2] = mesh->addTriangle(vertices[2], vertices[3], middle);
-	triangles[3] = mesh->addTriangle(vertices[3], vertices[0], middle);
+	triangles[1] = mesh->addTriangle(vertices[1], vertices[3], middle);
+	triangles[2] = mesh->addTriangle(vertices[3], vertices[2], middle);
+	triangles[3] = mesh->addTriangle(vertices[2], vertices[0], middle);
 
 	Log("level: %d", level);
 }
@@ -130,9 +274,11 @@ Quadtree::~Quadtree() {
 			delete t;
 	}
 
-	if (level != maxLevel) {
-		mesh->removeVertex(middle);
+	for (auto& t : triangles) {
+		mesh->removeTriangle(t);
 	}
+
+	mesh->removeVertex(middle);
 
 	if (!parent) {
 		delete mesh;
