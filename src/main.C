@@ -49,7 +49,8 @@ int main(int argc, char **argv) {
 	 window.run();
 	 */
 
-	Quadtree* tree = new Quadtree(0, 0, 1, 1, 0, 20);
+	//Quadtree* tree = new Quadtree(0, 0, 1, 1, 0, 20);
+	Quadtree* tree = new Quadtree(Vec3f(0, 0, 0), Vec3f(1, 0, 0), Vec3f(0, 1, 0), 0, 20);
 
 	Log("%d, %d", tree->getMesh()->numTriangles(), tree->getMesh()->numVertices());
 

@@ -27,8 +27,12 @@ enum Cardinal
 
 class Quadtree {
 public:
-	Quadtree(float x, float y, float width, float height, int level,
-			int maxLevel);
+//	Quadtree(float x, float y, float width, float height, int level,
+//			int maxLevel);
+
+	Quadtree(const Vec3f& origin, const Vec3f& xAxis, const Vec3f& yAxis,
+			int level, int maxLevel);
+
 	~Quadtree();
 
 	void subdivide(directions::Intercardinal point);
@@ -54,10 +58,15 @@ protected:
 
 private:
 
-	float x;
-	float y;
-	float width;
-	float height;
+//	float x;
+//	float y;
+//	float width;
+//	float height;
+
+	Vec3f origin;
+	Vec3f xAxis;
+	Vec3f yAxis;
+
 	int level;
 	int maxLevel;
 
