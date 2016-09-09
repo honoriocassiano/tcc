@@ -58,11 +58,6 @@ protected:
 
 private:
 
-//	float x;
-//	float y;
-//	float width;
-//	float height;
-
 	Vec3f origin;
 	Vec3f xAxis;
 	Vec3f yAxis;

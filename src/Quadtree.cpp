@@ -258,13 +258,10 @@ Quadtree::Quadtree(const Vec3f& _origin, const Vec3f& _xAxis,
 	vertices[2] = mesh->addVertex(_origin);
 	vertices[3] = mesh->addVertex(_origin + _xAxis);
 
-
 	triangles[0] = mesh->addTriangle(vertices[0], vertices[1], middle);
 	triangles[1] = mesh->addTriangle(vertices[1], vertices[3], middle);
 	triangles[2] = mesh->addTriangle(vertices[3], vertices[2], middle);
 	triangles[3] = mesh->addTriangle(vertices[2], vertices[0], middle);
-
-	Log("level: %d", level);
 }
 
 Quadtree::~Quadtree() {
