@@ -8,6 +8,8 @@
 #ifndef SRC_QUADCUBE_H_
 #define SRC_QUADCUBE_H_
 
+#include "Face.h"
+
 class QuadCube {
 public:
 	QuadCube();

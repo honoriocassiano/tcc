@@ -77,6 +77,7 @@ public:
   std::vector<Triangle*> getTrianglesByVertex(Edge * e);
 
   void printTriangles(int limit = 1000);
+  void printVertices(int limit = 1000);
 
   friend class CelestialBody;
   friend class MeshDrawer;

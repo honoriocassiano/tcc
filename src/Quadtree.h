@@ -27,15 +27,12 @@ enum Cardinal
 
 class Quadtree {
 public:
-//	Quadtree(float x, float y, float width, float height, int level,
-//			int maxLevel);
-
 	Quadtree(const Vec3f& origin, const Vec3f& xAxis, const Vec3f& yAxis,
 			int level, int maxLevel);
 
 	~Quadtree();
 
-	void subdivide(directions::Intercardinal point);
+	void subdivide(directions::Intercardinal point, bool propagate = true);
 
 	void merge(directions::Intercardinal point);
 
@@ -43,9 +40,16 @@ public:
 		return mesh;
 	}
 
-//	void			AddObject(Object *object);
-//	vector<Object*>	GetObjectsAt(float x, float y);
-//	void			Clear();
+	inline Quadtree* getChild(directions::Intercardinal direction) {
+		return children[direction];
+	}
+
+	void setNeighbourAt(directions::Cardinal position, Quadtree* value);
+	void setNeighbours(Quadtree* n, Quadtree* e, Quadtree* s, Quadtree* w);
+
+	inline int getLevel() const {
+		return level;
+	}
 
 protected:
 
@@ -71,6 +75,8 @@ private:
 	Triangle* triangles[4];
 
 	Quadtree* children[4];
+
+	Quadtree* neighbours[4];
 
 	Quadtree * parent;
 

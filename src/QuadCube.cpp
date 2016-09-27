@@ -5,7 +5,7 @@
  *      Author: aluno
  */
 
-#include <src/QuadCube.h>
+#include "QuadCube.h"
 
 QuadCube::QuadCube() {
 	// TODO Auto-generated constructor stub

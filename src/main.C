@@ -53,17 +53,18 @@ int main(int argc, char **argv) {
 
 	Log("%d, %d", tree->getMesh()->numTriangles(), tree->getMesh()->numVertices());
 
-	auto direction = directions::Intercardinal::SE;
+	auto direction = directions::Intercardinal::NW;
 
 	tree->subdivide(direction);
 
 	Log("%d, %d", tree->getMesh()->numTriangles(), tree->getMesh()->numVertices());
 
-	tree->merge(direction);
+//	tree->merge(direction);
+//
+//	Log("%d, %d", tree->getMesh()->numTriangles(), tree->getMesh()->numVertices());
 
-	Log("%d, %d", tree->getMesh()->numTriangles(), tree->getMesh()->numVertices());
-
-	tree->getMesh()->printTriangles(8);
+	tree->getMesh()->printVertices();
+	//tree->getMesh()->printTriangles(100);
 
 	delete tree;
 	/*

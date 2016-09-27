@@ -5,7 +5,7 @@
  *      Author: aluno
  */
 
-#include <src/Face.h>
+#include "Face.h"
 
 Face::Face(const Vec3f& origin, const Vec3f& xAxis, const Vec3f& yAxis,
 		int level, int maxLevel) :

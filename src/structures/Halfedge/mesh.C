@@ -395,6 +395,18 @@ void Mesh::computeVerticesNormals() {
 	edges->EndIteration(iter);
 }
 
+void Mesh::printVertices(int limit) {
+
+	int i = 0;
+
+	while (i < vertices->Count() && i < limit) {
+		Log("[%d] (%f, %f, %f)", i, (*vertices)[i]->x(), (*vertices)[i]->y(),
+				(*vertices)[i]->z());
+
+		i++;
+	}
+}
+
 void Mesh::printTriangles(int limit) {
 
 	auto it = triangles->StartIteration();
