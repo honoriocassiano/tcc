@@ -7,11 +7,11 @@
 
 #include "Color.h"
 
-Color Color::WHITE = Color(1.0f, 1.0f, 1.0f);
-Color Color::BLACK = Color(0.0f, 0.0f, 0.0f);
-Color Color::BLUE = Color(0.0f, 0.0f, 1.0f);
-Color Color::RED = Color(1.0f, 0.0f, 0.0f);
-Color Color::GREEN = Color(0.0f, 1.0f, 0.0f);
+Color Color::WHITE = Color(1.0f, 1.0f, 1.0f);			/**< @hideinitializer */
+Color Color::BLACK = Color(0.0f, 0.0f, 0.0f);			/**< @hideinitializer */
+Color Color::BLUE = Color(0.0f, 0.0f, 1.0f);			/**< @hideinitializer */
+Color Color::RED = Color(1.0f, 0.0f, 0.0f);				/**< @hideinitializer */
+Color Color::GREEN = Color(0.0f, 1.0f, 0.0f);			/**< @hideinitializer */
 
 Color::Color(GLfloat _r, GLfloat _g, GLfloat _b) :
 		values { _r, _g, _b, 1.0f } {
