@@ -82,7 +82,7 @@ void Planet::makePoints() {
 //		Color green(0x00 / 255.0f, 0x80 / 255.0f, 0x00 / 255.0f);
 //		Color acqua(0xCD / 255.0f, 0x85 / 255.0f, 0x3F / 255.0f);
 
-		Vertex * v = mMesh->addVertex(position);
+		Vertex * v = mesh->addVertex(position);
 //		v->setColor(Color::interpolate(acqua, green, positiveTurbulence));
 	}
 }
@@ -90,7 +90,7 @@ void Planet::makePoints() {
 void Planet::subdivide() {
 	mPendingUpdate = true;
 
-	int count = mMesh->numTriangles();
+	int count = mesh->numTriangles();
 
 	Bag<Triangle*>* triangles = getTriangles();
 
@@ -139,20 +139,20 @@ void Planet::subdivide() {
 //		Color green(0x00 / 255.0f, 0x80 / 255.0f, 0x00 / 255.0f);
 //		Color acqua(0xCD / 255.0f, 0x85 / 255.0f, 0x3F / 255.0f);
 
-		v01 = mMesh->addVertex(p01);
-		v12 = mMesh->addVertex(p12);
-		v20 = mMesh->addVertex(p20);
+		v01 = mesh->addVertex(p01);
+		v12 = mesh->addVertex(p12);
+		v20 = mesh->addVertex(p20);
 
 //		v01->setColor(Color::interpolate(acqua, green, (turbulence01 * 0.5) + 0.5));
 //		v12->setColor(Color::interpolate(acqua, green, (turbulence12 * 0.5) + 0.5));
 //		v20->setColor(Color::interpolate(acqua, green, (turbulence20 * 0.5) + 0.5));
 
-		mMesh->removeTriangle(t);
+		mesh->removeTriangle(t);
 
-		mMesh->addTriangle(v0, v01, v20);
-		mMesh->addTriangle(v1, v12, v01);
-		mMesh->addTriangle(v2, v20, v12);
-		mMesh->addTriangle(v01, v12, v20);
+		mesh->addTriangle(v0, v01, v20);
+		mesh->addTriangle(v1, v12, v01);
+		mesh->addTriangle(v2, v20, v12);
+		mesh->addTriangle(v01, v12, v20);
 	}
 }
 
@@ -167,7 +167,7 @@ void Planet::update(const Time& dt) {
 		float velocity = calculateVelocity(getMass(), getSemiMajorAxis(),
 				orbiter->getCenter(), getCenter());
 
-		Vec3f normal = (mCenter - orbiter->getCenter());
+		Vec3f normal = (center - orbiter->getCenter());
 		normal.Normalize();
 
 		Matrix matrix = Matrix::MakeYRotation(90 * to_rad);
@@ -191,22 +191,22 @@ void Planet::draw() {
 
 	glPushMatrix();
 
-	glTranslatef(mCenter.x(), mCenter.y(), mCenter.z());
+	glTranslatef(center.x(), center.y(), center.z());
 	glScalef(mRadius, mRadius, mRadius);
 
 	//mMesh->Paint(nullptr);
-	MeshDrawer::draw(mMesh);
+	MeshDrawer::draw(mesh);
 
 	glPopMatrix();
 }
 
 void Planet::makeTriangles() {
 	for (int i = 0; i < 20; ++i) {
-		Vertex * v0 = mMesh->getVertex(tindices[i][0]);
-		Vertex * v1 = mMesh->getVertex(tindices[i][1]);
-		Vertex * v2 = mMesh->getVertex(tindices[i][2]);
+		Vertex * v0 = mesh->getVertex(tindices[i][0]);
+		Vertex * v1 = mesh->getVertex(tindices[i][1]);
+		Vertex * v2 = mesh->getVertex(tindices[i][2]);
 
-		mMesh->addTriangle(v0, v2, v1);
+		mesh->addTriangle(v0, v2, v1);
 	}
 }
 

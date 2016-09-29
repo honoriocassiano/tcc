@@ -5,7 +5,6 @@
 #include "../Array/array.h"
 #include "../Array/bag.h"
 #include "boundingbox.h"
-#include "../argparser.h"
 
 // TODO Verificar a necessidade dessa estrutura
 #include <vector>

@@ -13,75 +13,122 @@
 
 #include "Time.h"
 
+/**
+ * Represents a generic celestial body.
+ */
 class CelestialBody {
 public:
+
+	/**
+	 * Construct a celestial body with default mass and size.
+	 * @param center Body position
+	 */
 	CelestialBody(const Vec3f& center) :
-			mCenter(center), mMesh(new Mesh()), mMass(0.0f), mOrbiter(nullptr), mSemiMajorAxis(0) {
+			center(center), mesh(new Mesh()), mass(0.0f), orbiter(nullptr), semiMajorAxis(
+					0) {
 	}
 	virtual ~CelestialBody() {
-		delete mMesh;
+		delete mesh;
 	}
 
+	/**
+	 * Set body position.
+	 */
 	void setCenter(const Vec3f& position) {
-		mCenter = position;
+		center = position;
 	}
+
+	/**
+	 * Get body position.
+	 */
 	const Vec3f getCenter() const {
-		return mCenter;
+		return center;
 	}
 
+	/**
+	 * Get body mass.
+	 */
 	float getMass() const {
-		return mMass;
+		return mass;
 	}
 
+	/**
+	 * Set body mass.
+	 */
 	void setMass(float mass) {
-		mMass = mass;
+		this->mass = mass;
 	}
 
+	/**
+	 * Get half-edge mesh.
+	 */
 	Mesh * getMesh() {
-		return mMesh;
+		return mesh;
 	}
 
+	/**
+	 * Get orbiter.
+	 */
 	const CelestialBody* getOrbiter() const {
-		return mOrbiter;
+		return orbiter;
 	}
 
+	/**
+	 * Set orbiter.
+	 */
 	void setOrbiter(CelestialBody* orbiter) {
-		mOrbiter = orbiter;
-		if(orbiter) {
-			float distance = (mCenter - orbiter->getCenter()).Length();
+		this->orbiter = orbiter;
+		if (orbiter) {
+			float distance = (center - orbiter->getCenter()).Length();
 
-			mSemiMajorAxis = (distance / 2) * 1.2;
+			semiMajorAxis = (distance / 2) * 1.2;
 		} else {
-			mSemiMajorAxis = 0.0f;
+			semiMajorAxis = 0.0f;
 		}
 	}
 
+	/**
+	 * Get half major axis value of orbit.
+	 */
 	float getSemiMajorAxis() const {
-		return mSemiMajorAxis;
+		return semiMajorAxis;
 	}
 
+	/**
+	 * Update body.
+	 * @param dt Time elapsed since last update.
+	 */
 	virtual void update(const Time& dt) = 0;
+
+	/**
+	 * Display body on screen.
+	 */
 	virtual void draw() = 0;
 
 private:
 
 protected:
+
+	// TODO Check usage of this function
 	Bag<Triangle*>* getTriangles() {
-		return mMesh->triangles;
+		return mesh->triangles;
 	}
 
+	/**
+	 * Recalculate mesh normals vectors.
+	 */
 	void recalculateNormals() {
-		mMesh->computeFaceNormals();
-		mMesh->computeVerticesNormals();
+		mesh->computeFaceNormals();
+		mesh->computeVerticesNormals();
 	}
 
-	Vec3f mCenter;
-	Mesh * mMesh;
+	Vec3f center;						/**< Body position. */
+	Mesh * mesh;						/**< Half-edge mesh. */
 
-	CelestialBody * mOrbiter;
+	CelestialBody * orbiter;
 
-	float mMass;
-	float mSemiMajorAxis;
+	float mass;							/**< Body mass. */
+	float semiMajorAxis;				/**< Semi major axis of orbit. */
 };
 
 #endif /* SRC_CELESTIALBODY_H_ */
