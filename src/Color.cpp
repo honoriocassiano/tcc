@@ -13,25 +13,17 @@ Color Color::BLUE = Color(0.0f, 0.0f, 1.0f);
 Color Color::RED = Color(1.0f, 0.0f, 0.0f);
 Color Color::GREEN = Color(0.0f, 1.0f, 0.0f);
 
-Color::Color(GLfloat r, GLfloat g, GLfloat b) {
-	this->mR = r;
-	this->mG = g;
-	this->mB = b;
-	this->mAlpha = 1.0f;
+Color::Color(GLfloat _r, GLfloat _g, GLfloat _b) :
+		values { _r, _g, _b, 1.0f } {
+
 }
 
-Color::Color(GLfloat r, GLfloat g, GLfloat b, GLfloat alpha) {
-	this->mR = r;
-	this->mG = g;
-	this->mB = b;
-	this->mAlpha = alpha;
+Color::Color(GLfloat _r, GLfloat _g, GLfloat _b, GLfloat _alpha) :
+		values { _r, _g, _b, _alpha } {
 }
 
-Color::Color() {
-	this->mR = 1.0f;
-	this->mG = 1.0f;
-	this->mB = 1.0f;
-	this->mAlpha = 1.0f;
+Color::Color() :
+		values { 1.0f, 1.0f, 1.0f, 1.0f } {
 }
 
 Color::~Color() {

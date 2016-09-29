@@ -10,35 +10,72 @@
 #ifndef OBJECTVIEW_COLOR_H_
 #define OBJECTVIEW_COLOR_H_
 
+/**
+ * Class that hold a rgb/rgba color.
+ */
 class Color {
 public:
-	// Default color is white
+	/**
+	 * Default constructor to white color.
+	 */
 	Color();
-	Color(GLfloat, GLfloat, GLfloat);
-	Color(GLfloat, GLfloat, GLfloat, GLfloat);
+
+	/**
+	 * Create a rgb color.
+	 */
+	Color(GLfloat r, GLfloat g, GLfloat b);
+
+	/**
+	 * Create a rgba color.
+	 */
+	Color(GLfloat r, GLfloat g, GLfloat b, GLfloat a);
+
 	virtual ~Color();
 
-	GLfloat r() const { return mR; }
+	/**
+	 * Get Red value.
+	 */
+	inline GLfloat r() const {
+		return values[0];
+	}
 
-	GLfloat g() const { return mG; }
+	/**
+	 * Get Green value.
+	 */
+	inline GLfloat g() const {
+		return values[1];
+	}
 
-	GLfloat b() const { return mB; }
+	/**
+	 * Get Blue value.
+	 */
+	inline GLfloat b() const {
+		return values[2];
+	}
 
-	GLfloat a() const { return mAlpha; }
+	/**
+	 * Get Alpha value.
+	 */
+	inline GLfloat a() const {
+		return values[3];
+	}
 
+	/**
+	 * Interpolate two colors.
+	 * @param c1 First color
+	 * @param c2 Second color
+	 * @param factor Interpolation factor
+	 */
 	static Color interpolate(const Color& c1, const Color& c2, float factor);
 
-	static Color WHITE;
-	static Color BLACK;
-	static Color BLUE;
-	static Color RED;
-	static Color GREEN;
+	static Color WHITE;					/**< White color. */
+	static Color BLACK;					/**< Black color. */
+	static Color BLUE;					/**< Blue color. */
+	static Color RED;					/**< Red color. */
+	static Color GREEN;					/**< Green color. */
 
 private:
-	GLfloat mR;
-	GLfloat mG;
-	GLfloat mB;
-	GLfloat mAlpha;
+	GLfloat values[4];
 };
 
 #endif /* OBJECTVIEW_COLOR_H_ */
