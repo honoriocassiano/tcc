@@ -7,46 +7,30 @@
 
 #include "Scale.h"
 
-Scale* Scale::m_scale = nullptr;
+Scale Scale::instance = Scale();
 
 float Scale::getLength() {
-	if(!m_scale) {
-		m_scale = new Scale();
-	}
-
-	return m_scale->m_length;
+	return instance.length;
 }
 
 void Scale::setLength(float value) {
-	if(!m_scale) {
-		m_scale = new Scale();
-	}
-
-	m_scale->m_length = value;
+	instance.length = value;
 }
 
 float Scale::getTime() {
-	if(!m_scale) {
-		m_scale = new Scale();
-	}
-
-	return m_scale->m_time;
+	return instance.time;
 }
 
 void Scale::setTime(float value) {
-	if(!m_scale) {
-		m_scale = new Scale();
-	}
-
-	m_scale->m_time = value;
+	instance.time = value;
 }
 
 Scale::Scale() {
-	m_length = 1000000;
-	m_time = 20000000;
+	length = 1000000;
+	time = 20000000;
 }
 
 Scale::~Scale() {
-	m_scale = nullptr;
+
 }
 

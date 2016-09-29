@@ -8,25 +8,52 @@
 #ifndef SRC_SCALE_H_
 #define SRC_SCALE_H_
 
+/**
+ * Singleton class to manage scales (time, length...).
+ */
 class Scale {
 public:
 	virtual ~Scale();
 
+	/**
+	 * Get length scale;
+	 */
 	static float getLength();
+
+	/**
+	 * Set length scale;
+	 */
 	static void setLength(float value);
 
+	/**
+	 * Get time scale;
+	 */
 	static float getTime();
+
+	/**
+	 * Set time scale;
+	 */
 	static void setTime(float value);
 
 private:
 	/**
-	 * Default value is 1.000.000 meters
+	 * Length scale. Default value is 1.000.000 meters.
 	 */
-	float m_length;
-	float m_time;
+	float length;
 
-	static Scale* m_scale;
+	/**
+	 * Time scale. Default value is 20.000.000 seconds.
+	 */
+	float time;
 
+	/**
+	 * Unique reference.
+	 */
+	static Scale instance;
+
+	/**
+	 * Default constructor.
+	 */
 	Scale();
 };
 
