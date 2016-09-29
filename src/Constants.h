@@ -10,8 +10,16 @@
 
 #include "Scale.h"
 
+/**
+ * Define some constants used by program.
+ */
 namespace constant {
 
+/**
+ * Get Gravitational Constant value
+ *
+ * Return the value of Gravitational Constant (6.67408 × 10<SUP>-11</SUP> m<SUP>3</SUP> kg<SUP>-1</SUP> s<SUP>-2</SUP>) relative to length scale.
+ */
 inline double G() {
 	return 6.67e-11 * Scale::getLength();
 }
