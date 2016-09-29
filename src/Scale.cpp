@@ -7,30 +7,21 @@
 
 #include "Scale.h"
 
-Scale Scale::instance = Scale();
+float Scale::length = 1000000;						/**< @hideinitializer */
+float Scale::time = 20000000;						/**< @hideinitializer */
 
 float Scale::getLength() {
-	return instance.length;
+	return length;
 }
 
 void Scale::setLength(float value) {
-	instance.length = value;
+	length = value;
 }
 
 float Scale::getTime() {
-	return instance.time;
+	return time;
 }
 
 void Scale::setTime(float value) {
-	instance.time = value;
+	time = value;
 }
-
-Scale::Scale() {
-	length = 1000000;
-	time = 20000000;
-}
-
-Scale::~Scale() {
-
-}
-
