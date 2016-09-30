@@ -63,8 +63,8 @@ int main(int argc, char **argv) {
 //
 //	Log("%d, %d", tree->getMesh()->numTriangles(), tree->getMesh()->numVertices());
 
-	tree->getMesh()->printVertices();
-	//tree->getMesh()->printTriangles(100);
+//	tree->getMesh()->printVertices();
+	tree->getMesh()->printTriangles();
 
 	delete tree;
 	/*
