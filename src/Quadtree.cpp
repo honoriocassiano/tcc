@@ -70,8 +70,6 @@ void Quadtree::subdivide(Intercardinal point, bool propagate) {
 				n = n->getChild(Intercardinal::SW);
 			}
 
-			Log("BLABLABLA");
-
 			if (w && !w->getChild(Intercardinal::NE)) {
 				w->subdivide(Intercardinal::NE, false);
 				w = w->getChild(Intercardinal::NE);
@@ -88,8 +86,6 @@ void Quadtree::subdivide(Intercardinal point, bool propagate) {
 			if (!children[Intercardinal::NE]) {
 				subdivide(Intercardinal::NE, false);
 			}
-
-			Log("BLABLABLA 2");
 
 			if (!children[Intercardinal::SW]) {
 				subdivide(Intercardinal::SW, false);
@@ -497,15 +493,10 @@ Quadtree::Quadtree(Vertex* nw, Vertex* ne, Vertex* sw, Vertex* se, int _level,
 
 	middle = mesh->addVertex(m);
 
-	Log("1");
 	triangles[0] = mesh->addTriangle(vertices[0], vertices[1], middle);
-	Log("2");
 	triangles[1] = mesh->addTriangle(vertices[1], vertices[3], middle);
-	Log("3");
 	triangles[2] = mesh->addTriangle(vertices[3], vertices[2], middle);
-	Log("4");
 	triangles[3] = mesh->addTriangle(vertices[2], vertices[0], middle);
-	Log("5");
 }
 
 Quadtree::Quadtree(const Vec3f& _origin, const Vec3f& _xAxis,
