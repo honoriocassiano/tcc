@@ -18,6 +18,16 @@
 int main(int argc, char **argv) {
 	srand(time(NULL));
 
+	SDLWindow window(640, 480);
+
+	auto tree = getTree();
+
+	auto direction = directions::Intercardinal::NW;
+
+	tree->subdivide(direction);
+	tree->getChild(direction)->subdivide(directions::Intercardinal::SE);
+
+	window.run();
 	/*
 	 SDLWindow window(640, 480);
 
@@ -49,31 +59,33 @@ int main(int argc, char **argv) {
 	 window.run();
 	 */
 
-	Quadtree* tree = new Quadtree(Vec3f(0, 0, 0), Vec3f(1, 0, 0), Vec3f(0, 1, 0), 0, 20);
-
-	Log("%d, %d", tree->getMesh()->numTriangles(), tree->getMesh()->numVertices());
-
-	auto direction = directions::Intercardinal::NW;
-
-	tree->subdivide(direction);
-
-	Log("%d, %d", tree->getMesh()->numTriangles(), tree->getMesh()->numVertices());
-
-//	tree->merge(direction);
-//
-//	Log("%d, %d", tree->getMesh()->numTriangles(), tree->getMesh()->numVertices());
-
-//	tree->getMesh()->printVertices();
-	tree->getMesh()->printTriangles();
-
-	delete tree;
 	/*
-	tree->AddObject(new Object(25, 25, 1, 1));
+	 Quadtree* tree = new Quadtree(Vec3f(0, 0, 0), Vec3f(1, 0, 0), Vec3f(0, 1, 0), 0, 20);
 
-	for (int i = 0; i < 20; ++i) {
-		Log("%d: %lu", i, tree->GetObjectsAt(i, i).size());
-	}
-	*/
+	 Log("%d, %d", tree->getMesh()->numTriangles(), tree->getMesh()->numVertices());
+
+	 auto direction = directions::Intercardinal::NW;
+
+	 tree->subdivide(direction);
+
+	 Log("%d, %d", tree->getMesh()->numTriangles(), tree->getMesh()->numVertices());
+
+	 //	tree->merge(direction);
+	 //
+	 //	Log("%d, %d", tree->getMesh()->numTriangles(), tree->getMesh()->numVertices());
+
+	 //	tree->getMesh()->printVertices();
+	 tree->getMesh()->printTriangles();
+
+	 delete tree;
+	 */
+	/*
+	 tree->AddObject(new Object(25, 25, 1, 1));
+
+	 for (int i = 0; i < 20; ++i) {
+	 Log("%d: %lu", i, tree->GetObjectsAt(i, i).size());
+	 }
+	 */
 
 //	Patch* patch = new Patch(0.25);
 //	Mesh* mesh = patch->getMesh();
@@ -90,62 +102,60 @@ int main(int argc, char **argv) {
 //
 //	Log("after process 2 - triangles: %d, vertices: %d", mesh->numTriangles(),
 //			mesh->numVertices());
-
-	//********************************************
+//********************************************
 	/*
 
-	Patch* patch = new Patch(1.0);
+	 Patch* patch = new Patch(1.0);
 
-	Mesh* mesh = patch->getMesh();
+	 Mesh* mesh = patch->getMesh();
 
-//	auto v0 = mesh->addVertex(Vec3f(0, 0, 0));
-//	auto v1 = mesh->addVertex(Vec3f(1, 0, 0));
-//	auto v2 = mesh->addVertex(Vec3f(0, 1, 0));
-//
-//	auto tri = mesh->addTriangle(v0, v1, v2);
+	 //	auto v0 = mesh->addVertex(Vec3f(0, 0, 0));
+	 //	auto v1 = mesh->addVertex(Vec3f(1, 0, 0));
+	 //	auto v2 = mesh->addVertex(Vec3f(0, 1, 0));
+	 //
+	 //	auto tri = mesh->addTriangle(v0, v1, v2);
 
-	Log("original - triangles: %d, vertices: %d", mesh->numTriangles(),
-			mesh->numVertices());
+	 Log("original - triangles: %d, vertices: %d", mesh->numTriangles(),
+	 mesh->numVertices());
 
-	mesh->printTriangles();
+	 mesh->printTriangles();
 
-//	BTTreeNode* node = new BTTreeNode(tri);
-	BTTreeNode* left = patch->getLeft();
-	BTTreeNode* right = patch->getRight();
+	 //	BTTreeNode* node = new BTTreeNode(tri);
+	 BTTreeNode* left = patch->getLeft();
+	 BTTreeNode* right = patch->getRight();
 
-	patch->computeVariance();
+	 patch->computeVariance();
 
-	Log("left: %p, priority: %f", left, left->getPriority());
-	Log("right: %p, priority: %f", right, right->getPriority());
+	 Log("left: %p, priority: %f", left, left->getPriority());
+	 Log("right: %p, priority: %f", right, right->getPriority());
 
-	patch->split(right);
-	patch->computeVariance();
-	Log("SPLIT!");
+	 patch->split(right);
+	 patch->computeVariance();
+	 Log("SPLIT!");
 
-//	Log("split - triangles: %d, vertices: %d", mesh->numTriangles(),
-//				mesh->numVertices());
+	 //	Log("split - triangles: %d, vertices: %d", mesh->numTriangles(),
+	 //				mesh->numVertices());
 
-	Log("left: %p, priority: %f", left, left->getPriority());
-	Log("right: %p, priority: %f", right, right->getPriority());
+	 Log("left: %p, priority: %f", left, left->getPriority());
+	 Log("right: %p, priority: %f", right, right->getPriority());
 
-	Log("right-l: %p, priority: %f", right->getLeftChild(),
-			right->getLeftChild()->getPriority());
-	Log("right-r: %p, priority: %f", right->getRightChild(),
-			right->getRightChild()->getPriority());
+	 Log("right-l: %p, priority: %f", right->getLeftChild(),
+	 right->getLeftChild()->getPriority());
+	 Log("right-r: %p, priority: %f", right->getRightChild(),
+	 right->getRightChild()->getPriority());
 
-	patch->merge(right);
-	patch->computeVariance();
+	 patch->merge(right);
+	 patch->computeVariance();
 
-	Log("MERGE!");
-//	Log("merge - triangles: %d, vertices: %d", mesh->numTriangles(),
-//					mesh->numVertices());
+	 Log("MERGE!");
+	 //	Log("merge - triangles: %d, vertices: %d", mesh->numTriangles(),
+	 //					mesh->numVertices());
 
-	Log("left: %p, priority: %f", left, left->getPriority());
-	Log("right: %p, priority: %f", right, right->getPriority());
+	 Log("left: %p, priority: %f", left, left->getPriority());
+	 Log("right: %p, priority: %f", right, right->getPriority());
 
-	*/
+	 */
 	//********************************************
-
 	/*
 	 patch->split(node);
 

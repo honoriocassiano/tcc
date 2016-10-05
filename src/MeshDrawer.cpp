@@ -36,7 +36,7 @@ MeshDrawer::~MeshDrawer() {
 
 }
 
-void MeshDrawer::draw(Mesh* mesh, bool wireframe) {
+void MeshDrawer::draw(Mesh* mesh, bool wireframe, bool generateNoise) {
 	mesh->computeFaceNormals();
 	mesh->computeVerticesNormals();
 
@@ -84,30 +84,33 @@ void MeshDrawer::draw(Mesh* mesh, bool wireframe) {
 
 		glColor3f(va->getColor().r(), va->getColor().g(), va->getColor().b());
 		glNormal3f(n_a.x(), n_a.y(), n_a.z());
-		glVertex3f(a.x(), a.y(), Perlin::generate(a));
+
+		if (generateNoise) {
+			glVertex3f(a.x(), a.y(), Perlin::generate(a));
+		} else {
+			glVertex3f(a.x(), a.y(), a.z());
+		}
 
 //		glColor3f(n_b.r(), n_b.g(), n_b.b());
 		glColor3f(vb->getColor().r(), vb->getColor().g(), vb->getColor().b());
 		glNormal3f(n_b.x(), n_b.y(), n_b.z());
-		glVertex3f(b.x(), b.y(),  Perlin::generate(b));
+
+		if (generateNoise) {
+			glVertex3f(b.x(), b.y(), Perlin::generate(b));
+		} else {
+			glVertex3f(b.x(), b.y(), b.z());
+		}
 
 //		glColor3f(n_c.r(), n_c.g(), n_c.b());
 		glColor3f(vc->getColor().r(), vc->getColor().g(), vc->getColor().b());
 		glNormal3f(n_c.x(), n_c.y(), n_c.z());
-		glVertex3f(c.x(), c.y(),  Perlin::generate(c));
-//		glColor3f(va->getColor().r(), va->getColor().g(), va->getColor().b());
-//		glNormal3f(n_a.x(), n_a.y(), n_a.z());
-//		glVertex3f(a.x(), a.y(), a.z());
-//
-////		glColor3f(n_b.r(), n_b.g(), n_b.b());
-//		glColor3f(vb->getColor().r(), vb->getColor().g(), vb->getColor().b());
-//		glNormal3f(n_b.x(), n_b.y(), n_b.z());
-//		glVertex3f(b.x(), b.y(), b.z());
-//
-////		glColor3f(n_c.r(), n_c.g(), n_c.b());
-//		glColor3f(vc->getColor().r(), vc->getColor().g(), vc->getColor().b());
-//		glNormal3f(n_c.x(), n_c.y(), n_c.z());
-//		glVertex3f(c.x(), c.y(), c.z());
+
+		if (generateNoise) {
+			glVertex3f(c.x(), c.y(), Perlin::generate(c));
+		} else {
+			glVertex3f(c.x(), c.y(), c.z());
+		}
+
 		//***************************************
 	}
 	mesh->triangles->EndIteration(iter);

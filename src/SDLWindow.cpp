@@ -13,17 +13,32 @@
 #include "Debug.h"
 
 //******************************************************
-Landscape* landscape = new Landscape(0.5f);
-//Vec3f position(0.5, 0.5, 10);
-//Vec3f position(2.5, 2.5, 100);
-const Vec3f position(100, 0, 40);
-int globalI = 0;
+#include "Quadtree.h"
+#include "MeshDrawer.h"
 
-Landscape* getLandscape() {
-	return landscape;
+Quadtree* tree = new Quadtree(Vec3f(0, 0, 0), Vec3f(1, 0, 0), Vec3f(0, 1, 0), 0,
+		20);
+//Quadtree* tree = new Quadtree(Vec3f(0, 0, 0), Vec3f(50, 0, -10), Vec3f(0, 50, -10), 0, 20);
+
+Quadtree* getTree() {
+	return tree;
 }
 //******************************************************
 
+//******************************************************
+//Landscape* landscape = new Landscape(0.5f);
+//Vec3f position(0.5, 0.5, 10);
+//Vec3f position(2.5, 2.5, 100);
+//const Vec3f position(100, 0, 40);
+const Vec3f position(6.2, 1.2, -28.8);
+int globalI = 0;
+
+/*
+ Landscape* getLandscape() {
+ return landscape;
+ }
+ */
+//******************************************************
 int HandleGLErrorWindow2() {
 	GLenum error;
 	int i = 0;
@@ -103,10 +118,12 @@ void SDLWindow::run() {
 
 		//******************************************************
 		//const Patch* p = landscape->getPatch();
-		Patch* p = landscape->getPatch();
+		/*
+		 Patch* p = landscape->getPatch();
 
-		Log("%2d - vertices: %d, triangles: %d\n", globalI,
-				p->getMesh()->numVertices(), p->getMesh()->numTriangles());
+		 Log("%2d - vertices: %d, triangles: %d\n", globalI,
+		 p->getMesh()->numVertices(), p->getMesh()->numTriangles());
+		 */
 
 		++globalI;
 		//******************************************************
@@ -117,12 +134,14 @@ void SDLWindow::run() {
 
 void SDLWindow::update(const Time& dt) {
 	//******************************************************
-	landscape->computeVariance();
-	//landscape->tessellate(position);
-	landscape->tessellate(mCamera->getPosition());
-	//	for (CelestialBody* body : mBodies) {
-	//		body->update(dt);
-	//	}
+	/*
+	 landscape->computeVariance();
+	 //landscape->tessellate(position);
+	 landscape->tessellate(mCamera->getPosition());
+	 //	for (CelestialBody* body : mBodies) {
+	 //		body->update(dt);
+	 //	}
+	 */
 	//******************************************************
 }
 
@@ -152,6 +171,8 @@ void SDLWindow::processRealtimeEvents() {
 		if (mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)) {
 			mCamera->rotateCamera(-0.005 * x, -0.005 * y);
 			//mCamera->rotateCamera(-0.005 * x, -0.005 * y);
+
+			Log("%s", mCamera->getPosition().str().c_str());
 		}
 		// Inserir ações com outros botões aqui
 	}
@@ -180,7 +201,8 @@ void SDLWindow::display() {
 	//	for (CelestialBody* body : mBodies) {
 	//		body->draw();
 	//	}
-	landscape->render();
+	MeshDrawer::draw(tree->getMesh(), true, false);
+//	landscape->render();
 	//******************************************************
 
 	// Trocar buffers
@@ -279,8 +301,13 @@ void SDLWindow::processEvents(const SDL_Event& e) {
 			break;
 		}
 
+		case SDLK_p: {
+			getTree()->getMesh()->printTriangles();
+			break;
+		}
+
 		case SDLK_w: {
-			landscape->toggleWireframe();
+			//landscape->toggleWireframe();
 			break;
 		}
 

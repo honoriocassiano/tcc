@@ -21,6 +21,8 @@
 
 #include "PerspectiveCamera2.h"
 
+class Quadtree* getTree();
+
 //******************************************************
 #include "Landscape.h"
 
