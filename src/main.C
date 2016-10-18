@@ -20,12 +20,12 @@ int main(int argc, char **argv) {
 
 	SDLWindow window(640, 480);
 
-	auto tree = getTree();
-
-	auto direction = directions::Intercardinal::NW;
-
-	tree->subdivide(direction);
-	tree->getChild(direction)->subdivide(directions::Intercardinal::SE);
+//	auto tree = getTree();
+//
+//	auto direction = directions::Intercardinal::NW;
+//
+//	tree->subdivide(direction);
+//	tree->getChild(direction)->subdivide(directions::Intercardinal::SE);
 
 	window.run();
 	/*

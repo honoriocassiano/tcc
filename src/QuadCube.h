@@ -8,14 +8,27 @@
 #ifndef SRC_QUADCUBE_H_
 #define SRC_QUADCUBE_H_
 
-#include "Face.h"
+#include "Quadtree.h"
+#include "geometry/Vector3.h"
+
+namespace directions {
+
+enum Face : int {
+	FRONT = 0, LEFT, RIGHT, TOP, BOTTOM, BACK
+};
+}
 
 class QuadCube {
 public:
-	QuadCube();
+	QuadCube(const Vec3f& position);
 	virtual ~QuadCube();
 
-	Face* faces[6];
+	void draw(bool wireframe = false, bool generateNoise = true);
+
+//private:
+	Vec3f position;
+	Quadtree* faces[6];
+	directions::Face reference;
 };
 
 #endif /* SRC_QUADCUBE_H_ */

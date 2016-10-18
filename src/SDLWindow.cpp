@@ -14,10 +14,13 @@
 
 //******************************************************
 #include "Quadtree.h"
+#include "QuadCube.h"
 #include "MeshDrawer.h"
 
 Quadtree* tree = new Quadtree(Vec3f(0, 0, 0), Vec3f(1, 0, 0), Vec3f(0, 1, 0), 0,
 		20);
+
+QuadCube* cube = new QuadCube(Vec3f(0, 0, 0));
 //Quadtree* tree = new Quadtree(Vec3f(0, 0, 0), Vec3f(50, 0, -10), Vec3f(0, 50, -10), 0, 20);
 
 Quadtree* getTree() {
@@ -179,7 +182,7 @@ void SDLWindow::processRealtimeEvents() {
 }
 
 void SDLWindow::display() {
-	//glClearColor(1, 1, 1, 0);
+//	glClearColor(1, 1, 1, 0);
 	glClearColor(0, 0, 0, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -201,7 +204,10 @@ void SDLWindow::display() {
 	//	for (CelestialBody* body : mBodies) {
 	//		body->draw();
 	//	}
-	MeshDrawer::draw(tree->getMesh(), true, false);
+//	MeshDrawer::draw(tree->getMesh(), true, false);
+
+	cube->draw(false, false);
+
 //	landscape->render();
 	//******************************************************
 
@@ -254,7 +260,6 @@ bool SDLWindow::initOpenGL() {
 
 	glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
 	glCullFace(GL_BACK);
-	glEnable(GL_CULL_FACE);
 
 	return true;
 }
@@ -281,8 +286,9 @@ void SDLWindow::configureLight() {
 	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, spec_mat);
 
 	glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
-	float back_color[] = { 0.0, 0.0, 1.0, 1 };
-	glMaterialfv(GL_BACK, GL_AMBIENT_AND_DIFFUSE, back_color);
+//	float back_color[] = { 0.0, 0.0, 1.0, 1 };
+//	glMaterialfv(GL_BACK, GL_AMBIENT_AND_DIFFUSE, back_color);
+	glColorMaterial(GL_BACK, GL_AMBIENT_AND_DIFFUSE);
 	glEnable(GL_LIGHT1);
 }
 

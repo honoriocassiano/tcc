@@ -11,7 +11,7 @@ using namespace directions;
 void Quadtree::subdivide(Intercardinal point, bool propagate) {
 
 	if (children[point]) {
-		Error("Unsplitable quadtree!");
+		Error("\"Unsplitable\" quadtree!");
 		return;
 	}
 
