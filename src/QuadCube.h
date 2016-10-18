@@ -26,6 +26,9 @@ public:
 	void draw(bool wireframe = false, bool generateNoise = true);
 
 //private:
+
+	void initNeighbours();
+
 	Vec3f position;
 	Quadtree* faces[6];
 	directions::Face reference;

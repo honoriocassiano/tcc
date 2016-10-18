@@ -20,8 +20,11 @@
 #include <GL/glu.h>
 
 #include "PerspectiveCamera2.h"
+#include "QuadCube.h"
 
 class Quadtree* getTree();
+
+QuadCube* getCube();
 
 //******************************************************
 #include "Landscape.h"

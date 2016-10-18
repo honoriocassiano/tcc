@@ -14,7 +14,6 @@
 
 //******************************************************
 #include "Quadtree.h"
-#include "QuadCube.h"
 #include "MeshDrawer.h"
 
 Quadtree* tree = new Quadtree(Vec3f(0, 0, 0), Vec3f(1, 0, 0), Vec3f(0, 1, 0), 0,
@@ -25,6 +24,10 @@ QuadCube* cube = new QuadCube(Vec3f(0, 0, 0));
 
 Quadtree* getTree() {
 	return tree;
+}
+
+QuadCube* getCube() {
+	return cube;
 }
 //******************************************************
 
@@ -206,7 +209,7 @@ void SDLWindow::display() {
 	//	}
 //	MeshDrawer::draw(tree->getMesh(), true, false);
 
-	cube->draw(false, false);
+	cube->draw(true, false);
 
 //	landscape->render();
 	//******************************************************
