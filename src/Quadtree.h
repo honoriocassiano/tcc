@@ -27,13 +27,14 @@ enum Cardinal
 
 typedef struct _qtd {
 	const directions::Intercardinal data[2];
+	Quadtree * tree;
 
 	enum Side {
 		LEFT = 0, RIGHT
 	};
 
-	_qtd(directions::Intercardinal l, directions::Intercardinal r) :
-			data { l, r } {
+	_qtd(directions::Intercardinal l, directions::Intercardinal r, Quadtree * tree) :
+			data { l, r }, tree(tree) {
 
 	}
 
@@ -89,6 +90,8 @@ protected:
 	}
 
 	int findPosition(Triangle* triangle) const;
+
+	friend class QuadTree;
 
 private:
 

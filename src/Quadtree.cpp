@@ -10,7 +10,7 @@ using namespace directions;
 
 void Quadtree::subdivide(Intercardinal point, bool propagate) {
 
-#define INVERT(S) (1 - S)
+#define INVERT(S) (static_cast<QuadtreeData::Side>(1 - static_cast<int>( S )))
 
 	using namespace directions;
 
@@ -22,8 +22,8 @@ void Quadtree::subdivide(Intercardinal point, bool propagate) {
 	Edge* e1 = nullptr;
 	Edge* e2 = nullptr;
 
-	QuadtreeData::Side s1 = LEFT;
-	QuadtreeData::Side s2 = LEFT;
+	QuadtreeData::Side s1 = QuadtreeData::Side::LEFT;
+	QuadtreeData::Side s2 = QuadtreeData::Side::LEFT;
 
 	switch (point) {
 	case Intercardinal::NW: {
@@ -39,95 +39,23 @@ void Quadtree::subdivide(Intercardinal point, bool propagate) {
 			e2 = mesh->getEdge(vertices[NW], vertices[SW]);
 		}
 
-//***********************
-		// /*
-		Vertex* topMiddle = nullptr;
-		Vertex* leftMiddle = nullptr;
-
-		// Check if top child vertex exists
-		if (!(topMiddle = mesh->getChildVertex(vertices[Intercardinal::NW],
-				vertices[Intercardinal::NE]))) {
-
-			topMiddle = mesh->addVertex(
-					(vertices[Intercardinal::NW]->get()
-							+ vertices[Intercardinal::NE]->get()) * 0.5);
-
-			mesh->setParentsChild(vertices[Intercardinal::NW],
-					vertices[Intercardinal::NE], topMiddle);
-		}
-
-		// Check if left child vertex exists
-		if (!(leftMiddle = mesh->getChildVertex(vertices[Intercardinal::NW],
-				vertices[Intercardinal::SW]))) {
-
-			leftMiddle = mesh->addVertex(
-					(vertices[Intercardinal::NW]->get()
-							+ vertices[Intercardinal::SW]->get()) * 0.5);
-
-			mesh->setParentsChild(vertices[Intercardinal::NW],
-					vertices[Intercardinal::SW], leftMiddle);
-		}
-
-		mesh->removeTriangle(triangles[Cardinal::N]);
-		triangles[Cardinal::N] = nullptr;
-
-		mesh->removeTriangle(triangles[Cardinal::W]);
-		triangles[Cardinal::W] = nullptr;
-
-		if (!children[Intercardinal::NE]) {
-			triangles[Cardinal::N] = mesh->addTriangle(topMiddle,
-					vertices[Intercardinal::NE], middle);
-		}
-
-		if (!children[Intercardinal::SW]) {
-			triangles[Cardinal::W] = mesh->addTriangle(
-					vertices[Intercardinal::SW], leftMiddle, middle);
-		}
-
-		Quadtree * n = neighbours[Cardinal::N];
-		Quadtree * w = neighbours[Cardinal::W];
-
-		if (propagate) {
-			if (n && !n->getChild(Intercardinal::SW)) {
-				n->subdivide(Intercardinal::SW, false);
-				n = n->getChild(Intercardinal::SW);
-			}
-
-			if (w && !w->getChild(Intercardinal::NE)) {
-				w->subdivide(Intercardinal::NE, false);
-				w = w->getChild(Intercardinal::NE);
-			}
-		} else {
-			n = n ? n->getChild(Intercardinal::SE) : nullptr;
-			w = w ? w->getChild(Intercardinal::NE) : nullptr;
-		}
-
-		children[Intercardinal::NW] = new Quadtree(vertices[0], topMiddle,
-				leftMiddle, middle, level + 1, maxLevel, mesh, this);
-
-		if (propagate) {
-			if (!children[Intercardinal::NE]) {
-				subdivide(Intercardinal::NE, false);
-			}
-
-			if (!children[Intercardinal::SW]) {
-				subdivide(Intercardinal::SW, false);
-			}
-		}
-
-		children[0]->setNeighbours(n, children[Intercardinal::NE],
-				children[Intercardinal::SW], w);
-
-		break;
-		// */
-		//************************
-
 		break;
 	}
 	case Intercardinal::NE: {
 
 		auto t1 = triangles[directions::N];
 		auto t2 = triangles[directions::E];
+
+		e1 = mesh->getEdge(vertices[NW], vertices[NE]);
+		e2 = mesh->getEdge(vertices[SE], vertices[NE]);
+
+		if (e1->getTriangle() != triangles[N]) {
+			e1 = mesh->getEdge(vertices[NE], vertices[NW]);
+		}
+
+		if (e2->getTriangle() != triangles[E]) {
+			e2 = mesh->getEdge(vertices[NE], vertices[SE]);
+		}
 
 		break;
 	}
@@ -136,12 +64,34 @@ void Quadtree::subdivide(Intercardinal point, bool propagate) {
 		auto t1 = triangles[directions::S];
 		auto t2 = triangles[directions::W];
 
+		e1 = mesh->getEdge(vertices[SW], vertices[SE]);
+		e2 = mesh->getEdge(vertices[SW], vertices[NW]);
+
+		if (e1->getTriangle() != triangles[S]) {
+			e1 = mesh->getEdge(vertices[SE], vertices[SW]);
+		}
+
+		if (e2->getTriangle() != triangles[W]) {
+			e2 = mesh->getEdge(vertices[NW], vertices[SW]);
+		}
+
 		break;
 	}
 	case Intercardinal::SE: {
 
 		auto t1 = triangles[directions::S];
 		auto t2 = triangles[directions::E];
+
+		e1 = mesh->getEdge(vertices[SW], vertices[SE]);
+		e2 = mesh->getEdge(vertices[SE], vertices[NE]);
+
+		if (e1->getTriangle() != triangles[S]) {
+			e1 = mesh->getEdge(vertices[SE], vertices[SW]);
+		}
+
+		if (e2->getTriangle() != triangles[E]) {
+			e2 = mesh->getEdge(vertices[NE], vertices[SE]);
+		}
 
 		break;
 	}
@@ -158,10 +108,29 @@ void Quadtree::subdivide(Intercardinal point, bool propagate) {
 			s1 = INVERT(s1);
 		}
 
+
 		if (tempS2->data[s2] != point) {
 			s2 = INVERT(s2);
 		}
 	}
+
+	Triangle* nt1 =
+			(e1->getOpposite()) ? e1->getOpposite()->getTriangle() : nullptr;
+	Triangle* nt2 =
+			(e2->getOpposite()) ? e2->getOpposite()->getTriangle() : nullptr;
+
+	Quadtree* n1 =
+			e1->getOpposite() ?
+					static_cast<QuadtreeData*>(nt1->getUserData())->tree :
+					nullptr;
+
+	Quadtree* n2 =
+			e2->getOpposite() ?
+					static_cast<QuadtreeData*>(nt2->getUserData())->tree :
+					nullptr;
+
+	QuadtreeData::Side ns1 = INVERT(s1);
+	QuadtreeData::Side ns2 = INVERT(s2);
 
 	Vertex * v11 = e1->getVertex();
 	Vertex * v12 = e1->getNext()->getNext()->getVertex();
@@ -197,9 +166,91 @@ void Quadtree::subdivide(Intercardinal point, bool propagate) {
 	mesh->removeTriangle(triangles[positionT2]);
 	triangles[positionT2] = nullptr;
 
-	if(!children[INVERT(s1)]) {
-
+	if (!children[INVERT(s1)]) {
+		triangles[positionT1] = mesh->addTriangle(vertices[INVERT(s1)], middle1,
+				middle);
 	}
+
+	if (!children[INVERT(s2)]) {
+		triangles[positionT2] = mesh->addTriangle(vertices[INVERT(s2)], middle2,
+				middle);
+	}
+
+
+	directions::Intercardinal nd1 =
+			static_cast<QuadtreeData*>(nt1->getUserData())->data[INVERT(s1)];
+
+	directions::Intercardinal nd2 =
+			static_cast<QuadtreeData*>(nt2->getUserData())->data[INVERT(s2)];
+
+	// Subdivide neighbours
+	if (propagate) {
+		if (n1 && !n1->getChild(nd1)) {
+			n1->subdivide(nd1, false);
+		}
+
+		if (n2 && !n2->getChild(nd2)) {
+			n2->subdivide(nd2, false);
+		}
+
+	} else {
+		// todo check this
+	}
+
+	children[point] = new Quadtree(vertices[point], middle1, middle, middle2,
+			level + 1, maxLevel, mesh, this);
+
+	if (propagate) {
+
+		auto temp1 =
+				static_cast<QuadtreeData*>(e1->getTriangle()->getUserData())->data[INVERT(
+						s1)];
+		auto temp2 =
+				static_cast<QuadtreeData*>(e2->getTriangle()->getUserData())->data[INVERT(
+						s2)];
+
+		if (!children[temp1]) {
+			subdivide(temp1, false);
+		}
+
+		if (!children[temp2]) {
+			subdivide(temp2, false);
+		}
+	}
+
+	/*
+	 if (propagate) {
+	 if (n && !n->getChild(Intercardinal::SW)) {
+	 n->subdivide(Intercardinal::SW, false);
+	 n = n->getChild(Intercardinal::SW);
+	 }
+
+	 if (w && !w->getChild(Intercardinal::NE)) {
+	 w->subdivide(Intercardinal::NE, false);
+	 w = w->getChild(Intercardinal::NE);
+	 }
+	 } else {
+	 n = n ? n->getChild(Intercardinal::SE) : nullptr;
+	 w = w ? w->getChild(Intercardinal::NE) : nullptr;
+	 }
+
+	 children[Intercardinal::NW] = new Quadtree(vertices[0], topMiddle,
+	 leftMiddle, middle, level + 1, maxLevel, mesh, this);
+
+	 if (propagate) {
+	 if (!children[Intercardinal::NE]) {
+	 subdivide(Intercardinal::NE, false);
+	 }
+
+	 if (!children[Intercardinal::SW]) {
+	 subdivide(Intercardinal::SW, false);
+	 }
+	 }
+
+	 children[0]->setNeighbours(n, children[Intercardinal::NE],
+	 children[Intercardinal::SW], w);
+	 */
+
 	/*
 	 switch (point) {
 	 case Intercardinal::NW: {
@@ -686,13 +737,13 @@ Quadtree::Quadtree(Vertex* nw, Vertex* ne, Vertex* sw, Vertex* se, int _level,
 	triangles[3] = mesh->addTriangle(vertices[2], vertices[0], middle);
 
 	triangles[directions::N]->setUserData(
-			new QuadtreeData(directions::NE, directions::NW));
+			new QuadtreeData(directions::NE, directions::NW, this));
 	triangles[directions::S]->setUserData(
-			new QuadtreeData(directions::SW, directions::SE));
+			new QuadtreeData(directions::SW, directions::SE, this));
 	triangles[directions::W]->setUserData(
-			new QuadtreeData(directions::NW, directions::SW));
+			new QuadtreeData(directions::NW, directions::SW, this));
 	triangles[directions::E]->setUserData(
-			new QuadtreeData(directions::SE, directions::NE));
+			new QuadtreeData(directions::SE, directions::NE, this));
 }
 
 Quadtree::Quadtree(const Vec3f& _origin, const Vec3f& _xAxis,
@@ -719,6 +770,15 @@ Quadtree::Quadtree(const Vec3f& _origin, const Vec3f& _xAxis,
 	triangles[1] = mesh->addTriangle(vertices[1], vertices[3], middle);
 	triangles[2] = mesh->addTriangle(vertices[3], vertices[2], middle);
 	triangles[3] = mesh->addTriangle(vertices[2], vertices[0], middle);
+
+	triangles[directions::N]->setUserData(
+			new QuadtreeData(directions::NE, directions::NW, this));
+	triangles[directions::S]->setUserData(
+			new QuadtreeData(directions::SW, directions::SE, this));
+	triangles[directions::W]->setUserData(
+			new QuadtreeData(directions::NW, directions::SW, this));
+	triangles[directions::E]->setUserData(
+			new QuadtreeData(directions::SE, directions::NE, this));
 }
 
 Quadtree::~Quadtree() {
