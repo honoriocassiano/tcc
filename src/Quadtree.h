@@ -61,11 +61,12 @@ public:
 			int level, int maxLevel);
 
 	Quadtree(Vertex* nw, Vertex* ne, Vertex* sw, Vertex* se, int level,
-				int maxLevel, Mesh * mesh, Quadtree* parent = nullptr);
+			int maxLevel, Mesh * mesh, Quadtree* parent = nullptr);
 
 	~Quadtree();
 
-	void subdivide(directions::Intercardinal point, bool propagate = true);
+	void subdivide(directions::Intercardinal point, const std::string& tag,
+			bool propagate = true);
 
 	void merge(directions::Intercardinal point);
 

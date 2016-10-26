@@ -209,7 +209,8 @@ void SDLWindow::display() {
 	//	}
 //	MeshDrawer::draw(tree->getMesh(), true, false);
 
-	cube->draw(true, false);
+//	cube->draw(true, false);
+	cube->draw(false, false);
 
 //	landscape->render();
 	//******************************************************

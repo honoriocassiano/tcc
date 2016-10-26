@@ -26,8 +26,8 @@ int main(int argc, char **argv) {
 
 	auto direction = directions::Intercardinal::NW;
 
-	tree->subdivide(direction);
-	tree->getChild(direction)->subdivide(directions::Intercardinal::SE);
+	tree->subdivide(direction, "main");
+//	tree->getChild(direction)->subdivide(directions::Intercardinal::SE);
 
 	window.run();
 	/*
