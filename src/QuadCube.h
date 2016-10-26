@@ -9,6 +9,7 @@
 #define SRC_QUADCUBE_H_
 
 #include "Quadtree.h"
+#include "structures/Halfedge/mesh.h"
 #include "geometry/Vector3.h"
 
 namespace directions {
@@ -29,6 +30,7 @@ public:
 
 	void initNeighbours();
 
+	Mesh * mesh;
 	Vec3f position;
 	Quadtree* faces[6];
 	directions::Face reference;

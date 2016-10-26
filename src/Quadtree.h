@@ -33,7 +33,8 @@ typedef struct _qtd {
 		LEFT = 0, RIGHT
 	};
 
-	_qtd(directions::Intercardinal l, directions::Intercardinal r, Quadtree * tree) :
+	_qtd(directions::Intercardinal l, directions::Intercardinal r,
+			Quadtree * tree) :
 			data { l, r }, tree(tree) {
 
 	}
@@ -59,6 +60,9 @@ public:
 	Quadtree(const Vec3f& origin, const Vec3f& xAxis, const Vec3f& yAxis,
 			int level, int maxLevel);
 
+	Quadtree(Vertex* nw, Vertex* ne, Vertex* sw, Vertex* se, int level,
+				int maxLevel, Mesh * mesh, Quadtree* parent = nullptr);
+
 	~Quadtree();
 
 	void subdivide(directions::Intercardinal point, bool propagate = true);
@@ -81,9 +85,6 @@ public:
 	}
 
 protected:
-
-	Quadtree(Vertex* nw, Vertex* ne, Vertex* sw, Vertex* se, int level,
-			int maxLevel, Mesh * mesh, Quadtree* parent);
 
 	Vertex** getVertices() {
 		return vertices;

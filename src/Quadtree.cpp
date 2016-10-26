@@ -31,11 +31,11 @@ void Quadtree::subdivide(Intercardinal point, bool propagate) {
 		e1 = mesh->getEdge(vertices[NW], vertices[NE]);
 		e2 = mesh->getEdge(vertices[SW], vertices[NW]);
 
-		if (e1->getTriangle() != triangles[N]) {
+		if (!e1 || (e1 && (e1->getTriangle() != triangles[N]))) {
 			e1 = mesh->getEdge(vertices[NE], vertices[NW]);
 		}
 
-		if (e2->getTriangle() != triangles[W]) {
+		if (!e2 || ((e2 && (e2->getTriangle() != triangles[W])))) {
 			e2 = mesh->getEdge(vertices[NW], vertices[SW]);
 		}
 
@@ -49,11 +49,11 @@ void Quadtree::subdivide(Intercardinal point, bool propagate) {
 		e1 = mesh->getEdge(vertices[NW], vertices[NE]);
 		e2 = mesh->getEdge(vertices[SE], vertices[NE]);
 
-		if (e1->getTriangle() != triangles[N]) {
+		if (!e1 || (e1 && (e1->getTriangle() != triangles[N]))) {
 			e1 = mesh->getEdge(vertices[NE], vertices[NW]);
 		}
 
-		if (e2->getTriangle() != triangles[E]) {
+		if (!e2 || (e2 && (e2->getTriangle() != triangles[E]))) {
 			e2 = mesh->getEdge(vertices[NE], vertices[SE]);
 		}
 
@@ -67,11 +67,11 @@ void Quadtree::subdivide(Intercardinal point, bool propagate) {
 		e1 = mesh->getEdge(vertices[SW], vertices[SE]);
 		e2 = mesh->getEdge(vertices[SW], vertices[NW]);
 
-		if (e1->getTriangle() != triangles[S]) {
+		if (!e1 || (e1 && (e1->getTriangle() != triangles[S]))) {
 			e1 = mesh->getEdge(vertices[SE], vertices[SW]);
 		}
 
-		if (e2->getTriangle() != triangles[W]) {
+		if (!e2 || (e2 && (e2->getTriangle() != triangles[W]))) {
 			e2 = mesh->getEdge(vertices[NW], vertices[SW]);
 		}
 
@@ -85,11 +85,11 @@ void Quadtree::subdivide(Intercardinal point, bool propagate) {
 		e1 = mesh->getEdge(vertices[SW], vertices[SE]);
 		e2 = mesh->getEdge(vertices[SE], vertices[NE]);
 
-		if (e1->getTriangle() != triangles[S]) {
+		if (!e1 || (e1 && (e1->getTriangle() != triangles[S]))) {
 			e1 = mesh->getEdge(vertices[SE], vertices[SW]);
 		}
 
-		if (e2->getTriangle() != triangles[E]) {
+		if (!e2 || (e2 && (e2->getTriangle() != triangles[E]))) {
 			e2 = mesh->getEdge(vertices[NE], vertices[SE]);
 		}
 
@@ -107,7 +107,6 @@ void Quadtree::subdivide(Intercardinal point, bool propagate) {
 		if (tempS1->data[s1] != point) {
 			s1 = INVERT(s1);
 		}
-
 
 		if (tempS2->data[s2] != point) {
 			s2 = INVERT(s2);
@@ -176,7 +175,6 @@ void Quadtree::subdivide(Intercardinal point, bool propagate) {
 				middle);
 	}
 
-
 	directions::Intercardinal nd1 =
 			static_cast<QuadtreeData*>(nt1->getUserData())->data[INVERT(s1)];
 
@@ -185,6 +183,7 @@ void Quadtree::subdivide(Intercardinal point, bool propagate) {
 
 	// Subdivide neighbours
 	if (propagate) {
+
 		if (n1 && !n1->getChild(nd1)) {
 			n1->subdivide(nd1, false);
 		}
@@ -217,6 +216,8 @@ void Quadtree::subdivide(Intercardinal point, bool propagate) {
 			subdivide(temp2, false);
 		}
 	}
+
+	Log("A2");
 
 	/*
 	 if (propagate) {
