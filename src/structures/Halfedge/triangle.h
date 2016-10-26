@@ -20,6 +20,7 @@ public:
 	Triangle() {
 		edge = nullptr;
 		hypotenuse = nullptr;
+		userData = nullptr;
 	}
 	~Triangle() {
 	}
@@ -96,6 +97,14 @@ public:
 		normal = n;
 	}
 
+	void setUserData(void * data) {
+		this->userData = data;
+	}
+
+	void * getUserData() {
+		return this->userData;
+	}
+
 	// NOTE: If you want to modify a triangle, remove it from the mesh,
 	// delete it, create a new copy with the changes, and re-add it.
 	// This will ensure the edges get updated appropriately.
@@ -126,6 +135,9 @@ protected:
 	Edge *edge;
 	Vec3f normal;
 	Edge *hypotenuse;
+
+	// Must be deleted manually
+	void * userData;
 };
 
 // ===========================================================

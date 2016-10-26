@@ -25,6 +25,34 @@ enum Cardinal
 };
 }
 
+typedef struct _qtd {
+	const directions::Intercardinal data[2];
+
+	enum Side {
+		LEFT = 0, RIGHT
+	};
+
+	_qtd(directions::Intercardinal l, directions::Intercardinal r) :
+			data { l, r } {
+
+	}
+
+} QuadtreeData;
+
+//typedef struct _qtd {
+//	Quadtree * data[2] = { nullptr, nullptr };
+//
+//	enum SIDE {
+//		LEFT = 0, RIGHT
+//	};
+//
+//	_qtd(Quadtree * l, Quadtree * r) :
+//			data { l, r } {
+//
+//	}
+//
+//} QuadtreeData;
+
 class Quadtree {
 public:
 	Quadtree(const Vec3f& origin, const Vec3f& xAxis, const Vec3f& yAxis,
@@ -59,6 +87,8 @@ protected:
 	Vertex** getVertices() {
 		return vertices;
 	}
+
+	int findPosition(Triangle* triangle) const;
 
 private:
 
