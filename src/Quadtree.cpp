@@ -727,8 +727,10 @@ Quadtree::Quadtree(Vertex* nw, Vertex* ne, Vertex* sw, Vertex* se, int _level,
 				_level), middle(nullptr), maxLevel(_maxLevel), children {
 				nullptr }, triangles { nullptr }, parent(_parent), mesh(_mesh) {
 
-	auto m = Vec3f((nw->get().x() + ne->get().x()) * 0.5f,
-			(nw->get().y() + sw->get().y()) * 0.5f, 0);
+	auto temp1 = (nw->get() + ne->get()) * 0.5;
+	auto temp2 = (sw->get() + se->get()) * 0.5;
+
+	auto m = (temp1 + temp2) * 0.5;
 
 	middle = mesh->addVertex(m);
 
