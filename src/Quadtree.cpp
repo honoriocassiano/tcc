@@ -233,10 +233,10 @@ void Quadtree::subdivide(Intercardinal point, const std::string& tag,
 	if (propagate) {
 
 		auto temp1 =
-				static_cast<QuadtreeData*>(edge1->getTriangle()->getUserData())->data[INVERT(
+				static_cast<QuadtreeData*>(userDataTriangle1)->data[INVERT(
 						sideTriangle1)];
 		auto temp2 =
-				static_cast<QuadtreeData*>(edge2->getTriangle()->getUserData())->data[INVERT(
+				static_cast<QuadtreeData*>(userDataTriangle2)->data[INVERT(
 						sideTriangle2)];
 
 		if (!children[temp1]) {
