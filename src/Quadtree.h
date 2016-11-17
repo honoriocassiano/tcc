@@ -8,6 +8,8 @@ class Vertex;
 #include "structures/Halfedge/triangle.h"
 #include "structures/Halfedge/mesh.h"
 
+#include <array>
+
 using namespace std;
 
 class Quadtree;
@@ -94,6 +96,15 @@ protected:
 	int findPosition(Triangle* triangle) const;
 
 	friend class QuadTree;
+
+private:
+	Vertex* getChildVertex(directions::Intercardinal d1,
+			directions::Intercardinal d2);
+	Vertex* getRelativeVertex(directions::Intercardinal outer,
+			directions::Intercardinal inner, bool createIfNotExists = false);
+
+	std::array<directions::Intercardinal, 2> getAdjacents(
+			directions::Intercardinal point);
 
 private:
 
