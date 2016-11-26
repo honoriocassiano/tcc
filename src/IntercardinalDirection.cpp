@@ -9,28 +9,29 @@
 
 #define CAST(X) static_cast<Direction>(X)
 
-std::vector<IntercardinalDirection> IntercardinalDirection::all{ NW, NE, SW, SE };
+std::vector<const IntercardinalDirection*> IntercardinalDirection::all = { &NW, &NE, &SW,
+		&SE };
 
-const IntercardinalDirection IntercardinalDirection::NW = IntercardinalDirection(0,
-		0);
-const IntercardinalDirection IntercardinalDirection::NE = IntercardinalDirection(1,
-		1);
-const IntercardinalDirection IntercardinalDirection::SW = IntercardinalDirection(2,
-		3);
-const IntercardinalDirection IntercardinalDirection::SE = IntercardinalDirection(3,
-		2);
+const IntercardinalDirection IntercardinalDirection::NW =
+		IntercardinalDirection(0, 0);
+const IntercardinalDirection IntercardinalDirection::NE =
+		IntercardinalDirection(1, 1);
+const IntercardinalDirection IntercardinalDirection::SW =
+		IntercardinalDirection(2, 3);
+const IntercardinalDirection IntercardinalDirection::SE =
+		IntercardinalDirection(3, 2);
 
 std::size_t IntercardinalDirection::getCount() {
 	return 4;
 }
 
-const std::vector<IntercardinalDirection>& IntercardinalDirection::getAll() {
+const std::vector<const IntercardinalDirection*>& IntercardinalDirection::getAll() {
 	return all;
 }
 
 const IntercardinalDirection* IntercardinalDirection::getAtMatrixIndex(
 		int index) {
-	switch(index) {
+	switch (index) {
 	case 0:
 		return &NW;
 	case 1:
@@ -49,7 +50,7 @@ const IntercardinalDirection* IntercardinalDirection::getAtMatrixIndex(
 
 const IntercardinalDirection* IntercardinalDirection::getAtClockwiseIndex(
 		int index) {
-	switch(index) {
+	switch (index) {
 	case 0:
 		return &NW;
 
@@ -67,6 +68,7 @@ const IntercardinalDirection* IntercardinalDirection::getAtClockwiseIndex(
 	}
 }
 
-IntercardinalDirection::IntercardinalDirection(int mIndex, int cIndex) : Direction(mIndex, cIndex) {
+IntercardinalDirection::IntercardinalDirection(int mIndex, int cIndex) :
+		Direction(mIndex, cIndex) {
 
 }

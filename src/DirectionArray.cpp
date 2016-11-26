@@ -11,9 +11,10 @@
 #define _SRC_DIRECTIONARRAY_CPP_
 
 template<class DType, class Element>
-DirectionArray<DType, Element>::DirectionArray(const std::vector<DType>& allElements, Element defaultValue) {
-	for(auto& e : allElements) {
-		elements[e] = defaultValue;
+DirectionArray<DType, Element>::DirectionArray(const std::vector<const DType*>& allElements, Element defaultValue) {
+
+	for(auto e : allElements) {
+		elements[*e] = defaultValue;
 	}
 }
 
@@ -40,7 +41,7 @@ DirectionArray<DType, Element>::DirectionArray(const std::vector<DType>& allElem
 
 template<class DType, class Element>
 DirectionArray<DType, Element>::DirectionArray(
-		const std::vector<DType>& allElements,
+		const std::vector<const DType*>& allElements,
 		const std::vector<Element>& values) {
 
 	assert((values.size() == allElements.size()) &&"Invalid number of arguments");

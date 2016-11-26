@@ -26,14 +26,14 @@ public:
 	static const CardinalDirection* getAtMatrixIndex(int index);
 	static const CardinalDirection* getAtClockwiseIndex(int index);
 
-	static const std::vector<CardinalDirection>& getAll();
+	static const std::vector<const CardinalDirection*>& getAll();
 
 private:
 	CardinalDirection(int mIndex, int cIndex) :
 			Direction(mIndex, cIndex) {
 	}
 
-	static std::vector<CardinalDirection> all;
+	static std::vector<const CardinalDirection*> all;
 };
 
 #endif /* SRC_CARDINALDIRECTION_H_ */

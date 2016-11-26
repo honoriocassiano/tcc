@@ -26,11 +26,15 @@ public:
 	}
 
 	friend bool operator<(const Direction& d1, const Direction& d2) {
-		return d1.getMatrixIndex() < d1.getMatrixIndex();
+		return d1.getMatrixIndex() < d2.getMatrixIndex();
 	}
 
+	Direction(const Direction &) = default;
+
 protected:
-	Direction(int mIndex, int cIndex) : mIndex(mIndex), cIndex(cIndex) {}
+	Direction(int mIndex, int cIndex) :
+			mIndex(mIndex), cIndex(cIndex) {
+	}
 
 private:
 	const int mIndex;

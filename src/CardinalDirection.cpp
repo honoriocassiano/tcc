@@ -7,7 +7,7 @@
 
 #include "CardinalDirection.h"
 
-std::vector<CardinalDirection> CardinalDirection::all { N, E, W, S };
+std::vector<const CardinalDirection*> CardinalDirection::all { &N, &E, &W, &S };
 
 const CardinalDirection CardinalDirection::N = CardinalDirection(0, 0);
 const CardinalDirection CardinalDirection::E = CardinalDirection(2, 1);
@@ -54,6 +54,6 @@ const CardinalDirection* CardinalDirection::getAtClockwiseIndex(int index) {
 	}
 }
 
-const std::vector<CardinalDirection>& CardinalDirection::getAll() {
+const std::vector<const CardinalDirection*>& CardinalDirection::getAll() {
 	return all;
 }
