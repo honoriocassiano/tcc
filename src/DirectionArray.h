@@ -14,6 +14,8 @@
 template<class DType, class Element>
 class DirectionArray {
 public:
+
+	// todo Create an constructor that receive all elements and values
 	DirectionArray(const std::vector<DType>& allElements, Element defaultValue);
 	virtual ~DirectionArray();
 

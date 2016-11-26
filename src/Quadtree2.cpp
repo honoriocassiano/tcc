@@ -19,8 +19,11 @@ Quadtree2::Quadtree2(Vertex* nw, Vertex* ne, Vertex* sw, Vertex* se,
 		parent(nullptr), mesh(_mesh), intercardinals(
 				IntercardinalDirection::getAll(), nullptr), children(
 				IntercardinalDirection::getAll(), nullptr) {
-//		parent(nullptr), mesh(_mesh), intercardinals { nw, ne, sw, se }, children {
-//				nullptr } {
+
+	intercardinals[IntercardinalDirection::NW] = nw;
+	intercardinals[IntercardinalDirection::NW] = ne;
+	intercardinals[IntercardinalDirection::SW] = sw;
+	intercardinals[IntercardinalDirection::SE] = se;
 
 	using namespace directions;
 
@@ -38,8 +41,6 @@ Quadtree2::Quadtree2(Vertex* nw, Vertex* ne, Vertex* sw, Vertex* se,
 				i)];
 		auto& d2 = intercardinals[*IntercardinalDirection::getAtClockwiseIndex(
 				(i + 1) % 4)];
-//		auto& d1 = intercardinals[i];
-//		auto& d2 = intercardinals[(i + 1) % 4];
 
 		auto tempVertex = mesh->addVertex(MIDDLE(d1->get(), d2->get()));
 
@@ -48,7 +49,6 @@ Quadtree2::Quadtree2(Vertex* nw, Vertex* ne, Vertex* sw, Vertex* se,
 
 	// Create middle points between center and intercardinals
 	for (int i = 0; i < 4; ++i) {
-		//auto& d1 = intercardinals[i];
 		auto& d1 = intercardinals[*IntercardinalDirection::getAtClockwiseIndex(
 				i)];
 
@@ -70,11 +70,10 @@ void Quadtree2::update(const Vec3f& cameraPosition) {
 
 	bool marked[4] { false };
 
+	// Mark who children must be exist
 	for (int i = 0; i < 4; ++i) {
-//		auto& e = intercardinals[i];
 		auto& e = intercardinals[*IntercardinalDirection::getAtClockwiseIndex(4)];
 
-		//auto middlePoint = (center->get() + e->get()) * 0.5;
 		auto middlePoint = mesh->getChildVertex(center, e)->get();
 
 		auto d =
@@ -87,6 +86,7 @@ void Quadtree2::update(const Vec3f& cameraPosition) {
 		}
 	}
 
+	// Update the children
 	for (int i = 0; i < 4; ++i) {
 
 		auto& enumValue = *IntercardinalDirection::getAtClockwiseIndex(i);
