@@ -11,15 +11,9 @@
 #include "structures/Halfedge/mesh.h"
 #include "DirectionArray.h"
 #include "IntercardinalDirection.h"
+#include "CardinalDirection.h"
 
 #include "Quadtree.h"
-
-//namespace directions {
-//enum Intercardinal2
-//	: int {
-//		NW = 0, NE, SE, SW
-//};
-//}
 
 class Quadtree2 {
 public:
@@ -33,19 +27,18 @@ public:
 
 private:
 
-//	Quadtree2(Vertex* nw, Vertex* ne, Vertex* sw, Vertex* se, Mesh * mesh);
-
-
+	Quadtree2(Vertex* nw, Vertex* ne, Vertex* sw, Vertex* se, Vertex* center,
+			Mesh * mesh, const DirectionArray<CardinalDirection, bool>& marked);
+//	Quadtree2(Vertex* nw, Vertex* ne, Vertex* sw, Vertex* se, Vertex* center, Mesh * mesh,
+//			const DirectionArray<CardinalDirection, bool>& marked, const DirectionArray<CardinalDirection, bool>& willHaveNeighbor);
 
 	Quadtree2* parent;
-//	Quadtree2* children[4];
+	DirectionArray<CardinalDirection, Quadtree2*> neighbors;
 	DirectionArray<IntercardinalDirection, Quadtree2*> children;
 
 	Mesh* mesh;
 	Vertex* center;
-//	Vertex* intercardinals[4];
 	DirectionArray<IntercardinalDirection, Vertex*> intercardinals;
-
 
 	static float C;
 };
