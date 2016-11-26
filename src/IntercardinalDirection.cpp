@@ -11,13 +11,13 @@
 
 std::vector<IntercardinalDirection> IntercardinalDirection::all{ NW, NE, SW, SE };
 
-IntercardinalDirection IntercardinalDirection::NW = IntercardinalDirection(0,
+const IntercardinalDirection IntercardinalDirection::NW = IntercardinalDirection(0,
 		0);
-IntercardinalDirection IntercardinalDirection::NE = IntercardinalDirection(1,
+const IntercardinalDirection IntercardinalDirection::NE = IntercardinalDirection(1,
 		1);
-IntercardinalDirection IntercardinalDirection::SW = IntercardinalDirection(2,
+const IntercardinalDirection IntercardinalDirection::SW = IntercardinalDirection(2,
 		3);
-IntercardinalDirection IntercardinalDirection::SE = IntercardinalDirection(3,
+const IntercardinalDirection IntercardinalDirection::SE = IntercardinalDirection(3,
 		2);
 
 std::size_t IntercardinalDirection::getCount() {
@@ -26,6 +26,45 @@ std::size_t IntercardinalDirection::getCount() {
 
 const std::vector<IntercardinalDirection>& IntercardinalDirection::getAll() {
 	return all;
+}
+
+const IntercardinalDirection* IntercardinalDirection::getAtMatrixIndex(
+		int index) {
+	switch(index) {
+	case 0:
+		return &NW;
+	case 1:
+		return &NE;
+
+	case 2:
+		return &SW;
+
+	case 3:
+		return &SE;
+
+	default:
+		return nullptr;
+	}
+}
+
+const IntercardinalDirection* IntercardinalDirection::getAtClockwiseIndex(
+		int index) {
+	switch(index) {
+	case 0:
+		return &NW;
+
+	case 1:
+		return &NE;
+
+	case 2:
+		return &SE;
+
+	case 3:
+		return &SW;
+
+	default:
+		return nullptr;
+	}
 }
 
 IntercardinalDirection::IntercardinalDirection(int mIndex, int cIndex) : Direction(mIndex, cIndex) {

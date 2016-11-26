@@ -9,13 +9,49 @@
 
 std::vector<CardinalDirection> CardinalDirection::all { N, E, W, S };
 
-CardinalDirection CardinalDirection::N = CardinalDirection(0, 0);
-CardinalDirection CardinalDirection::E = CardinalDirection(1, 1);
-CardinalDirection CardinalDirection::W = CardinalDirection(2, 3);
-CardinalDirection CardinalDirection::S = CardinalDirection(3, 2);
+const CardinalDirection CardinalDirection::N = CardinalDirection(0, 0);
+const CardinalDirection CardinalDirection::E = CardinalDirection(2, 1);
+const CardinalDirection CardinalDirection::W = CardinalDirection(1, 3);
+const CardinalDirection CardinalDirection::S = CardinalDirection(3, 2);
 
 std::size_t CardinalDirection::getCount() {
 	return 4;
+}
+
+const CardinalDirection* CardinalDirection::getAtMatrixIndex(int index) {
+	switch (index) {
+	case 0:
+		return &N;
+	case 1:
+		return &W;
+
+	case 2:
+		return &E;
+
+	case 3:
+		return &S;
+
+	default:
+		return nullptr;
+	}
+}
+
+const CardinalDirection* CardinalDirection::getAtClockwiseIndex(int index) {
+	switch (index) {
+	case 0:
+		return &N;
+	case 1:
+		return &E;
+
+	case 2:
+		return &S;
+
+	case 3:
+		return &W;
+
+	default:
+		return nullptr;
+	}
 }
 
 const std::vector<CardinalDirection>& CardinalDirection::getAll() {

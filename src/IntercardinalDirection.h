@@ -13,13 +13,16 @@
 class IntercardinalDirection: public Direction {
 public:
 
-	static IntercardinalDirection NW;
-	static IntercardinalDirection NE;
-	static IntercardinalDirection SW;
-	static IntercardinalDirection SE;
+	static const IntercardinalDirection NW;
+	static const IntercardinalDirection NE;
+	static const IntercardinalDirection SW;
+	static const IntercardinalDirection SE;
 
 	virtual ~IntercardinalDirection() {
 	}
+
+	static const IntercardinalDirection* getAtMatrixIndex(int index);
+	static const IntercardinalDirection* getAtClockwiseIndex(int index);
 
 	static std::size_t getCount();
 

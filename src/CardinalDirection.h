@@ -10,22 +10,28 @@
 
 #include "Direction.h"
 
-class CardinalDirection : public Direction {
+class CardinalDirection: public Direction {
 public:
 
-	static CardinalDirection N;
-	static CardinalDirection E;
-	static CardinalDirection W;
-	static CardinalDirection S;
+	static const CardinalDirection N;
+	static const CardinalDirection E;
+	static const CardinalDirection W;
+	static const CardinalDirection S;
 
-	virtual ~CardinalDirection() {}
+	virtual ~CardinalDirection() {
+	}
 
 	static std::size_t getCount();
+
+	static const CardinalDirection* getAtMatrixIndex(int index);
+	static const CardinalDirection* getAtClockwiseIndex(int index);
 
 	static const std::vector<CardinalDirection>& getAll();
 
 private:
-	CardinalDirection(int mIndex, int cIndex) : Direction(mIndex, cIndex) {}
+	CardinalDirection(int mIndex, int cIndex) :
+			Direction(mIndex, cIndex) {
+	}
 
 	static std::vector<CardinalDirection> all;
 };
