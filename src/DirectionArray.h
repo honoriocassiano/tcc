@@ -10,6 +10,7 @@
 
 #include <vector>
 #include <map>
+#include <tuple>
 
 template<class DType, class Element>
 class DirectionArray {
@@ -17,6 +18,10 @@ public:
 
 	// todo Create an constructor that receive all elements and values
 	DirectionArray(const std::vector<DType>& allElements, Element defaultValue);
+
+//	DirectionArray(const std::vector<DType>& allElements, Element values...);
+	DirectionArray(const std::vector<DType>& allElements, const std::vector<Element>& values);
+
 	virtual ~DirectionArray();
 
 	Element& getAt(const DType& position);
