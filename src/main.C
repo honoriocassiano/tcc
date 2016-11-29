@@ -1,4 +1,5 @@
 #include "Debug.h"
+#include <assert.h>
 
 #include <GL/glut.h>
 #include "PriorityQueue.h"
@@ -11,25 +12,73 @@
 
 #include "Object.h"
 #include "Quadtree.h"
+#include "Quadtree2.h"
+
+#include "DirectionArray.h"
+#include "IntercardinalDirection.h"
 
 // =========================================
 // =========================================
 
 int main(int argc, char **argv) {
-	srand(time(NULL));
+
+//	assert( 1 == 0 && "aaaa" );
+	Mesh* mesh = new Mesh();
+
+	auto nw = mesh->addVertex(Vec3f(-0.5, 0.5, 0));
+	auto ne = mesh->addVertex(Vec3f(0.5, 0.5, 0));
+	auto se = mesh->addVertex(Vec3f(0.5, -0.5, 0));
+	auto sw = mesh->addVertex(Vec3f(-0.5, -0.5, 0));
+
+//	Log("%d", IntercardinalDirection::NW.getClockwiseIndex());
+//	Log("%d", IntercardinalDirection::NE.getClockwiseIndex());
+//	Log("%d", IntercardinalDirection::SW.getClockwiseIndex());
+//	Log("%d", IntercardinalDirection::SE.getClockwiseIndex());
+//
+//	Log("***********************************************************");
+//
+//	for(auto& d : IntercardinalDirection::getAll()) {
+//		Log("%d %d", (*d).getClockwiseIndex(), (*d).getMatrixIndex());
+//	}
+
+	Quadtree2** temp = getTree2();//new Quadtree2(nw, ne, sw, se, mesh);
+	*temp = new Quadtree2(nw, ne, sw, se, mesh);
+
+	Quadtree2* quadtree = *temp;//new Quadtree2(nw, ne, sw, se, mesh);
+
+	Log("t: %d", mesh->numTriangles());
+
+//	quadtree->update(Vec3f(0, 0, -0.01));
+	quadtree->update(Vec3f(-0.5, -0.25, -0.01));
+
+	Log("t: %d", mesh->numTriangles());
 
 	SDLWindow window(640, 480);
-
-//	auto cube = getCube()->faces[directions::FRONT];
-
-	auto tree = getCube()->faces[directions::FRONT];
-
-	auto direction = directions::Intercardinal::NW;
-
-	tree->subdivide(direction, "main");
-//	tree->getChild(direction)->subdivide(directions::Intercardinal::SE);
-
 	window.run();
+
+//	quadtree->update(Vec3f(0, 0, -0.01));
+//
+//	Log("t: %d", mesh->numTriangles());
+
+//	delete quadtree;
+
+	/*
+	 srand(time(NULL));
+
+	 SDLWindow window(640, 480);
+
+	 //	auto cube = getCube()->faces[directions::FRONT];
+
+	 auto tree = getCube()->faces[directions::FRONT];
+
+	 auto direction = directions::Intercardinal::NW;
+
+	 tree->subdivide(direction, "main");
+	 //	tree->getChild(direction)->subdivide(directions::Intercardinal::SE);
+
+	 window.run();
+	 */
+
 	/*
 	 SDLWindow window(640, 480);
 

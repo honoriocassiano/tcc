@@ -25,10 +25,14 @@ public:
 	void update(const Vec3f& cameraPosition);
 	void render();
 
+	Mesh* getMesh() {
+		return mesh;
+	}
+
 private:
 
 	Quadtree2(Vertex* nw, Vertex* ne, Vertex* sw, Vertex* se, Vertex* center,
-			Mesh * mesh, const DirectionArray<CardinalDirection, bool>& marked);
+			Mesh * mesh, const DirectionArray<CardinalDirection, bool>& marked, Quadtree2* parent);
 //	Quadtree2(Vertex* nw, Vertex* ne, Vertex* sw, Vertex* se, Vertex* center, Mesh * mesh,
 //			const DirectionArray<CardinalDirection, bool>& marked, const DirectionArray<CardinalDirection, bool>& willHaveNeighbor);
 

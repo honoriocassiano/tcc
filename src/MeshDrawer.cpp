@@ -36,33 +36,167 @@ MeshDrawer::~MeshDrawer() {
 
 }
 
-void MeshDrawer::draw(Mesh* mesh, bool wireframe, bool generateNoise) {
+//void MeshDrawer::draw(Mesh* mesh, bool wireframe, bool generateNoise) {
+//	mesh->computeFaceNormals();
+//	mesh->computeVerticesNormals();
+//
+//	// scale it so it fits in the window
+////		Vec3f center;
+////		bbox->getCenter(center);
+////		float s = 1 / bbox->maxDim();
+//	//glScalef(s, s, s);
+//	//	glTranslatef(-center.x(), -center.y(), -7);///-center.z()*100);
+//
+//	//	printf("(%f, %f, %f)\n", center.x(), center.y(), center.z());
+//
+//	// this offset prevents "z-fighting" bewteen the edges and faces
+//	// the edges will always win.
+//	glEnable(GL_POLYGON_OFFSET_FILL);
+//	glPolygonOffset(1.1, 4.0);
+//
+//	if (wireframe) {
+//		glPolygonMode( GL_FRONT_AND_BACK, GL_LINE);
+//	} else {
+////		glPolygonMode( GL_FRONT, GL_FILL);
+//		glPolygonMode( GL_FRONT_AND_BACK, GL_FILL);
+//	}
+//
+//	// draw the triangles
+////	glColor3f(1, 1, 1);
+//	Iterator<Triangle*> *iter = mesh->triangles->StartIteration();
+//	glBegin(GL_TRIANGLES);
+//	while (Triangle *t = iter->GetNext()) {
+//		Vertex* va = (*t)[0];
+//		Vertex* vb = (*t)[1];
+//		Vertex* vc = (*t)[2];
+//
+//		Vec3f a = va->get();
+//		Vec3f b = vb->get();
+//		Vec3f c = vc->get();
+//
+//		Vec3f n_a = va->getNormal();
+//		Vec3f n_b = vb->getNormal();
+//		Vec3f n_c = vc->getNormal();
+//
+////		printf("(%f, %f, %f)\n", va->getColor().r(), va->getColor().g(), va->getColor().b());
+//
+//		//***************************************
+//		constexpr float maxHeight = 5.0f;
+//
+//		glColor3f(va->getColor().r(), va->getColor().g(), va->getColor().b());
+//		glNormal3f(n_a.x(), n_a.y(), n_a.z());
+//
+//		if (generateNoise) {
+//			glVertex3f(a.x(), a.y(), Perlin::generate(a));
+//		} else {
+//			glVertex3f(a.x(), a.y(), a.z());
+//		}
+//
+////		glColor3f(n_b.r(), n_b.g(), n_b.b());
+//		glColor3f(vb->getColor().r(), vb->getColor().g(), vb->getColor().b());
+//		glNormal3f(n_b.x(), n_b.y(), n_b.z());
+//
+//		if (generateNoise) {
+//			glVertex3f(b.x(), b.y(), Perlin::generate(b));
+//		} else {
+//			glVertex3f(b.x(), b.y(), b.z());
+//		}
+//
+////		glColor3f(n_c.r(), n_c.g(), n_c.b());
+//		glColor3f(vc->getColor().r(), vc->getColor().g(), vc->getColor().b());
+//		glNormal3f(n_c.x(), n_c.y(), n_c.z());
+//
+//		if (generateNoise) {
+//			glVertex3f(c.x(), c.y(), Perlin::generate(c));
+//		} else {
+//			glVertex3f(c.x(), c.y(), c.z());
+//		}
+//
+//		//***************************************
+//	}
+//	mesh->triangles->EndIteration(iter);
+//	glEnd();
+//
+//	glDisable(GL_POLYGON_OFFSET_FILL);
+//
+//	/*
+//	 if (args->wireframe) {
+//	 glDisable(GL_LIGHTING);
+//
+//	 // draw all the interior, non-crease edges
+//	 glLineWidth(1);
+//	 glColor3f(0, 0, 0);
+//	 glBegin(GL_LINES);
+//	 Iterator<Edge*> *iter = edges->StartIteration();
+//	 while (Edge *e = iter->GetNext()) {
+//	 if (e->getOpposite() == NULL || e->getCrease() > 0)
+//	 continue;
+//	 Vec3f a = (*e)[0]->get();
+//	 Vec3f b = (*e)[1]->get();
+//	 glVertex3f(a.x(), a.y(), a.z());
+//	 glVertex3f(b.x(), b.y(), b.z());
+//	 }
+//	 edges->EndIteration(iter);
+//	 glEnd();
+//
+//	 // draw all the interior, crease edges
+//	 glLineWidth(3);
+//	 glColor3f(1, 1, 0);
+//	 glBegin(GL_LINES);
+//	 iter = edges->StartIteration();
+//	 while (Edge *e = iter->GetNext()) {
+//	 if (e->getOpposite() == NULL || e->getCrease() == 0)
+//	 continue;
+//	 Vec3f a = (*e)[0]->get();
+//	 Vec3f b = (*e)[1]->get();
+//	 glVertex3f(a.x(), a.y(), a.z());
+//	 glVertex3f(b.x(), b.y(), b.z());
+//	 }
+//	 edges->EndIteration(iter);
+//	 glEnd();
+//
+//	 // draw all the boundary edges
+//	 glLineWidth(3);
+//	 glColor3f(1, 0, 0);
+//	 glBegin(GL_LINES);
+//	 iter = edges->StartIteration();
+//	 while (Edge *e = iter->GetNext()) {
+//	 if (e->getOpposite() != NULL)
+//	 continue;
+//	 assert(e->getCrease() == 0);
+//	 Vec3f a = (*e)[0]->get();
+//	 Vec3f b = (*e)[1]->get();
+//	 glVertex3f(a.x(), a.y(), a.z());
+//	 glVertex3f(b.x(), b.y(), b.z());
+//	 }
+//	 edges->EndIteration(iter);
+//	 glEnd();
+//
+//	 glEnable(GL_LIGHTING);
+//	 }
+//	 */
+//
+//	HandleGLError();
+//}
+
+void MeshDrawer::draw(Mesh* mesh, const DrawOptions& options) {
 	mesh->computeFaceNormals();
 	mesh->computeVerticesNormals();
-
-	// scale it so it fits in the window
-//		Vec3f center;
-//		bbox->getCenter(center);
-//		float s = 1 / bbox->maxDim();
-	//glScalef(s, s, s);
-	//	glTranslatef(-center.x(), -center.y(), -7);///-center.z()*100);
-
-	//	printf("(%f, %f, %f)\n", center.x(), center.y(), center.z());
 
 	// this offset prevents "z-fighting" bewteen the edges and faces
 	// the edges will always win.
 	glEnable(GL_POLYGON_OFFSET_FILL);
 	glPolygonOffset(1.1, 4.0);
 
-	if (wireframe) {
+	if (options.wireframe) {
 		glPolygonMode( GL_FRONT_AND_BACK, GL_LINE);
 	} else {
-//		glPolygonMode( GL_FRONT, GL_FILL);
+		//		glPolygonMode( GL_FRONT, GL_FILL);
 		glPolygonMode( GL_FRONT_AND_BACK, GL_FILL);
 	}
 
 	// draw the triangles
-//	glColor3f(1, 1, 1);
+	//	glColor3f(1, 1, 1);
 	Iterator<Triangle*> *iter = mesh->triangles->StartIteration();
 	glBegin(GL_TRIANGLES);
 	while (Triangle *t = iter->GetNext()) {
@@ -78,7 +212,7 @@ void MeshDrawer::draw(Mesh* mesh, bool wireframe, bool generateNoise) {
 		Vec3f n_b = vb->getNormal();
 		Vec3f n_c = vc->getNormal();
 
-//		printf("(%f, %f, %f)\n", va->getColor().r(), va->getColor().g(), va->getColor().b());
+		//		printf("(%f, %f, %f)\n", va->getColor().r(), va->getColor().g(), va->getColor().b());
 
 		//***************************************
 		constexpr float maxHeight = 5.0f;
@@ -86,31 +220,41 @@ void MeshDrawer::draw(Mesh* mesh, bool wireframe, bool generateNoise) {
 		glColor3f(va->getColor().r(), va->getColor().g(), va->getColor().b());
 		glNormal3f(n_a.x(), n_a.y(), n_a.z());
 
-		if (generateNoise) {
+		if (options.noise) {
 			glVertex3f(a.x(), a.y(), Perlin::generate(a));
 		} else {
 			glVertex3f(a.x(), a.y(), a.z());
 		}
 
-//		glColor3f(n_b.r(), n_b.g(), n_b.b());
+		//		glColor3f(n_b.r(), n_b.g(), n_b.b());
 		glColor3f(vb->getColor().r(), vb->getColor().g(), vb->getColor().b());
 		glNormal3f(n_b.x(), n_b.y(), n_b.z());
 
-		if (generateNoise) {
+		if (options.noise) {
 			glVertex3f(b.x(), b.y(), Perlin::generate(b));
 		} else {
 			glVertex3f(b.x(), b.y(), b.z());
 		}
 
-//		glColor3f(n_c.r(), n_c.g(), n_c.b());
+		//		glColor3f(n_c.r(), n_c.g(), n_c.b());
 		glColor3f(vc->getColor().r(), vc->getColor().g(), vc->getColor().b());
 		glNormal3f(n_c.x(), n_c.y(), n_c.z());
 
-		if (generateNoise) {
+		if (options.noise) {
 			glVertex3f(c.x(), c.y(), Perlin::generate(c));
 		} else {
 			glVertex3f(c.x(), c.y(), c.z());
 		}
+
+//		if (options.normals) {
+//			glPushMatrix();
+//			glColor3f(0, 0, 1);
+//			glBegin(GL_LINES);
+//			drawNormal(t);
+//			glEnd();
+//
+//			glPopMatrix();
+//		}
 
 		//***************************************
 	}
@@ -119,62 +263,49 @@ void MeshDrawer::draw(Mesh* mesh, bool wireframe, bool generateNoise) {
 
 	glDisable(GL_POLYGON_OFFSET_FILL);
 
-	/*
-	 if (args->wireframe) {
-	 glDisable(GL_LIGHTING);
+	if (options.normals) {
+		iter = mesh->triangles->StartIteration();
 
-	 // draw all the interior, non-crease edges
-	 glLineWidth(1);
-	 glColor3f(0, 0, 0);
-	 glBegin(GL_LINES);
-	 Iterator<Edge*> *iter = edges->StartIteration();
-	 while (Edge *e = iter->GetNext()) {
-	 if (e->getOpposite() == NULL || e->getCrease() > 0)
-	 continue;
-	 Vec3f a = (*e)[0]->get();
-	 Vec3f b = (*e)[1]->get();
-	 glVertex3f(a.x(), a.y(), a.z());
-	 glVertex3f(b.x(), b.y(), b.z());
-	 }
-	 edges->EndIteration(iter);
-	 glEnd();
 
-	 // draw all the interior, crease edges
-	 glLineWidth(3);
-	 glColor3f(1, 1, 0);
-	 glBegin(GL_LINES);
-	 iter = edges->StartIteration();
-	 while (Edge *e = iter->GetNext()) {
-	 if (e->getOpposite() == NULL || e->getCrease() == 0)
-	 continue;
-	 Vec3f a = (*e)[0]->get();
-	 Vec3f b = (*e)[1]->get();
-	 glVertex3f(a.x(), a.y(), a.z());
-	 glVertex3f(b.x(), b.y(), b.z());
-	 }
-	 edges->EndIteration(iter);
-	 glEnd();
+		glColor3f(0, 0, 1.0);
+		glBegin(GL_LINES);
+//		glColor3f(1.0, 0, 0);
 
-	 // draw all the boundary edges
-	 glLineWidth(3);
-	 glColor3f(1, 0, 0);
-	 glBegin(GL_LINES);
-	 iter = edges->StartIteration();
-	 while (Edge *e = iter->GetNext()) {
-	 if (e->getOpposite() != NULL)
-	 continue;
-	 assert(e->getCrease() == 0);
-	 Vec3f a = (*e)[0]->get();
-	 Vec3f b = (*e)[1]->get();
-	 glVertex3f(a.x(), a.y(), a.z());
-	 glVertex3f(b.x(), b.y(), b.z());
-	 }
-	 edges->EndIteration(iter);
-	 glEnd();
+		while (Triangle *t = iter->GetNext()) {
+			MeshDrawer::drawNormal(t);
+		}
 
-	 glEnable(GL_LIGHTING);
-	 }
-	 */
+		glEnd();
 
+		mesh->triangles->EndIteration(iter);
+	}
+
+//	glDisable(GL_POLYGON_OFFSET_FILL);
 	HandleGLError();
+}
+
+void MeshDrawer::drawNormal(Triangle* triangle) {
+	auto p1 = (*triangle)[0]->get();
+	auto p2 = (*triangle)[1]->get();
+	auto p3 = (*triangle)[2]->get();
+
+	Vec3f normal;
+
+	Vec3f::Cross3(normal, (p2 - p1), (p3 - p1));
+
+	normal.Normalize();
+	normal = normal * 0.5;
+
+	auto centroid = getCentroid(triangle);
+	auto final = centroid + normal;
+
+//	glColor3f(1.0, 0, 0);
+	glVertex3f(centroid.x(), centroid.y(), centroid.z());
+//	glColor3f(1.0, 0, 0);
+	glVertex3f(final.x(), final.y(), final.z());
+}
+
+Vec3f MeshDrawer::getCentroid(const Triangle* triangle) {
+	return ((*triangle)[0]->get() + (*triangle)[1]->get()
+			+ (*triangle)[2]->get()) * (1.0 / 3);
 }

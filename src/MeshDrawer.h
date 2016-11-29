@@ -10,12 +10,27 @@
 
 #include "mesh.h"
 
+typedef struct _do {
+	bool wireframe;
+	bool normals;
+	bool noise;
+
+	_do() : wireframe(false), normals(false), noise(false) {}
+
+} DrawOptions;
+
 class MeshDrawer {
 public:
 	MeshDrawer();
 	virtual ~MeshDrawer();
 
-	static void draw(Mesh * mesh, bool wireframe = false, bool generateNoise = true);
+//	static void draw(Mesh * mesh, bool wireframe = false, bool generateNoise = true);
+
+	static void draw(Mesh * mesh, const DrawOptions& options = DrawOptions());
+
+private:
+	static void drawNormal(Triangle* triangle);
+	static Vec3f getCentroid(const Triangle* triangle);
 };
 
 #endif /* SRC_MESHDRAWER_H_ */

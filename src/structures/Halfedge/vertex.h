@@ -17,7 +17,7 @@ public:
 
   // ========================
   // CONSTRUCTOR & DESTRUCTOR
-  Vertex(int i, const Vec3f &pos) : position(pos), color(1.0f, 1.0f, 1.0f) { index = i; }
+  Vertex(int i, const Vec3f &pos) : position(pos), color(1.0f, 1.0f, 1.0f), active(false) { index = i; }
   virtual ~Vertex() { }
   
   // =========
@@ -31,6 +31,8 @@ public:
   const Vec3f& getNormal() const { return normal; }
   const Color& getColor() const { return color; }
 
+  bool isActive() const { return active; }
+
   // =========
   // MODIFIERS
   void set(Vec3f v) { position = v; }
@@ -39,6 +41,8 @@ public:
   void setNormal(Vec3f v) { normal = v; }
   void setNormal(double x, double y, double z) { normal.Set(x,y,z); }
   void setColor(Color c) { color = c; }
+
+  void setActive(bool active) { this->active = active; }
 
 private:
 
@@ -52,6 +56,7 @@ private:
   Vec3f position;
   Vec3f normal;
   Color color;
+  bool active;
 
   // this is the index from the original .obj file.
   // technically not part of the half-edge data structure

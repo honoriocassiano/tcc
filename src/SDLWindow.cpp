@@ -22,6 +22,12 @@ Quadtree* tree = new Quadtree(Vec3f(0, 0, 0), Vec3f(1, 0, 0), Vec3f(0, 1, 0), 0,
 QuadCube* cube = new QuadCube(Vec3f(0, 0, 0));
 //Quadtree* tree = new Quadtree(Vec3f(0, 0, 0), Vec3f(50, 0, -10), Vec3f(0, 50, -10), 0, 20);
 
+Quadtree2* tree2 = nullptr;
+
+Quadtree2** getTree2() {
+	return &tree2;
+}
+
 Quadtree* getTree() {
 	return tree;
 }
@@ -60,6 +66,9 @@ int HandleGLErrorWindow2() {
 SDLWindow::SDLWindow(int width, int height) :
 		mCamera(nullptr), mClock(new Clock()), mIsRunning(false), mWindow(
 				nullptr), mWidth(width), mHeight(height) {
+
+//	options.normals = true;
+	options.wireframe = true;
 
 //	Vec3f position(0, 1500, 100);
 //	Vec3f direction = Vec3f(0, 0, 0) - position;
@@ -210,7 +219,10 @@ void SDLWindow::display() {
 //	MeshDrawer::draw(tree->getMesh(), true, false);
 
 //	cube->draw(true, false);
-	cube->draw(false, false);
+	//cube->draw(false, false);
+//	cube->draw(options);
+	MeshDrawer::draw(tree2->getMesh(), options);
+
 
 //	landscape->render();
 	//******************************************************

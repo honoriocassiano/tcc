@@ -21,8 +21,12 @@
 
 #include "PerspectiveCamera2.h"
 #include "QuadCube.h"
+#include "MeshDrawer.h"
+#include "Quadtree2.h"
 
 class Quadtree* getTree();
+
+Quadtree2** getTree2();
 
 QuadCube* getCube();
 
@@ -59,6 +63,7 @@ private:
 	std::vector<CelestialBody*> mBodies;
 	std::vector<int> mIndices;
 
+	DrawOptions options;
 	SDL_Window * mWindow;
 
 	PerspectiveCamera2* mCamera;

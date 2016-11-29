@@ -133,11 +133,27 @@ void Quadtree2::update(const Vec3f& cameraPosition) {
 				auto opposite = mesh->getEdge(intercardinals[enumValue],
 						center);
 
-				if (edge)
-					mesh->removeTriangle(edge->getTriangle());
+				{
+					// Remove the triangles
+					if (edge) {
+						mesh->removeTriangle(edge->getTriangle());
+					}
 
-				if (opposite)
-					mesh->removeTriangle(opposite->getTriangle());
+					if (opposite) {
+						mesh->removeTriangle(opposite->getTriangle());
+					}
+				}
+
+				{
+					// Recreate the triangles
+					mesh->addTriangle(center,
+							intercardinals[*IntercardinalDirection::getAtClockwiseIndex(
+									(i + 3) % 4)], intercardinals[enumValue]);
+
+					mesh->addTriangle(center,
+							intercardinals[*IntercardinalDirection::getAtClockwiseIndex(
+									(i + 1) % 4)], intercardinals[enumValue]);
+				}
 			}
 
 			{
@@ -196,7 +212,7 @@ void Quadtree2::update(const Vec3f& cameraPosition) {
 										(i + 3) % 4)]);
 
 				children[enumValue] = new Quadtree2(v[0], v[1], v[3], v[2],
-						localCenter, mesh, localMarked);
+						localCenter, mesh, localMarked, this);
 			}
 
 		} else if (!marked[*IntercardinalDirection::getAtClockwiseIndex(i)]
@@ -236,8 +252,9 @@ void Quadtree2::render() {
 
 Quadtree2::Quadtree2(Vertex* nw, Vertex* ne, Vertex* sw, Vertex* se,
 		Vertex* _center, Mesh* _mesh,
-		const DirectionArray<CardinalDirection, bool>& marked) :
-		parent(nullptr), mesh(_mesh), intercardinals(
+		const DirectionArray<CardinalDirection, bool>& marked,
+		Quadtree2* _parent) :
+		parent(_parent), mesh(_mesh), intercardinals(
 				IntercardinalDirection::getAll(), nullptr), children(
 				IntercardinalDirection::getAll(), nullptr), neighbors(
 				CardinalDirection::getAll(), nullptr), center(_center) {
