@@ -204,6 +204,12 @@ void MeshDrawer::draw(Mesh* mesh, const DrawOptions& options) {
 		Vertex* vb = (*t)[1];
 		Vertex* vc = (*t)[2];
 
+		// Check triangle orientation
+		if (!isClockwise(t)) {
+			vb = (*t)[2];
+			vc = (*t)[1];
+		}
+
 		Vec3f a = va->get();
 		Vec3f b = vb->get();
 		Vec3f c = vc->get();
@@ -266,7 +272,6 @@ void MeshDrawer::draw(Mesh* mesh, const DrawOptions& options) {
 	if (options.normals) {
 		iter = mesh->triangles->StartIteration();
 
-
 		glColor3f(0, 0, 1.0);
 		glBegin(GL_LINES);
 //		glColor3f(1.0, 0, 0);
@@ -308,4 +313,18 @@ void MeshDrawer::drawNormal(Triangle* triangle) {
 Vec3f MeshDrawer::getCentroid(const Triangle* triangle) {
 	return ((*triangle)[0]->get() + (*triangle)[1]->get()
 			+ (*triangle)[2]->get()) * (1.0 / 3);
+}
+
+bool MeshDrawer::isClockwise(const Triangle* triangle) {
+	auto& A = (*triangle)[0]->get();
+	auto& B = (*triangle)[1]->get();
+	auto& C = (*triangle)[2]->get();
+
+	Vec3f normal;
+
+	Vec3f::Cross3(normal, (B - A), (C - A));
+
+	Vec3f centroid = getCentroid(triangle);
+
+	return (normal.Dot3(centroid) > 0.0f);
 }

@@ -31,6 +31,8 @@ public:
 private:
 	static void drawNormal(Triangle* triangle);
 	static Vec3f getCentroid(const Triangle* triangle);
+
+	static bool isClockwise(const Triangle* triangle);
 };
 
 #endif /* SRC_MESHDRAWER_H_ */

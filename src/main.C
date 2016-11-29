@@ -25,10 +25,15 @@ int main(int argc, char **argv) {
 //	assert( 1 == 0 && "aaaa" );
 	Mesh* mesh = new Mesh();
 
-	auto nw = mesh->addVertex(Vec3f(-0.5, 0.5, 0));
-	auto ne = mesh->addVertex(Vec3f(0.5, 0.5, 0));
-	auto se = mesh->addVertex(Vec3f(0.5, -0.5, 0));
-	auto sw = mesh->addVertex(Vec3f(-0.5, -0.5, 0));
+//	auto nw = mesh->addVertex(Vec3f(-0.5, 0.5, 0));
+//	auto ne = mesh->addVertex(Vec3f(0.5, 0.5, 0));
+//	auto se = mesh->addVertex(Vec3f(0.5, -0.5, 0));
+//	auto sw = mesh->addVertex(Vec3f(-0.5, -0.5, 0));
+
+	auto nw = mesh->addVertex(Vec3f(-0.5, 0.5, 0.5));
+	auto ne = mesh->addVertex(Vec3f(0.5, 0.5, 0.5));
+	auto se = mesh->addVertex(Vec3f(0.5, -0.5, 0.5));
+	auto sw = mesh->addVertex(Vec3f(-0.5, -0.5, 0.5));
 
 //	Log("%d", IntercardinalDirection::NW.getClockwiseIndex());
 //	Log("%d", IntercardinalDirection::NE.getClockwiseIndex());
@@ -41,15 +46,15 @@ int main(int argc, char **argv) {
 //		Log("%d %d", (*d).getClockwiseIndex(), (*d).getMatrixIndex());
 //	}
 
-	Quadtree2** temp = getTree2();//new Quadtree2(nw, ne, sw, se, mesh);
+	Quadtree2** temp = getTree2(); //new Quadtree2(nw, ne, sw, se, mesh);
 	*temp = new Quadtree2(nw, ne, sw, se, mesh);
 
-	Quadtree2* quadtree = *temp;//new Quadtree2(nw, ne, sw, se, mesh);
+	Quadtree2* quadtree = *temp; //new Quadtree2(nw, ne, sw, se, mesh);
 
 	Log("t: %d", mesh->numTriangles());
 
 //	quadtree->update(Vec3f(0, 0, -0.01));
-	quadtree->update(Vec3f(-0.5, -0.25, -0.01));
+	quadtree->update(Vec3f(-0.5, -0.25, 0.51));
 
 	Log("t: %d", mesh->numTriangles());
 
