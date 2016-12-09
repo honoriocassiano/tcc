@@ -15,6 +15,8 @@
 
 #include "Quadtree.h"
 
+#include <string>
+
 class Quadtree2 {
 public:
 	Quadtree2(Vertex* nw, Vertex* ne, Vertex* sw, Vertex* se, Mesh * mesh =
@@ -22,7 +24,7 @@ public:
 
 	virtual ~Quadtree2();
 
-	void update(const Vec3f& cameraPosition);
+	void update(const Vec3f& cameraPosition, const std::string& tag = "main");
 	void render();
 
 	Mesh* getMesh() {

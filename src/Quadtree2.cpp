@@ -88,16 +88,21 @@ Quadtree2::~Quadtree2() {
 	}
 }
 
-void Quadtree2::update(const Vec3f& cameraPosition) {
+void Quadtree2::update(const Vec3f& cameraPosition, const std::string& tag) {
 
 	DirectionArray<IntercardinalDirection, bool> marked(
 			IntercardinalDirection::getAll(), false);
 
+	Log("%s", tag.c_str());
+
 	for (auto& e : IntercardinalDirection::getAll()) {
 		if (children[*e]) {
-			children[*e]->update(cameraPosition);
+			children[*e]->update(cameraPosition,
+					tag + " > " + std::to_string(e->getClockwiseIndex()));
 		}
 	}
+
+	Log("%s", tag.c_str());
 
 	// Mark who children must be exist
 	for (int i = 0; i < 4; ++i) {
@@ -119,13 +124,18 @@ void Quadtree2::update(const Vec3f& cameraPosition) {
 		}
 	}
 
+	Log("%s", tag.c_str());
+
 	// Update the children
 	for (int i = 0; i < 4; ++i) {
 
 		auto& enumValue = *IntercardinalDirection::getAtClockwiseIndex(i);
 
+		Log("%s %d", tag.c_str(), i);
+
 		if (marked[*IntercardinalDirection::getAtClockwiseIndex(i)]
 				&& !children[enumValue]) {
+
 			// Marked for creation and it's not exist
 			// so this have be created
 			{
@@ -133,28 +143,52 @@ void Quadtree2::update(const Vec3f& cameraPosition) {
 				auto opposite = mesh->getEdge(intercardinals[enumValue],
 						center);
 
+				auto edgeDeleted = false;
+				auto oppositeDeleted = false;
+
 				{
+
+					Log("%p %p", edge, opposite);
+
 					// Remove the triangles
 					if (edge) {
+						Log("%s", tag.c_str());
 						mesh->removeTriangle(edge->getTriangle());
+						edgeDeleted = true;
 					}
 
 					if (opposite) {
+						Log("%s", tag.c_str());
 						mesh->removeTriangle(opposite->getTriangle());
+						oppositeDeleted = true;
 					}
 				}
 
+				Log("%s", tag.c_str());
+
 				{
 					// Recreate the triangles
-					mesh->addTriangle(center,
-							intercardinals[*IntercardinalDirection::getAtClockwiseIndex(
-									(i + 3) % 4)], intercardinals[enumValue]);
+					if (oppositeDeleted) {
+						mesh->addTriangle(center,
+								intercardinals[*IntercardinalDirection::getAtClockwiseIndex(
+										(i + 3) % 4)],
+								intercardinals[enumValue]);
+					}
 
-					mesh->addTriangle(center,
-							intercardinals[*IntercardinalDirection::getAtClockwiseIndex(
-									(i + 1) % 4)], intercardinals[enumValue]);
+					Log("%s", tag.c_str());
+
+					if (edgeDeleted) {
+						mesh->addTriangle(center,
+								intercardinals[*IntercardinalDirection::getAtClockwiseIndex(
+										(i + 1) % 4)],
+								intercardinals[enumValue]);
+					}
 				}
+
+				Log("%s", tag.c_str());
 			}
+
+			Log("%s", tag.c_str());
 
 			{
 				auto& cd1 = *CardinalDirection::getAtClockwiseIndex(i);
@@ -214,6 +248,8 @@ void Quadtree2::update(const Vec3f& cameraPosition) {
 				children[enumValue] = new Quadtree2(v[0], v[1], v[3], v[2],
 						localCenter, mesh, localMarked, this);
 			}
+
+			Log("%s", tag.c_str());
 
 		} else if (!marked[*IntercardinalDirection::getAtClockwiseIndex(i)]
 				&& !children[enumValue]) {
@@ -326,4 +362,5 @@ Quadtree2::Quadtree2(Vertex* nw, Vertex* ne, Vertex* sw, Vertex* se,
 
 #undef MIDDLE
 #undef CAST
+
 

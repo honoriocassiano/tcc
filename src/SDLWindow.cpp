@@ -68,7 +68,7 @@ SDLWindow::SDLWindow(int width, int height) :
 				nullptr), mWidth(width), mHeight(height) {
 
 //	options.normals = true;
-	options.wireframe = true;
+//	options.wireframe = true;
 
 //	Vec3f position(0, 1500, 100);
 //	Vec3f direction = Vec3f(0, 0, 0) - position;
@@ -187,7 +187,7 @@ void SDLWindow::processRealtimeEvents() {
 			mCamera->rotateCamera(-0.005 * x, -0.005 * y);
 			//mCamera->rotateCamera(-0.005 * x, -0.005 * y);
 
-			Log("%s", mCamera->getPosition().str().c_str());
+//			Log("%s", mCamera->getPosition().str().c_str());
 		}
 		// Inserir ações com outros botões aqui
 	}
@@ -222,7 +222,6 @@ void SDLWindow::display() {
 	//cube->draw(false, false);
 //	cube->draw(options);
 	MeshDrawer::draw(tree2->getMesh(), options);
-
 
 //	landscape->render();
 	//******************************************************
@@ -323,13 +322,34 @@ void SDLWindow::processEvents(const SDL_Event& e) {
 			break;
 		}
 
+		case SDLK_n: {
+			options.normals = !options.normals;
+			break;
+		}
+
+		case SDLK_o: {
+			options.noise = !options.noise;
+			break;
+		}
+
 		case SDLK_p: {
-			getTree()->getMesh()->printTriangles();
+			options.points = !options.points;
+			break;
+		}
+
+		case SDLK_t: {
+//			getTree()->getMesh()->printTriangles();
+			Log("Triangles: %d", (*getTree2())->getMesh()->numTriangles());
+			break;
+		}
+
+		case SDLK_v: {
+			Log("Vertices: %d", (*getTree2())->getMesh()->numVertices());
 			break;
 		}
 
 		case SDLK_w: {
-			//landscape->toggleWireframe();
+			options.wireframe = !options.wireframe;
 			break;
 		}
 

@@ -195,94 +195,209 @@ void MeshDrawer::draw(Mesh* mesh, const DrawOptions& options) {
 		glPolygonMode( GL_FRONT_AND_BACK, GL_FILL);
 	}
 
-	// draw the triangles
-	//	glColor3f(1, 1, 1);
-	Iterator<Triangle*> *iter = mesh->triangles->StartIteration();
-	glBegin(GL_TRIANGLES);
-	while (Triangle *t = iter->GetNext()) {
-		Vertex* va = (*t)[0];
-		Vertex* vb = (*t)[1];
-		Vertex* vc = (*t)[2];
+	/*
+	 // draw the triangles
+	 //	glColor3f(1, 1, 1);
+	 if (!options.points) {
+	 auto iterEdge = mesh->edges->StartIteration();
 
-		// Check triangle orientation
-		if (!isClockwise(t)) {
-			vb = (*t)[2];
-			vc = (*t)[1];
-		}
+	 glBegin(GL_LINES);
+	 while (Edge *e = iterEdge->GetNext()) {
 
-		Vec3f a = va->get();
-		Vec3f b = vb->get();
-		Vec3f c = vc->get();
+	 auto v1 = e->getVertex();
+	 auto v2 = e->getNext()->getNext()->getVertex();
 
-		Vec3f n_a = va->getNormal();
-		Vec3f n_b = vb->getNormal();
-		Vec3f n_c = vc->getNormal();
+	 if (options.noise) {
+	 glColor3f(v1->getColor().r(), v1->getColor().g(),
+	 v1->getColor().b());
+	 glNormal3f(v1->getNormal().x(), v1->getNormal().y(),
+	 v1->getNormal().z());
+	 glVertex3f(v1->get().x(), v1->get().y(),
+	 Perlin::generate(v1->get()));
 
-		//		printf("(%f, %f, %f)\n", va->getColor().r(), va->getColor().g(), va->getColor().b());
+	 glColor3f(v2->getColor().r(), v2->getColor().g(),
+	 v2->getColor().b());
+	 glNormal3f(v2->getNormal().x(), v2->getNormal().y(),
+	 v2->getNormal().z());
+	 glVertex3f(v2->get().x(), v2->get().y(),
+	 Perlin::generate(v2->get()));
 
-		//***************************************
-		constexpr float maxHeight = 5.0f;
+	 } else {
 
-		glColor3f(va->getColor().r(), va->getColor().g(), va->getColor().b());
-		glNormal3f(n_a.x(), n_a.y(), n_a.z());
+	 glColor3f(v1->getColor().r(), v1->getColor().g(),
+	 v1->getColor().b());
+	 glNormal3f(v1->getNormal().x(), v1->getNormal().y(),
+	 v1->getNormal().z());
+	 glVertex3f(v1->get().x(), v1->get().y(), v1->get().z());
 
-		if (options.noise) {
-			glVertex3f(a.x(), a.y(), Perlin::generate(a));
-		} else {
-			glVertex3f(a.x(), a.y(), a.z());
-		}
+	 glColor3f(v2->getColor().r(), v2->getColor().g(),
+	 v2->getColor().b());
+	 glNormal3f(v2->getNormal().x(), v2->getNormal().y(),
+	 v2->getNormal().z());
+	 glVertex3f(v2->get().x(), v2->get().y(), v2->get().z());
 
-		//		glColor3f(n_b.r(), n_b.g(), n_b.b());
-		glColor3f(vb->getColor().r(), vb->getColor().g(), vb->getColor().b());
-		glNormal3f(n_b.x(), n_b.y(), n_b.z());
+	 }
+	 }
 
-		if (options.noise) {
-			glVertex3f(b.x(), b.y(), Perlin::generate(b));
-		} else {
-			glVertex3f(b.x(), b.y(), b.z());
-		}
+	 mesh->edges->EndIteration(iterEdge);
+	 glEnd();
 
-		//		glColor3f(n_c.r(), n_c.g(), n_c.b());
-		glColor3f(vc->getColor().r(), vc->getColor().g(), vc->getColor().b());
-		glNormal3f(n_c.x(), n_c.y(), n_c.z());
+	 glDisable(GL_POLYGON_OFFSET_FILL);
 
-		if (options.noise) {
-			glVertex3f(c.x(), c.y(), Perlin::generate(c));
-		} else {
-			glVertex3f(c.x(), c.y(), c.z());
-		}
+	 } else {
+	 glBegin(GL_POINTS);
 
-//		if (options.normals) {
-//			glPushMatrix();
-//			glColor3f(0, 0, 1);
-//			glBegin(GL_LINES);
-//			drawNormal(t);
-//			glEnd();
-//
-//			glPopMatrix();
-//		}
+	 for (int i = 0; i < mesh->vertices->Count(); ++i) {
+	 auto v = (*mesh->vertices)[i];
 
-		//***************************************
-	}
-	mesh->triangles->EndIteration(iter);
-	glEnd();
+	 glColor3f(1, 1, 1);
+	 glVertex3f(v->x(), v->y(), v->z());
+	 }
 
-	glDisable(GL_POLYGON_OFFSET_FILL);
+	 glEnd();
+	 }
 
-	if (options.normals) {
-		iter = mesh->triangles->StartIteration();
+	 if (options.normals) {
+	 Iterator<Triangle*> *iterTriangle = mesh->triangles->StartIteration();
 
-		glColor3f(0, 0, 1.0);
-		glBegin(GL_LINES);
-//		glColor3f(1.0, 0, 0);
+	 iterTriangle = mesh->triangles->StartIteration();
 
+	 glColor3f(0, 0, 1.0);
+	 glBegin(GL_LINES);
+	 //		glColor3f(1.0, 0, 0);
+
+	 while (Triangle *t = iterTriangle->GetNext()) {
+	 MeshDrawer::drawNormal(t);
+	 }
+
+	 glEnd();
+
+	 mesh->triangles->EndIteration(iterTriangle);
+	 }
+	 */
+
+	if (!options.points) {
+		Iterator<Triangle*> *iter = mesh->triangles->StartIteration();
+		glBegin(GL_TRIANGLES);
 		while (Triangle *t = iter->GetNext()) {
-			MeshDrawer::drawNormal(t);
-		}
+			Vertex* va = (*t)[0];
+			Vertex* vb = (*t)[1];
+			Vertex* vc = (*t)[2];
 
+			Vec3f tNormal = MeshDrawer::getNormal(t);
+
+			// Check triangle orientation
+			if (!isClockwise(t)) {
+				vb = (*t)[2];
+				vc = (*t)[1];
+
+				tNormal *= -1;
+			}
+
+			Vec3f a = va->get();
+			Vec3f b = vb->get();
+			Vec3f c = vc->get();
+
+			Vec3f n_a = va->getNormal();
+			Vec3f n_b = vb->getNormal();
+			Vec3f n_c = vc->getNormal();
+
+			if (MeshDrawer::cos(n_a, tNormal) < 0.0) {
+				n_a *= -1;
+				va->setNormal(n_a);
+			}
+			if (MeshDrawer::cos(n_b, tNormal) < 0.0) {
+				n_b *= -1;
+				vb->setNormal(n_b);
+			}
+
+			if (MeshDrawer::cos(n_c, tNormal) < 0.0) {
+				n_c *= -1;
+				vc->setNormal(n_c);
+			}
+
+			//		printf("(%f, %f, %f)\n", va->getColor().r(), va->getColor().g(), va->getColor().b());
+
+			//***************************************
+			constexpr float maxHeight = 5.0f;
+
+			glColor3f(va->getColor().r(), va->getColor().g(),
+					va->getColor().b());
+			glNormal3f(n_a.x(), n_a.y(), n_a.z());
+
+			if (options.noise) {
+				glVertex3f(a.x(), a.y(), Perlin::generate(a));
+			} else {
+				glVertex3f(a.x(), a.y(), a.z());
+			}
+
+			//		glColor3f(n_b.r(), n_b.g(), n_b.b());
+			glColor3f(vb->getColor().r(), vb->getColor().g(),
+					vb->getColor().b());
+			glNormal3f(n_b.x(), n_b.y(), n_b.z());
+
+			if (options.noise) {
+				glVertex3f(b.x(), b.y(), Perlin::generate(b));
+			} else {
+				glVertex3f(b.x(), b.y(), b.z());
+			}
+
+			//		glColor3f(n_c.r(), n_c.g(), n_c.b());
+			glColor3f(vc->getColor().r(), vc->getColor().g(),
+					vc->getColor().b());
+			glNormal3f(n_c.x(), n_c.y(), n_c.z());
+
+			if (options.noise) {
+				glVertex3f(c.x(), c.y(), Perlin::generate(c));
+			} else {
+				glVertex3f(c.x(), c.y(), c.z());
+			}
+
+			//		if (options.normals) {
+			//			glPushMatrix();
+			//			glColor3f(0, 0, 1);
+			//			glBegin(GL_LINES);
+			//			drawNormal(t);
+			//			glEnd();
+			//
+			//			glPopMatrix();
+			//		}
+
+			//***************************************
+		}
+		mesh->triangles->EndIteration(iter);
 		glEnd();
 
-		mesh->triangles->EndIteration(iter);
+		glDisable(GL_POLYGON_OFFSET_FILL);
+
+		if (options.normals) {
+			iter = mesh->triangles->StartIteration();
+
+			glColor3f(0, 0, 1.0);
+			glBegin(GL_LINES);
+			//		glColor3f(1.0, 0, 0);
+
+			while (Triangle *t = iter->GetNext()) {
+				MeshDrawer::drawNormal(t);
+			}
+
+			glEnd();
+
+			mesh->triangles->EndIteration(iter);
+		}
+
+	} else {
+		glDisable(GL_LIGHTING);
+		glPointSize(1.25);
+		glColor3f(1, 1, 1);
+		glBegin(GL_POINTS);
+		for (int i = 0; i < mesh->vertices->Count(); ++i) {
+			auto v = (*mesh->vertices)[i];
+
+			glVertex3f(v->x(), v->y(), v->z());
+		}
+		glEnd();
+		glEnable(GL_LIGHTING);
 	}
 
 //	glDisable(GL_POLYGON_OFFSET_FILL);
@@ -313,6 +428,22 @@ void MeshDrawer::drawNormal(Triangle* triangle) {
 Vec3f MeshDrawer::getCentroid(const Triangle* triangle) {
 	return ((*triangle)[0]->get() + (*triangle)[1]->get()
 			+ (*triangle)[2]->get()) * (1.0 / 3);
+}
+
+Vec3f MeshDrawer::getNormal(const Triangle* triangle) {
+	auto& A = (*triangle)[0]->get();
+	auto& B = (*triangle)[1]->get();
+	auto& C = (*triangle)[2]->get();
+
+	Vec3f normal;
+
+	Vec3f::Cross3(normal, (B - A), (C - A));
+
+	return normal;
+}
+
+float MeshDrawer::cos(const Vec3f& v1, const Vec3f& v2) {
+	return (v1.Dot3(v2)) / (v1.Length() * v2.Length());
 }
 
 bool MeshDrawer::isClockwise(const Triangle* triangle) {

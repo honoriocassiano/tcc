@@ -14,8 +14,11 @@ typedef struct _do {
 	bool wireframe;
 	bool normals;
 	bool noise;
+	bool points;
 
-	_do() : wireframe(false), normals(false), noise(false) {}
+	_do() :
+			wireframe(false), normals(false), noise(false), points(false) {
+	}
 
 } DrawOptions;
 
@@ -31,6 +34,10 @@ public:
 private:
 	static void drawNormal(Triangle* triangle);
 	static Vec3f getCentroid(const Triangle* triangle);
+
+	static Vec3f getNormal(const Triangle* triangle);
+
+	static float cos(const Vec3f& v1, const Vec3f& v2);
 
 	static bool isClockwise(const Triangle* triangle);
 };

@@ -51,12 +51,23 @@ int main(int argc, char **argv) {
 
 	Quadtree2* quadtree = *temp; //new Quadtree2(nw, ne, sw, se, mesh);
 
-	Log("t: %d", mesh->numTriangles());
+//	Log("t: %d", mesh->numTriangles());
 
-//	quadtree->update(Vec3f(0, 0, -0.01));
-	quadtree->update(Vec3f(-0.5, -0.25, 0.51));
+	quadtree->update(Vec3f(0.7, 0.7, 0.51));
+	quadtree->update(Vec3f(0.7, 0.7, 0.51));
+//	quadtree->update(Vec3f(0.5, 0.5, 0.51));
+//	quadtree->update(Vec3f(-0.5, -0.25, 0.51));
 
-	Log("t: %d", mesh->numTriangles());
+//	Log("t: %d", mesh->numTriangles());
+
+//	quadtree->update(Vec3f(0.5, 0.5, 0.51));
+//	quadtree->update(Vec3f(-0.5, -0.25, 0.51));
+
+//	Log("t: %d", mesh->numTriangles());
+
+//	quadtree->update(Vec3f(0.5, 0.5, 0.51));
+
+//	Log("t: %d", mesh->numTriangles());
 
 	SDLWindow window(640, 480);
 	window.run();
