@@ -348,8 +348,18 @@ void SDLWindow::processEvents(const SDL_Event& e) {
 			break;
 		}
 
+		case SDLK_a: {
+			options.axis = !options.axis;
+			break;
+		}
+
 		case SDLK_w: {
 			options.wireframe = !options.wireframe;
+			break;
+		}
+
+		case SDLK_ESCAPE: {
+			mIsRunning = false;
 			break;
 		}
 

@@ -15,57 +15,105 @@ class Vertex {
 
 public:
 
-  // ========================
-  // CONSTRUCTOR & DESTRUCTOR
-  Vertex(int i, const Vec3f &pos) : position(pos), color(1.0f, 1.0f, 1.0f), active(false) { index = i; }
-  virtual ~Vertex() { }
-  
-  // =========
-  // ACCESSORS
-  int getIndex() const { return index; }
-  double x() const { return position.x(); }
-  double y() const { return position.y(); }
-  double z() const { return position.z(); }
-  const Vec3f& get() const { return position; }
+	// ========================
+	// CONSTRUCTOR & DESTRUCTOR
+	Vertex(int i, const Vec3f &pos) :
+			position(pos), color(1.0f, 1.0f, 1.0f), active(false), level(0) {
+		index = i;
+	}
+	virtual ~Vertex() {
+	}
 
-  const Vec3f& getNormal() const { return normal; }
-  const Color& getColor() const { return color; }
+	// =========
+	// ACCESSORS
+	int getIndex() const {
+		return index;
+	}
+	double x() const {
+		return position.x();
+	}
+	double y() const {
+		return position.y();
+	}
+	double z() const {
+		return position.z();
+	}
+	const Vec3f& get() const {
+		return position;
+	}
 
-  bool isActive() const { return active; }
+	const Vec3f& getNormal() const {
+		return normal;
+	}
+	const Color& getColor() const {
+		return color;
+	}
 
-  // =========
-  // MODIFIERS
-  void set(Vec3f v) { position = v; }
-  void set(double x, double y, double z) { position.Set(x,y,z); }
+	bool isActive() const {
+		return active;
+	}
+	std::size_t getLevel() const {
+		return level;
+	}
 
-  void setNormal(Vec3f v) { normal = v; }
-  void setNormal(double x, double y, double z) { normal.Set(x,y,z); }
-  void setColor(Color c) { color = c; }
+	// =========
+	// MODIFIERS
+	void set(const Vec3f& v) {
+		position = v;
+	}
+	void set(double x, double y, double z) {
+		position.Set(x, y, z);
+	}
 
-  void setActive(bool active) { this->active = active; }
+	void setNormal(const Vec3f& v) {
+		normal = v;
+	}
+
+	void setNormal(double x, double y, double z) {
+		normal.Set(x, y, z);
+	}
+
+	void setColor(const Color& c) {
+		color = c;
+	}
+
+	void setLevel(std::size_t l) {
+		this->level = l;
+	}
+
+	void setActive(bool active) {
+		this->active = active;
+	}
 
 private:
 
-  // don't use these constructors
-  Vertex() { assert(0); }
-  Vertex& operator=(const Vertex&) { assert(0); }
-  Vertex(const Vertex&) { assert(0); }
-  
-  // ==============
-  // REPRESENTATION
-  Vec3f position;
-  Vec3f normal;
-  Color color;
-  bool active;
+	// don't use these constructors
+	Vertex() {
+		assert(0);
+	}
+	Vertex& operator=(const Vertex&) {
+		assert(0);
+	}
+	Vertex(const Vertex&) {
+		assert(0);
+	}
 
-  // this is the index from the original .obj file.
-  // technically not part of the half-edge data structure
-  int index;  
+	// ==============
+	// REPRESENTATION
+	Vec3f position;
+	Vec3f normal;
+	Color color;
+	bool active;
+	std::size_t level;
 
-  // NOTE: the vertices don't know anything about adjacency.  In some
-  // versions of this data structure they have a pointer to one of
-  // their incoming edges.  However, this data is very complicated to
-  // maintain during mesh manipulation.
+	// this is the index from the original .obj file.
+	// technically not part of the half-edge data structure
+	int index;
+
+	// NOTE: the vertices don't know anything about adjacency.  In some
+	// versions of this data structure they have a pointer to one of
+	// their incoming edges.  However, this data is very complicated to
+	// maintain during mesh manipulation.
 
 };
 

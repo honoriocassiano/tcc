@@ -42,8 +42,14 @@ private:
 	float calculateRoughness(const Vertex* center,
 			const DirectionArray<IntercardinalDirection, Vertex*>& intercardinals);
 
+	DirectionArray<CardinalDirection, Vertex*> getNeighborhood(
+			Vertex* center, const IntercardinalDirection& direction,
+			const DirectionArray<IntercardinalDirection, Vertex*>& intercardinals,
+			const DirectionArray<CardinalDirection, Vertex*>& neighbors);
+
 	void updateActives(const Vec3f& cameraPosition, Vertex* center,
-			DirectionArray<IntercardinalDirection, Vertex*>& intercardinals);
+			DirectionArray<IntercardinalDirection, Vertex*>& intercardinals,
+			const DirectionArray<CardinalDirection, Vertex*>& neighbors);
 
 	Quadtree2(Vertex* nw, Vertex* ne, Vertex* sw, Vertex* se, Vertex* center,
 			QuadtreeMesh * mesh,

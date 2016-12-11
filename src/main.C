@@ -55,9 +55,12 @@ int main(int argc, char **argv) {
 //	Log("t: %d", mesh->numTriangles());
 
 	quadtree->update2(Vec3f(0.7, 0.7, 10.51));
+	quadtree->update2(Vec3f(0.7, 0.7, 2.76));
+	quadtree->update2(Vec3f(0.7, 0.7, 2.76));
+//	quadtree->update2(Vec3f(0.7, 0.7, 2.76));
 //	quadtree->update2(Vec3f(0.7, 0.7, 0.51));
-	quadtree->update2(Vec3f(0.0, 0.0, 0.51));
-	quadtree->update2(Vec3f(0.0, 0.0, 0.51));
+//	quadtree->update2(Vec3f(0.7, 0.7, 0.51));
+//	quadtree->update2(Vec3f(0.7, 0.7, 0.51));
 
 //	quadtree->update2(Vec3f(0.7, 0.7, 0.51));
 //	quadtree->update(Vec3f(0.7, 0.7, 0.51));

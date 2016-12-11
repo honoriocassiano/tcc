@@ -195,6 +195,10 @@ void MeshDrawer::draw(Mesh* mesh, const DrawOptions& options) {
 		glPolygonMode( GL_FRONT_AND_BACK, GL_FILL);
 	}
 
+	if(options.axis) {
+		drawAxis();
+	}
+
 	/*
 	 // draw the triangles
 	 //	glColor3f(1, 1, 1);
@@ -444,6 +448,44 @@ Vec3f MeshDrawer::getNormal(const Triangle* triangle) {
 
 float MeshDrawer::cos(const Vec3f& v1, const Vec3f& v2) {
 	return (v1.Dot3(v2)) / (v1.Length() * v2.Length());
+}
+
+void MeshDrawer::drawAxis() {
+
+	glDisable(GL_LIGHTING);
+
+	constexpr float center[3] { 0, 0, 0 };
+	constexpr float x[3] { 1, 0, 0 };
+	constexpr float y[3] { 0, 1, 0 };
+	constexpr float z[3] { 0, 0, 1 };
+
+	glPushMatrix();
+
+	glMatrixMode(GL_MODELVIEW);
+//	glLoadIdentity();
+
+	glBegin(GL_LINES);
+
+	// Draw x axis
+	glColor3fv(x);
+	glVertex3fv(center);
+	glVertex3fv(x);
+
+	// Draw x axis
+	glColor3fv(y);
+	glVertex3fv(center);
+	glVertex3fv(y);
+
+	// Draw x axis
+	glColor3fv(z);
+	glVertex3fv(center);
+	glVertex3fv(z);
+
+	glEnd();
+
+	glPopMatrix();
+
+	glEnable(GL_LIGHTING);
 }
 
 bool MeshDrawer::isClockwise(const Triangle* triangle) {

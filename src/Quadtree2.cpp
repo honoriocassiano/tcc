@@ -12,7 +12,7 @@
 #include "CardinalDirection.h"
 #include "Perlin.h"
 
-float Quadtree2::C = 1.0;
+float Quadtree2::C = 2.5;
 
 #define MIDDLE(P1, P2) ( (P1 + P2 ) * 0.5)
 #define CAST(X, TYPE) static_cast<TYPE>(X)
@@ -93,15 +93,17 @@ Quadtree2::~Quadtree2() {
 }
 
 void Quadtree2::updateActives(const Vec3f& cameraPosition, Vertex* center,
-		DirectionArray<IntercardinalDirection, Vertex*>& intercardinals) {
+		DirectionArray<IntercardinalDirection, Vertex*>& intercardinals,
+		const DirectionArray<CardinalDirection, Vertex*>& neighbors) {
 
-	for (int i = 0; i < 4; ++i) {
+	for (auto i = 0; i < 4; ++i) {
 
 		auto direction = *IntercardinalDirection::getAtClockwiseIndex(i);
 
 		auto& e = intercardinals[direction];
 
-		auto middleVertex = mesh->getChildVertex(center, e);
+//		auto middleVertex = mesh->getChildVertex(center, e);
+		auto middleVertex = mesh->getOrCreateChildVertex(center, e);
 
 		if (middleVertex->isActive()) {
 
@@ -111,18 +113,20 @@ void Quadtree2::updateActives(const Vec3f& cameraPosition, Vertex* center,
 			temp[*IntercardinalDirection::getAtClockwiseIndex(i)] = e;
 
 			temp[*IntercardinalDirection::getAtClockwiseIndex((i + 1) % 4)] =
-					mesh->getChildVertex(e,
+					mesh->getOrCreateChildVertex(e,
 							intercardinals[*IntercardinalDirection::getAtClockwiseIndex(
 									(i + 1) % 4)]);
 			temp[*IntercardinalDirection::getAtClockwiseIndex((i + 2) % 4)] =
 					center;
 
 			temp[*IntercardinalDirection::getAtClockwiseIndex((i + 3) % 4)] =
-					mesh->getChildVertex(e,
+					mesh->getOrCreateChildVertex(e,
 							intercardinals[*IntercardinalDirection::getAtClockwiseIndex(
 									(i + 3) % 4)]);
 
-			updateActives(cameraPosition, middleVertex, temp);
+			updateActives(cameraPosition, middleVertex, temp,
+					getNeighborhood(center, direction, intercardinals,
+							neighbors));
 		}
 
 //		auto d =
@@ -135,42 +139,67 @@ void Quadtree2::updateActives(const Vec3f& cameraPosition, Vertex* center,
 
 		auto l = (middleVertex->get() - cameraPosition).Length();
 
-		if (l / d < C) {
-			// Remove edges
-			//			marked[*IntercardinalDirection::getAtClockwiseIndex(i)] = true;
+//		if (l / d < C) {
+//			// Remove edges
+//			//			marked[*IntercardinalDirection::getAtClockwiseIndex(i)] = true;
+//			middleVertex->setActive(true);
+//		}
+
+// TODO Change this value
+		auto c = 1.0f;
+		auto d2 = calculateRoughness(center, intercardinals);
+		auto f = l / (d * C * std::max(d2, 1.0f));
+
+		if (f < 1.0f) {
 			middleVertex->setActive(true);
+		} else {
+			middleVertex->setActive(false);
+		}
+	}
+
+	// Unset active if any vertex in the neighborhood differ by more than 1
+	for (auto i = 0; i < 4; ++i) {
+		auto direction = *IntercardinalDirection::getAtClockwiseIndex(i);
+
+		auto& e = intercardinals[direction];
+
+		auto middleVertex = mesh->getOrCreateChildVertex(center, e);
+
+		auto neighborhood = getNeighborhood(middleVertex, direction,
+				intercardinals, neighbors);
+
+		bool differByOne = true;
+
+		for (auto j = 0; j < 4; ++j) {
+			if (neighborhood[*CardinalDirection::getAtClockwiseIndex(j)]
+					&& abs(
+							(int)middleVertex->getLevel()
+									- (int)neighborhood[*CardinalDirection::getAtClockwiseIndex(
+											j)]->getLevel()) > 1) {
+
+//				Log("level: %d", abs(
+//						(int)middleVertex->getLevel()
+//								- (int)neighborhood[*CardinalDirection::getAtClockwiseIndex(
+//										j)]->getLevel()));
+
+				differByOne = false;
+				break;
+			}
+		}
+
+		if (!differByOne) {
+			middleVertex->setActive(false);
 		}
 	}
 }
 
 void Quadtree2::update2(const Vec3f& cameraPosition, const std::string& tag) {
 
-	/*
-	 //	DirectionArray<IntercardinalDirection, bool> marked(
-	 //			IntercardinalDirection::getAll(), false);
-
-
-	 for (int i = 0; i < 4; ++i) {
-	 auto& e =
-	 intercardinals[*IntercardinalDirection::getAtClockwiseIndex(i)];
-
-	 auto middleVertex = mesh->getChildVertex(center, e);
-
-	 auto d =
-	 ((intercardinals[IntercardinalDirection::NE]->get()
-	 + intercardinals[IntercardinalDirection::NW]->get())
-	 * 0.5).Length();
-	 auto l = (middleVertex->get() - cameraPosition).Length();
-
-	 if (l / d < C) {
-	 // Remove edges
-	 //			marked[*IntercardinalDirection::getAtClockwiseIndex(i)] = true;
-	 middleVertex->setActive(true);
-	 }
-	 }
-	 */
-
-	updateActives(cameraPosition, center, intercardinals);
+	// TODO Check this code
+	updateActives(cameraPosition, center, intercardinals,
+			DirectionArray<CardinalDirection, Vertex*>(
+					CardinalDirection::getAll(), nullptr));
+//	updateActives(cameraPosition, center, intercardinals, neighbors);
 
 	remesh(center, intercardinals,
 			DirectionArray<CardinalDirection, Vertex*>(
@@ -196,13 +225,12 @@ float Quadtree2::calculateRoughness(const Vertex* center,
 		auto elevationVector = Vec3f(middle->get().x(), middle->get().y(),
 				middle->get().z() + (1.0 * elevation));
 
-		// |(p - r1)x(p - r2)| / |r2 - r1|
-
 		Vec3f numerator;
 
 		Vec3f::Cross3(numerator, (elevationVector - v1->get()),
 				(elevationVector - v2->get()));
 
+		// |(p - r1)x(p - r2)| / |r2 - r1|
 		dh[i] = numerator.Length() / (v1->get() - v2->get()).Length();
 	}
 
@@ -319,7 +347,8 @@ void Quadtree2::remesh(Vertex* center,
 				(i + 1) % 4)];
 
 		// Check if not have neighbor
-		if (!neighbors[direction]) {
+		if (!neighbors[direction] || neighbors[direction]->isActive()) {
+			Log("%s", tag.c_str());
 
 			auto cardinalMiddle = mesh->getOrCreateChildVertex(v1, v2);
 
@@ -330,28 +359,92 @@ void Quadtree2::remesh(Vertex* center,
 				mesh->addTriangle(center, v1, cardinalMiddle);
 				mesh->addTriangle(center, v2, cardinalMiddle);
 			}
-		} else if (!neighbors[direction]->isActive()) {
+		} else if (neighbors[direction] && !neighbors[direction]->isActive()) {
+
+			Log("%s", tag.c_str());
+
 			auto tempEdge = mesh->getEdge(center, v1);
 			auto exist = false;
+			auto abc = true;
 
 			if (tempEdge && (tempEdge->getNext()->getVertex() == v2)) {
+//			if (tempEdge
+//					&& (tempEdge->getNext()->getNext()->getVertex() == v2)) {
+				Log("%s", tag.c_str());
 				exist = true;
 			} else {
+
+				abc = abc && (tempEdge != nullptr);
+
+				Log("%s", tag.c_str());
+
+				Log("%p %p %p", (tempEdge ? tempEdge->getVertex() : nullptr),
+						center, v1);
+				Log("%p %p %p",
+						((tempEdge && tempEdge->getOpposite()) ?
+								tempEdge->getOpposite()->getVertex() : nullptr),
+						center, v1);
+				Log("%s %s %s", center->get().str().c_str(),
+						v1->get().str().c_str(), v2->get().str().c_str());
+
 				tempEdge = mesh->getEdge(v1, center);
+
+				Log("%p %p %p", (tempEdge ? tempEdge->getVertex() : nullptr),
+						center, v1);
+
+				abc = abc && (tempEdge != nullptr);
 			}
+
+//			Log("%d %p %d", (!exist), tempEdge,
+//					true);//(tempEdge->getNext()->getVertex() == v2));
 
 			if (!exist && tempEdge
 					&& (tempEdge->getNext()->getVertex() == v2)) {
+//			if (!exist && tempEdge
+//					&& (tempEdge->getNext()->getNext()->getVertex() == v2)) {
+				Log("%s", tag.c_str());
 				exist = true;
 			}
 
-			if (!exist) {
+//			Log("%s %s %s", center->get().str().c_str(),
+//					v1->get().str().c_str(), v2->get().str().c_str());
+
+			if (!exist && abc) {
 				mesh->addTriangle(center, v1, v2);
 			}
 		}
 	}
 
 	Log("%s", tag.c_str());
+}
+
+DirectionArray<CardinalDirection, Vertex*> Quadtree2::getNeighborhood(
+		Vertex* center, const IntercardinalDirection& direction,
+		const DirectionArray<IntercardinalDirection, Vertex*>& intercardinals,
+		const DirectionArray<CardinalDirection, Vertex*>& neighbors) {
+
+	auto tempNeighbors = DirectionArray<CardinalDirection, Vertex*>(
+			CardinalDirection::getAll(), nullptr);
+
+	auto i = direction.getClockwiseIndex();
+
+	tempNeighbors[*CardinalDirection::getAtClockwiseIndex(i)] =
+			neighbors[*CardinalDirection::getAtClockwiseIndex(i)];
+
+	tempNeighbors[*CardinalDirection::getAtClockwiseIndex((i + 1) % 4)] =
+			mesh->getOrCreateChildVertex(center,
+					intercardinals[*IntercardinalDirection::getAtClockwiseIndex(
+							(i + 1) % 4)]);
+
+	tempNeighbors[*CardinalDirection::getAtClockwiseIndex((i + 2) % 4)] =
+			mesh->getOrCreateChildVertex(center,
+					intercardinals[*IntercardinalDirection::getAtClockwiseIndex(
+							(i + 3) % 4)]);
+
+	tempNeighbors[*CardinalDirection::getAtClockwiseIndex((i + 3) % 4)] =
+			neighbors[*CardinalDirection::getAtClockwiseIndex((i + 3) % 4)];
+
+	return tempNeighbors;
 }
 
 void Quadtree2::update(const Vec3f& cameraPosition, const std::string& tag) {
