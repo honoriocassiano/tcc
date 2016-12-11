@@ -1,6 +1,8 @@
 #ifndef _TRIANGLE_H
 #define _TRIANGLE_H
 
+#include <sstream>
+#include <string>
 #include <limits.h>
 #include "boundingbox.h"
 #include "edge.h"
@@ -103,6 +105,19 @@ public:
 
 	void * getUserData() {
 		return this->userData;
+	}
+
+	const std::string str() const {
+		std::stringstream ss;
+
+		ss << (*this)[0]->get().str();
+		ss << " ";
+		ss << (*this)[1]->get().str();
+		ss << " ";
+		ss << (*this)[2]->get().str();
+		ss << " ";
+
+		return ss.str();
 	}
 
 	// NOTE: If you want to modify a triangle, remove it from the mesh,
