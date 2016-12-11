@@ -125,10 +125,13 @@ void Quadtree2::updateActives(const Vec3f& cameraPosition, Vertex* center,
 			updateActives(cameraPosition, middleVertex, temp);
 		}
 
-		auto d =
-				((intercardinals[IntercardinalDirection::NE]->get()
-						+ intercardinals[IntercardinalDirection::NW]->get())
-						* 0.5).Length();
+//		auto d =
+//				((intercardinals[IntercardinalDirection::NE]->get()
+//						+ intercardinals[IntercardinalDirection::NW]->get())
+//						* 0.5).Length();
+
+		auto d = (intercardinals[IntercardinalDirection::NE]->get()
+				- intercardinals[IntercardinalDirection::NW]->get()).Length();
 
 		auto l = (middleVertex->get() - cameraPosition).Length();
 
