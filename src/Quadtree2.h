@@ -19,8 +19,8 @@
 
 class Quadtree2 {
 public:
-	Quadtree2(Vertex* nw, Vertex* ne, Vertex* sw, Vertex* se, QuadtreeMesh * mesh =
-			new QuadtreeMesh());
+	Quadtree2(Vertex* nw, Vertex* ne, Vertex* sw, Vertex* se,
+			QuadtreeMesh * mesh = new QuadtreeMesh());
 
 	virtual ~Quadtree2();
 
@@ -39,11 +39,15 @@ private:
 			const DirectionArray<CardinalDirection, Vertex*>& neighbors,
 			const std::string& tag = "main");
 
+	float calculateRoughness(const Vertex* center,
+			const DirectionArray<IntercardinalDirection, Vertex*>& intercardinals);
+
 	void updateActives(const Vec3f& cameraPosition, Vertex* center,
 			DirectionArray<IntercardinalDirection, Vertex*>& intercardinals);
 
 	Quadtree2(Vertex* nw, Vertex* ne, Vertex* sw, Vertex* se, Vertex* center,
-			QuadtreeMesh * mesh, const DirectionArray<CardinalDirection, bool>& marked,
+			QuadtreeMesh * mesh,
+			const DirectionArray<CardinalDirection, bool>& marked,
 			Quadtree2* parent);
 //	Quadtree2(Vertex* nw, Vertex* ne, Vertex* sw, Vertex* se, Vertex* center, Mesh * mesh,
 //			const DirectionArray<CardinalDirection, bool>& marked, const DirectionArray<CardinalDirection, bool>& willHaveNeighbor);

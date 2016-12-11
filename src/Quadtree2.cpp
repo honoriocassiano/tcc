@@ -8,7 +8,9 @@
 #include "Quadtree2.h"
 
 #include <math.h>
+#include <algorithm>
 #include "CardinalDirection.h"
+#include "Perlin.h"
 
 float Quadtree2::C = 1.0;
 
@@ -172,6 +174,58 @@ void Quadtree2::update2(const Vec3f& cameraPosition, const std::string& tag) {
 					CardinalDirection::getAll(), nullptr));
 }
 
+float Quadtree2::calculateRoughness(const Vertex* center,
+		const DirectionArray<IntercardinalDirection, Vertex*>& intercardinals) {
+
+	float dh[6] { 0.0f };
+
+	for (auto i = 0; i < 4; ++i) {
+		auto v1 =
+				intercardinals[*IntercardinalDirection::getAtClockwiseIndex(i)];
+		auto v2 = intercardinals[*IntercardinalDirection::getAtClockwiseIndex(
+				(i + 1) % 4)];
+
+		auto middle = mesh->getOrCreateChildVertex(v1, v2);
+
+		auto elevation = Perlin::generate(middle->get());
+
+		// TODO Change this formula
+		auto elevationVector = Vec3f(middle->get().x(), middle->get().y(),
+				middle->get().z() + (1.0 * elevation));
+
+		// |(p - r1)x(p - r2)| / |r2 - r1|
+
+		Vec3f numerator;
+
+		Vec3f::Cross3(numerator, (elevationVector - v1->get()),
+				(elevationVector - v2->get()));
+
+		dh[i] = numerator.Length() / (v1->get() - v2->get()).Length();
+	}
+
+	for (auto i = 0; i < 2; ++i) {
+		auto v1 =
+				intercardinals[*IntercardinalDirection::getAtClockwiseIndex(i)];
+		auto v2 = intercardinals[*IntercardinalDirection::getAtClockwiseIndex(
+				(i + 2) % 4)];
+
+		auto elevation = Perlin::generate(center->get());
+
+		// TODO Change this formula
+		auto elevationVector = Vec3f(center->get().x(), center->get().y(),
+				center->get().z() + (1.0 * elevation));
+
+		Vec3f numerator;
+
+		Vec3f::Cross3(numerator, (elevationVector - v1->get()),
+				(elevationVector - v2->get()));
+
+		dh[i + 4] = numerator.Length() / (v1->get() - v2->get()).Length();
+	}
+
+	return *std::max_element(dh, dh + 6);
+}
+
 void Quadtree2::remesh(Vertex* center,
 		const DirectionArray<IntercardinalDirection, Vertex*>& intercardinals,
 		const DirectionArray<CardinalDirection, Vertex*>& neighbors,
@@ -310,7 +364,7 @@ void Quadtree2::update(const Vec3f& cameraPosition, const std::string& tag) {
 
 	Log("%s", tag.c_str());
 
-	// Mark who children must be exist
+// Mark who children must be exist
 	for (int i = 0; i < 4; ++i) {
 		auto& e =
 				intercardinals[*IntercardinalDirection::getAtClockwiseIndex(i)];
@@ -332,7 +386,7 @@ void Quadtree2::update(const Vec3f& cameraPosition, const std::string& tag) {
 
 	Log("%s", tag.c_str());
 
-	// Update the children
+// Update the children
 	for (int i = 0; i < 4; ++i) {
 
 		auto& enumValue = *IntercardinalDirection::getAtClockwiseIndex(i);
@@ -501,7 +555,7 @@ Quadtree2::Quadtree2(Vertex* nw, Vertex* ne, Vertex* sw, Vertex* se,
 				IntercardinalDirection::getAll(), nullptr), neighbors(
 				CardinalDirection::getAll(), nullptr), center(_center) {
 
-	// TODO Delete this code when the new constructor will be created
+// TODO Delete this code when the new constructor will be created
 	intercardinals[IntercardinalDirection::NW] = nw;
 	intercardinals[IntercardinalDirection::NE] = ne;
 	intercardinals[IntercardinalDirection::SW] = sw;
@@ -538,7 +592,7 @@ Quadtree2::Quadtree2(Vertex* nw, Vertex* ne, Vertex* sw, Vertex* se,
 		}
 	}
 
-	// Create cardinals vertices
+// Create cardinals vertices
 	for (int i = 0; i < 4; ++i) {
 		auto& d1 = intercardinals[*IntercardinalDirection::getAtClockwiseIndex(
 				i)];
@@ -553,7 +607,7 @@ Quadtree2::Quadtree2(Vertex* nw, Vertex* ne, Vertex* sw, Vertex* se,
 		}
 	}
 
-	// Create middle points between center and intercardinals
+// Create middle points between center and intercardinals
 	for (int i = 0; i < 4; ++i) {
 		auto& d1 = intercardinals[*IntercardinalDirection::getAtClockwiseIndex(
 				i)];
