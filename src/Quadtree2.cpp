@@ -223,7 +223,10 @@ float Quadtree2::calculateRoughness(const Vertex* center,
 		dh[i + 4] = numerator.Length() / (v1->get() - v2->get()).Length();
 	}
 
-	return *std::max_element(dh, dh + 6);
+	auto d = (intercardinals[IntercardinalDirection::NE]->get()
+			- intercardinals[IntercardinalDirection::NW]->get()).Length();
+
+	return (*std::max_element(dh, dh + 6) / d);
 }
 
 void Quadtree2::remesh(Vertex* center,
