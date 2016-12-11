@@ -13,6 +13,7 @@
 #include "Object.h"
 #include "Quadtree.h"
 #include "Quadtree2.h"
+#include "QuadtreeMesh.h"
 
 #include "DirectionArray.h"
 #include "IntercardinalDirection.h"
@@ -23,7 +24,7 @@
 int main(int argc, char **argv) {
 
 //	assert( 1 == 0 && "aaaa" );
-	Mesh* mesh = new Mesh();
+	QuadtreeMesh* mesh = new QuadtreeMesh();
 
 //	auto nw = mesh->addVertex(Vec3f(-0.5, 0.5, 0));
 //	auto ne = mesh->addVertex(Vec3f(0.5, 0.5, 0));
@@ -53,8 +54,10 @@ int main(int argc, char **argv) {
 
 //	Log("t: %d", mesh->numTriangles());
 
-	quadtree->update(Vec3f(0.7, 0.7, 0.51));
-	quadtree->update(Vec3f(0.7, 0.7, 0.51));
+	quadtree->update2(Vec3f(0.7, 0.7, 10.51));
+	quadtree->update2(Vec3f(0.7, 0.7, 0.51));
+	quadtree->update2(Vec3f(0.7, 0.7, 0.51));
+//	quadtree->update(Vec3f(0.7, 0.7, 0.51));
 //	quadtree->update(Vec3f(0.5, 0.5, 0.51));
 //	quadtree->update(Vec3f(-0.5, -0.25, 0.51));
 

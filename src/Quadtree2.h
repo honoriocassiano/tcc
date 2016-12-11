@@ -8,8 +8,8 @@
 #ifndef SRC_QUADTREE2_H_
 #define SRC_QUADTREE2_H_
 
-#include "structures/Halfedge/mesh.h"
 #include "DirectionArray.h"
+#include "QuadtreeMesh.h"
 #include "IntercardinalDirection.h"
 #include "CardinalDirection.h"
 
@@ -19,11 +19,12 @@
 
 class Quadtree2 {
 public:
-	Quadtree2(Vertex* nw, Vertex* ne, Vertex* sw, Vertex* se, Mesh * mesh =
-			new Mesh());
+	Quadtree2(Vertex* nw, Vertex* ne, Vertex* sw, Vertex* se, QuadtreeMesh * mesh =
+			new QuadtreeMesh());
 
 	virtual ~Quadtree2();
 
+	void update2(const Vec3f& cameraPosition, const std::string& tag = "main");
 	void update(const Vec3f& cameraPosition, const std::string& tag = "main");
 	void render();
 
@@ -33,8 +34,17 @@ public:
 
 private:
 
+	void remesh(Vertex* center,
+			const DirectionArray<IntercardinalDirection, Vertex*>& intercardinals,
+			const DirectionArray<CardinalDirection, Vertex*>& neighbors,
+			const std::string& tag = "main");
+
+	void updateActives(const Vec3f& cameraPosition, Vertex* center,
+			DirectionArray<IntercardinalDirection, Vertex*>& intercardinals);
+
 	Quadtree2(Vertex* nw, Vertex* ne, Vertex* sw, Vertex* se, Vertex* center,
-			Mesh * mesh, const DirectionArray<CardinalDirection, bool>& marked, Quadtree2* parent);
+			QuadtreeMesh * mesh, const DirectionArray<CardinalDirection, bool>& marked,
+			Quadtree2* parent);
 //	Quadtree2(Vertex* nw, Vertex* ne, Vertex* sw, Vertex* se, Vertex* center, Mesh * mesh,
 //			const DirectionArray<CardinalDirection, bool>& marked, const DirectionArray<CardinalDirection, bool>& willHaveNeighbor);
 
@@ -42,7 +52,7 @@ private:
 	DirectionArray<CardinalDirection, Quadtree2*> neighbors;
 	DirectionArray<IntercardinalDirection, Quadtree2*> children;
 
-	Mesh* mesh;
+	QuadtreeMesh* mesh;
 	Vertex* center;
 	DirectionArray<IntercardinalDirection, Vertex*> intercardinals;
 
