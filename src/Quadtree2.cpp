@@ -363,6 +363,25 @@ void Quadtree2::remesh(Vertex* center,
 		} else if (!currentSubdivided[direction]
 				&& willBeSubdivided[direction]) {
 
+			auto e1 = mesh->getEdge(center, intercardinals[direction]);
+			auto e2 = mesh->getEdge(center, intercardinals[direction]);
+
+			if (e1 && e1->getTriangle()) {
+				mesh->removeTriangle(e1->getTriangle());
+			}
+
+			if (e2 && e2->getTriangle()) {
+				mesh->removeTriangle(e2->getTriangle());
+			}
+
+			auto middleInter = mesh->getOrCreateChildVertex(center,
+					intercardinals[direction]);
+
+			remesh(middleInter,
+					relativeInter,
+					getNeighborhood(center, direction, intercardinals,
+							neighbors), std::string(" > ") + std::to_string(i));
+
 		} else if (currentSubdivided[direction]
 				&& willBeSubdivided[direction]) {
 
