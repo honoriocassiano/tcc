@@ -60,6 +60,7 @@ int main(int argc, char **argv) {
 	quadtree->update2(Vec3f(0.7, 0.7, 2.76));
 //	quadtree->update2(Vec3f(0.7, 0.7, 2.76));
 //	quadtree->update2(Vec3f(0.7, 0.7, 2.76));
+//	quadtree->update2(Vec3f(0.7, 0.7, 2.76));
 //	quadtree->update2(Vec3f(0.7, 0.7, 0.51));
 //	quadtree->update2(Vec3f(0.7, 0.7, 0.51));
 //	quadtree->update2(Vec3f(0.7, 0.7, 0.51));

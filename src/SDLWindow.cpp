@@ -354,6 +354,11 @@ void SDLWindow::processEvents(const SDL_Event& e) {
 			break;
 		}
 
+		case SDLK_h: {
+			options.halfEdge = !options.halfEdge;
+			break;
+		}
+
 		case SDLK_w: {
 			options.wireframe = !options.wireframe;
 			break;

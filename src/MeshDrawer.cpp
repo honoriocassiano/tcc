@@ -13,6 +13,7 @@
 
 #include "triangle.h"
 #include "vertex.h"
+#include "structures/matrix.h"
 
 #include "Perlin.h"
 
@@ -190,12 +191,16 @@ void MeshDrawer::draw(Mesh* mesh, const DrawOptions& options) {
 
 	if (options.wireframe) {
 		glPolygonMode( GL_FRONT_AND_BACK, GL_LINE);
+
+		if (options.halfEdge) {
+			drawHalfEdge(mesh);
+		}
 	} else {
 		//		glPolygonMode( GL_FRONT, GL_FILL);
 		glPolygonMode( GL_FRONT_AND_BACK, GL_FILL);
 	}
 
-	if(options.axis) {
+	if (options.axis) {
 		drawAxis();
 	}
 
@@ -485,6 +490,112 @@ void MeshDrawer::drawAxis() {
 
 	glPopMatrix();
 
+	glEnable(GL_LIGHTING);
+}
+
+void MeshDrawer::drawHalfEdge(Mesh* mesh) {
+
+	auto it = mesh->triangles->StartIteration();
+
+	glDisable(GL_LIGHTING);
+//	glColor3f(1, 1, 0);
+	glBegin(GL_LINES);
+//	glBegin(GL_TRIANGLES);
+
+	int counter = 0;
+
+	while (Triangle *t = it->GetNext()) {
+//		if (counter++ > 0) {
+//			break;
+//		}
+
+		auto centroid = getCentroid(t);
+
+		float distance = 0.2f;
+		float arrowSize = 0.2f;
+
+		auto dv0 = (centroid - (*t)[0]->get()) * distance;
+		auto dv1 = (centroid - (*t)[1]->get()) * distance;
+		auto dv2 = (centroid - (*t)[2]->get()) * distance;
+
+		auto v0 = (*t)[0]->get() + dv0;
+		auto v1 = (*t)[1]->get() + dv1;
+		auto v2 = (*t)[2]->get() + dv2;
+
+		auto n01 = (*t)[0]->getNormal();
+		auto n12 = (*t)[1]->getNormal();
+		auto n20 = (*t)[2]->getNormal();
+
+		auto n = t->getNormal();
+
+		auto dirV0 = (v1 - v0) * arrowSize;
+		auto dirV1 = (v2 - v1) * arrowSize;
+		auto dirV2 = (v0 - v2) * arrowSize;
+
+		auto m = Matrix::MakeAxisRotation(n, (160 * M_PI) / 180);
+
+		m.Transform(dirV0);
+		m.Transform(dirV1);
+		m.Transform(dirV2);
+
+		glColor3f(1, 1, 0);
+		glVertex3f(v0[0], v0[1], v0[2]);
+
+		glColor3f(1, 0, 0);
+		glVertex3f(v1[0], v1[1], v1[2]);
+
+		// ********************************************
+		// ********************************************
+
+		glVertex3f(v1[0], v1[1], v1[2]);
+
+//		glColor3f(1, 0, 0);
+		glVertex3f(v1[0] + dirV0[0], v1[1] + dirV0[1], v1[2] + dirV0[2]);
+
+		// ********************************************
+		// ********************************************
+
+		glColor3f(1, 1, 0);
+
+		glVertex3f(v1[0], v1[1], v1[2]);
+
+		glColor3f(1, 0, 0);
+
+		glVertex3f(v2[0], v2[1], v2[2]);
+
+
+
+		// ********************************************
+		// ********************************************
+
+		glVertex3f(v2[0], v2[1], v2[2]);
+
+//		glColor3f(1, 0, 0);
+		glVertex3f(v2[0] + dirV1[0], v2[1] + dirV1[1], v2[2] + dirV1[2]);
+
+		// ********************************************
+		// ********************************************
+		glColor3f(1, 1, 0);
+
+		glVertex3f(v2[0], v2[1], v2[2]);
+
+		glColor3f(1, 0, 0);
+
+		glVertex3f(v0[0], v0[1], v0[2]);
+
+		// ********************************************
+		// ********************************************
+
+		glVertex3f(v0[0], v0[1], v0[2]);
+		glVertex3f(v0[0] + dirV2[0], v0[1] + dirV2[1], v0[2] + dirV2[2]);
+
+		// ********************************************
+		// ********************************************
+	}
+
+	mesh->triangles->EndIteration(it);
+
+	glEnd();
 	glEnable(GL_LIGHTING);
 }
 
