@@ -9,6 +9,7 @@
 #define SRC_CARDINALDIRECTION_H_
 
 #include "Direction.h"
+#include <string>
 
 class CardinalDirection: public Direction {
 public:
@@ -35,5 +36,9 @@ private:
 
 	static std::vector<const CardinalDirection*> all;
 };
+
+namespace std {
+string to_string(const CardinalDirection& direction);
+}
 
 #endif /* SRC_CARDINALDIRECTION_H_ */

@@ -57,3 +57,19 @@ const CardinalDirection* CardinalDirection::getAtClockwiseIndex(int index) {
 const std::vector<const CardinalDirection*>& CardinalDirection::getAll() {
 	return all;
 }
+
+std::string std::to_string(const CardinalDirection& direction) {
+
+	switch (direction.getClockwiseIndex()) {
+	case 0:
+		return "N";
+	case 1:
+		return "E";
+	case 2:
+		return "S";
+	case 3:
+		return "W";
+	}
+
+	return "";
+}

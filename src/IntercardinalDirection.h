@@ -9,6 +9,7 @@
 #define SRC_INTERCARDINALDIRECTION_H_
 
 #include "Direction.h"
+#include <string>
 
 class IntercardinalDirection: public Direction {
 public:
@@ -33,5 +34,9 @@ private:
 
 	static std::vector<const IntercardinalDirection*> all;
 };
+
+namespace std {
+string to_string(const IntercardinalDirection& direction);
+}
 
 #endif /* SRC_INTERCARDINALDIRECTION_H_ */

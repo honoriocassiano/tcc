@@ -9,8 +9,8 @@
 
 #define CAST(X) static_cast<Direction>(X)
 
-std::vector<const IntercardinalDirection*> IntercardinalDirection::all = { &NW, &NE, &SW,
-		&SE };
+std::vector<const IntercardinalDirection*> IntercardinalDirection::all = { &NW,
+		&NE, &SW, &SE };
 
 const IntercardinalDirection IntercardinalDirection::NW =
 		IntercardinalDirection(0, 0);
@@ -71,4 +71,20 @@ const IntercardinalDirection* IntercardinalDirection::getAtClockwiseIndex(
 IntercardinalDirection::IntercardinalDirection(int mIndex, int cIndex) :
 		Direction(mIndex, cIndex) {
 
+}
+
+std::string std::to_string(const IntercardinalDirection& direction) {
+
+	switch (direction.getClockwiseIndex()) {
+	case 0:
+		return "NW";
+	case 1:
+		return "NE";
+	case 2:
+		return "SE";
+	case 3:
+		return "SW";
+	}
+
+	return "";
 }
