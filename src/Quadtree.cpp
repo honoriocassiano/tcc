@@ -232,13 +232,13 @@ void Quadtree::subdivide(Intercardinal point, const std::string& tag,
 
 		Log("BABABA: %p", children[temp1]);
 
-		if (!children[temp1]) {
-			subdivide(temp1, "children 1", false);
-		}
-
-		if (!children[temp2]) {
-			subdivide(temp2, "children 2", false);
-		}
+//		if (!children[temp1]) {
+//			subdivide(temp1, "children 1", false);
+//		}
+//
+//		if (!children[temp2]) {
+//			subdivide(temp2, "children 2", false);
+//		}
 	}
 
 //	if (children[point]) {
