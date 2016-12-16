@@ -377,13 +377,73 @@ void Quadtree2::remesh(Vertex* center,
 			auto middleInter = mesh->getOrCreateChildVertex(center,
 					intercardinals[direction]);
 
-			remesh(middleInter,
-					relativeInter,
+			remesh(middleInter, relativeInter,
 					getNeighborhood(center, direction, intercardinals,
 							neighbors), std::string(" > ") + std::to_string(i));
 
 		} else if (currentSubdivided[direction]
 				&& willBeSubdivided[direction]) {
+
+			for (auto j = 0; j < 4; ++j) {
+				auto ic = *IntercardinalDirection::getAtClockwiseIndex(j);
+				auto c = *CardinalDirection::getAtClockwiseIndex(j);
+
+				auto cVertex =
+						mesh->getChildVertex(relativeInter[ic],
+								relativeInter[*IntercardinalDirection::getAtClockwiseIndex(
+										(j + 1) % 4)]);
+
+				auto edge = mesh->getEdge(center, cVertex);
+				auto edgeOp = mesh->getEdge(cVertex, center);
+
+				if ((neighbors[c] && !neighbors[c]->isActive())
+						^ (edge == nullptr)) {
+
+					if (!edge) {
+						mesh->removeTriangle(edge->getTriangle());
+						mesh->removeTriangle(edgeOp->getTriangle());
+
+						mesh->addTriangle(center, relativeInter[ic],
+								relativeInter[*IntercardinalDirection::getAtClockwiseIndex(
+										(j + 1) % 4)]);
+					} else {
+
+						auto nextIc =
+								*IntercardinalDirection::getAtClockwiseIndex(
+										(j + 1) % 4);
+
+						edge = mesh->getEdge(relativeInter[ic],
+								relativeInter[nextIc]);
+						edgeOp = mesh->getEdge(relativeInter[nextIc],
+								relativeInter[ic]);
+
+						if (edge && edge->getNext()->getVertex() == center) {
+
+							mesh->removeTriangle(edge->getTriangle());
+
+						} else if (edgeOp
+								&& edgeOp->getNext()->getVertex() == center) {
+
+							mesh->removeTriangle(edgeOp->getTriangle());
+						}
+
+						mesh->addTriangle(center, cVertex, relativeInter[ic]);
+
+						mesh->addTriangle(center, relativeInter[nextIc],
+								cVertex);
+					}
+				}
+			}
+
+			for (auto& dirTemp : IntercardinalDirection::getAll()) {
+
+				auto middleTemp = mesh->getOrCreateChildVertex(center,
+						intercardinals[*dirTemp]);
+
+				remesh(middleTemp, relativeInter,
+						getNeighborhood(center, *dirTemp, intercardinals,
+								neighbors), std::string(""));
+			}
 
 		} // Else, do nothing;
 	}
