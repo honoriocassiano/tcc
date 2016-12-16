@@ -291,309 +291,440 @@ float Quadtree2::calculateRoughness(const Vertex* center,
 }
 
 void Quadtree2::remesh(Vertex* center,
-		const DirectionArray<IntercardinalDirection, Vertex*>& intercardinals,
+		DirectionArray<IntercardinalDirection, Vertex*>& intercardinals,
 		const DirectionArray<CardinalDirection, Vertex*>& neighbors,
 		const std::string& tag) {
 
-	Log("/****************************************************");
-	Log("/************** Entering on function ****************");
-	Log("/****************************************************");
+	std::vector<Triangle*> currentTriangles;
 
-	{
-		auto edge = mesh->getEdge(intercardinals[IntercardinalDirection::NW],
-				intercardinals[IntercardinalDirection::SE]);
+	for (auto d : IntercardinalDirection::getAll()) {
 
-		if (!edge) {
-			edge = mesh->getEdge(intercardinals[IntercardinalDirection::NE],
-					intercardinals[IntercardinalDirection::SW]);
-		}
+		//auto edge = mesh->getEdge(center, intercardinals[*d]);
+		auto edge = mesh->getEdge(intercardinals[*d], center);
 
 		if (edge) {
-			auto opp = edge->getOpposite();
-
-			mesh->removeTriangle(edge->getTriangle());
-
-			if (opp) {
-				mesh->removeTriangle(opp->getTriangle());
-			}
+			currentTriangles = mesh->getTrianglesByVertex(edge);
+			break;
 		}
 	}
 
-	for (auto i = 0; i < IntercardinalDirection::getCount(); ++i) {
-		auto middleVertex =
-				mesh->getOrCreateChildVertex(center,
-						intercardinals[*IntercardinalDirection::getAtClockwiseIndex(
-								i)]);
-//				mesh->getChildVertex(center,
-//						intercardinals[*IntercardinalDirection::getAtClockwiseIndex(
-//								i)]);
+	DirectionArray<IntercardinalDirection, bool> currentSubdivided(
+			IntercardinalDirection::getAll(), false);
 
-		Log("%s %p", tag.c_str(), middleVertex);
+	DirectionArray<IntercardinalDirection, bool> willBeSubdivided { {
+			IntercardinalDirection::NW, mesh->getOrCreateChildVertex(center,
+					intercardinals[IntercardinalDirection::NW]) }, {
+			IntercardinalDirection::NE, mesh->getOrCreateChildVertex(center,
+					intercardinals[IntercardinalDirection::NE]) }, {
+			IntercardinalDirection::SE, mesh->getOrCreateChildVertex(center,
+					intercardinals[IntercardinalDirection::SE]) }, {
+			IntercardinalDirection::SW, mesh->getOrCreateChildVertex(center,
+					intercardinals[IntercardinalDirection::SW]) } };
 
-		if (middleVertex->isActive()) {
+	// Get vertices that are subdivided
+	for (auto i = 0; i < 4; ++i) {
+		auto direction = *IntercardinalDirection::getAtClockwiseIndex(i);
 
-			Log("%s", tag.c_str());
+		auto intCenter = mesh->getOrCreateChildVertex(center,
+				intercardinals[direction]);
 
-			auto direction = *IntercardinalDirection::getAtClockwiseIndex(i);
+		auto relativeInter = getRelativeIntercardinals(direction, center,
+				intercardinals);
 
-			auto& e = intercardinals[direction];
+		std::vector<Triangle*> localTriangles;
 
-			auto tempIntercardinals = DirectionArray<IntercardinalDirection,
-					Vertex*>(IntercardinalDirection::getAll(), nullptr);
-			auto tempNeighbors = DirectionArray<CardinalDirection, Vertex*>(
-					CardinalDirection::getAll(), nullptr);
+		for (auto d : IntercardinalDirection::getAll()) {
+			auto edge = mesh->getEdge(relativeInter[*d], intCenter);
 
-			Log("%s", tag.c_str());
+			if (edge) {
+				localTriangles = mesh->getTrianglesByVertex(edge);
+				break;
+			}
+		}
 
-			// Setting intercardinals
-			tempIntercardinals[*IntercardinalDirection::getAtClockwiseIndex(i)] =
-					e;
+		if (localTriangles.size() > 0) {
+			currentSubdivided[direction] = true;
+		}
 
-			tempIntercardinals[*IntercardinalDirection::getAtClockwiseIndex(
-					(i + 1) % 4)] = mesh->getOrCreateChildVertex(e,
-					intercardinals[*IntercardinalDirection::getAtClockwiseIndex(
+		// Update mesh
+		if (currentSubdivided[direction] && !willBeSubdivided[direction]) {
+
+			for (auto& t : localTriangles) {
+				mesh->removeTriangle(t);
+			}
+
+			mesh->addTriangle(center, intercardinals[direction],
+					relativeInter[*IntercardinalDirection::getAtClockwiseIndex(
 							(i + 1) % 4)]);
+			mesh->addTriangle(center,
+					relativeInter[*IntercardinalDirection::getAtClockwiseIndex(
+							(i + 3) % 4)], intercardinals[direction]);
 
-			tempIntercardinals[*IntercardinalDirection::getAtClockwiseIndex(
-					(i + 2) % 4)] = center;
+		} else if (!currentSubdivided[direction]
+				&& willBeSubdivided[direction]) {
 
-			tempIntercardinals[*IntercardinalDirection::getAtClockwiseIndex(
-					(i + 3) % 4)] = mesh->getOrCreateChildVertex(e,
-					intercardinals[*IntercardinalDirection::getAtClockwiseIndex(
-							(i + 3) % 4)]);
+		} else if (currentSubdivided[direction]
+				&& willBeSubdivided[direction]) {
 
-			Log("%s", tag.c_str());
-
-			// Setting neighbors
-			tempNeighbors[*CardinalDirection::getAtClockwiseIndex(i)] =
-					neighbors[*CardinalDirection::getAtClockwiseIndex(i)];
-
-			tempNeighbors[*CardinalDirection::getAtClockwiseIndex((i + 1) % 4)] =
-					mesh->getOrCreateChildVertex(center,
-							intercardinals[*IntercardinalDirection::getAtClockwiseIndex(
-									(i + 1) % 4)]);
-
-			tempNeighbors[*CardinalDirection::getAtClockwiseIndex((i + 2) % 4)] =
-					mesh->getOrCreateChildVertex(center,
-							intercardinals[*IntercardinalDirection::getAtClockwiseIndex(
-									(i + 3) % 4)]);
-
-			tempNeighbors[*CardinalDirection::getAtClockwiseIndex((i + 3) % 4)] =
-					neighbors[*CardinalDirection::getAtClockwiseIndex(
-							(i + 3) % 4)];
-
-			Log("%s", tag.c_str());
-
-			remesh(middleVertex, tempIntercardinals, tempNeighbors,
-					tag + " > " + std::to_string(i));
-		}
+		} // Else, do nothing;
 	}
 
-	Log("%s", tag.c_str());
+	/*
+	 for (auto i = 0; i < 4; ++i) {
+	 auto direction = *IntercardinalDirection::getAtClockwiseIndex(i);
 
-	for (auto i = 0; i < CardinalDirection::getCount(); ++i) {
-		auto direction = *CardinalDirection::getAtClockwiseIndex(i);
+	 if (currentSubdivided[direction]
+	 && !willBeSubdivided[direction]) {
 
-		auto v1 =
-				intercardinals[*IntercardinalDirection::getAtClockwiseIndex(i)];
-		auto v2 = intercardinals[*IntercardinalDirection::getAtClockwiseIndex(
-				(i + 1) % 4)];
 
-		// Check if not have neighbor
-//		if ( !neighbors[direction] || neighbors[direction]->isActive() ) {
-		if ((!neighbors[direction] || neighbors[direction]->isActive())
-				&& !mesh->getOrCreateChildVertex(center, v1)->isActive()) {
-			Log("%s", tag.c_str());
 
-			auto cardinalMiddle = mesh->getOrCreateChildVertex(v1, v2);
+	 } else if (!currentSubdivided[direction]
+	 && willBeSubdivided[direction]) {
 
-			Log("%p %p", mesh->getEdge(center, cardinalMiddle),
-					mesh->getEdge(cardinalMiddle, center));
-			Log("%s %s", center->get().str().c_str(),
-					cardinalMiddle->get().str().c_str());
+	 } else if (currentSubdivided[direction]
+	 && willBeSubdivided[direction]) {
 
-			// TODO If this condition must be an AND or OR
-//			if (!(mesh->getEdge(center, cardinalMiddle)
-//					&& mesh->getEdge(cardinalMiddle, center))) {
-//
-//				mesh->addTriangle(center, v1, cardinalMiddle);
-//				mesh->addTriangle(center, v2, cardinalMiddle);
-//			}
+	 }// Else, do nothing;
+	 }
+	 */
+}
 
-			auto edge1 = mesh->getEdge(center, cardinalMiddle);
-			auto edge2 = mesh->getEdge(cardinalMiddle, center);
+/*
+ void Quadtree2::remesh(Vertex* center,
+ const DirectionArray<IntercardinalDirection, Vertex*>& intercardinals,
+ const DirectionArray<CardinalDirection, Vertex*>& neighbors,
+ const std::string& tag) {
 
-//			Log("ABC: %p %p", edge1, edge2);
-//			Log("ABC: %s %s", center->get().str().c_str(),
-//					cardinalMiddle->get().str().c_str());
-//
-//			if (edge2) {
-//				Log("ABC: %p", edge2->getOpposite());
-//			}
+ Log("/****************************************************");
+ Log("/************** Entering on function ****************");
+ Log("/****************************************************");
 
-//			if ((edge1 == nullptr) ^ (edge2 == nullptr)) {
-//
-//				if (edge1) {
-//					mesh->removeTriangle(edge1->getTriangle());
-//					edge1 = nullptr;
-//				}
-//
-//				if (edge2) {
-//					mesh->removeTriangle(edge2->getTriangle());
-//					edge2 = nullptr;
-//				}
-//			}
+ {
+ auto edge = mesh->getEdge(intercardinals[IntercardinalDirection::NW],
+ intercardinals[IntercardinalDirection::SE]);
 
-//			if (!(mesh->getEdge(center, cardinalMiddle)
-//					&& mesh->getEdge(cardinalMiddle, center))) {
+ if (!edge) {
+ edge = mesh->getEdge(intercardinals[IntercardinalDirection::NE],
+ intercardinals[IntercardinalDirection::SW]);
+ }
 
-			if (!edge1 && !edge2) {
-				mesh->addTriangle(center, v1, cardinalMiddle);
-				mesh->addTriangle(center, cardinalMiddle, v2);
-			}
-//			}
+ if (edge) {
+ auto opp = edge->getOpposite();
 
-		} else if (neighbors[direction] && !neighbors[direction]->isActive()) {
+ mesh->removeTriangle(edge->getTriangle());
 
-			Log("%s", tag.c_str());
+ if (opp) {
+ mesh->removeTriangle(opp->getTriangle());
+ }
+ }
+ }
 
-//			auto tempEdge = mesh->getEdge(center, v1);
-			auto tempEdge = mesh->getEdge(v1, v2);
-			auto exist = false;
-//			auto abc = true;
-			auto numberTriangles = 0;
+ for (auto i = 0; i < IntercardinalDirection::getCount(); ++i) {
+ auto middleVertex =
+ mesh->getOrCreateChildVertex(center,
+ intercardinals[*IntercardinalDirection::getAtClockwiseIndex(
+ i)]);
+ //				mesh->getChildVertex(center,
+ //						intercardinals[*IntercardinalDirection::getAtClockwiseIndex(
+ //								i)]);
 
-			{
-				if (tempEdge && (tempEdge->getNext()->getVertex() == center)) {
-					exist = true;
-				} else {
+ Log("%s %p", tag.c_str(), middleVertex);
 
-//					abc = abc && (tempEdge != nullptr);
-					tempEdge = mesh->getEdge(v2, v1);
+ if (middleVertex->isActive()) {
 
-					Log("%p %p %p",
-							(tempEdge ? tempEdge->getVertex() : nullptr),
-							center, v1);
+ Log("%s", tag.c_str());
 
-//					abc = abc && (tempEdge != nullptr);
-				}
+ auto direction = *IntercardinalDirection::getAtClockwiseIndex(i);
 
-				Log("%s", tag.c_str());
-				if (!exist && tempEdge
-						&& (tempEdge->getNext()->getVertex() == center)) {
-					Log("%s", tag.c_str());
-					exist = true;
-				}
+ auto& e = intercardinals[direction];
 
-				Log("%s", tag.c_str());
+ auto tempIntercardinals = DirectionArray<IntercardinalDirection,
+ Vertex*>(IntercardinalDirection::getAll(), nullptr);
+ auto tempNeighbors = DirectionArray<CardinalDirection, Vertex*>(
+ CardinalDirection::getAll(), nullptr);
 
-				if (exist) {
-//				if (!exist && abc) {
-					numberTriangles = 1;
-//				mesh->addTriangle(center, v1, v2);
-				}
-			}
-			Log("%s", tag.c_str());
+ Log("%s", tag.c_str());
 
-			if (!numberTriangles) {
-				tempEdge = mesh->getEdge(center,
-						mesh->getOrCreateChildVertex(v1, v2));
+ // Setting intercardinals
+ tempIntercardinals[*IntercardinalDirection::getAtClockwiseIndex(i)] =
+ e;
 
-				Log("%s", tag.c_str());
-				if (tempEdge) {
-					exist = true;
-				} else {
-					tempEdge = mesh->getEdge(
-							mesh->getOrCreateChildVertex(v1, v2), center);
-				}
+ tempIntercardinals[*IntercardinalDirection::getAtClockwiseIndex(
+ (i + 1) % 4)] = mesh->getOrCreateChildVertex(e,
+ intercardinals[*IntercardinalDirection::getAtClockwiseIndex(
+ (i + 1) % 4)]);
 
-				Log("%s", tag.c_str());
+ tempIntercardinals[*IntercardinalDirection::getAtClockwiseIndex(
+ (i + 2) % 4)] = center;
 
-				if (!exist && tempEdge) {
-					exist = true;
-				}
+ tempIntercardinals[*IntercardinalDirection::getAtClockwiseIndex(
+ (i + 3) % 4)] = mesh->getOrCreateChildVertex(e,
+ intercardinals[*IntercardinalDirection::getAtClockwiseIndex(
+ (i + 3) % 4)]);
 
-				if (exist) {
-					numberTriangles = 2;
-				}
+ Log("%s", tag.c_str());
 
-				Log("%s", tag.c_str());
-			}
+ // Setting neighbors
+ tempNeighbors[*CardinalDirection::getAtClockwiseIndex(i)] =
+ neighbors[*CardinalDirection::getAtClockwiseIndex(i)];
 
-			if (numberTriangles == 0) {
-//				Log("%s %d", tag.c_str(), i);
-//				Log("%p %p", mesh->getEdge(v1, v2), mesh->getEdge(v2, v1));
-//				Log("t1: %s\tt2: %s",
-//						mesh->getEdge(v1, v2)->getTriangle()->str().c_str(),
-//						mesh->getEdge(v2, v1)->getTriangle()->str().c_str());
-////				Log("%p %p", mesh->getEdge(v1, v2)->getVertex(), mesh->getEdge(v2, v1)->getVertex());
-//				Log("%p %p %p", v1, v2, center);
-//				Log("%s", center->get().str().c_str());
-//				Log("%s %s", v1->get().str().c_str(), v2->get().str().c_str());
+ tempNeighbors[*CardinalDirection::getAtClockwiseIndex((i + 1) % 4)] =
+ mesh->getOrCreateChildVertex(center,
+ intercardinals[*IntercardinalDirection::getAtClockwiseIndex(
+ (i + 1) % 4)]);
 
-				mesh->addTriangle(center, v1, v2);
+ tempNeighbors[*CardinalDirection::getAtClockwiseIndex((i + 2) % 4)] =
+ mesh->getOrCreateChildVertex(center,
+ intercardinals[*IntercardinalDirection::getAtClockwiseIndex(
+ (i + 3) % 4)]);
 
-			} else if (numberTriangles == 2) {
-				Log("%s %d", tag.c_str(), i);
+ tempNeighbors[*CardinalDirection::getAtClockwiseIndex((i + 3) % 4)] =
+ neighbors[*CardinalDirection::getAtClockwiseIndex(
+ (i + 3) % 4)];
 
-				auto opp = tempEdge->getOpposite();
+ Log("%s", tag.c_str());
 
-				mesh->removeTriangle(tempEdge->getTriangle());
-				mesh->removeTriangle(opp->getTriangle());
+ remesh(middleVertex, tempIntercardinals, tempNeighbors,
+ tag + " > " + std::to_string(i));
+ }
+ }
 
-				mesh->addTriangle(center, v1, v2);
-			}
+ Log("%s", tag.c_str());
 
-////			if (tempEdge && (tempEdge->getNext()->getVertex() == v2)) {
-//			if (tempEdge && (tempEdge->getNext()->getVertex() == center)) {
-//				Log("%s", tag.c_str());
-//				exist = true;
-//			} else {
-//
-////				abc = abc && (tempEdge != nullptr);
-//
-//				Log("%s", tag.c_str());
-//
-//				Log("%p %p %p", (tempEdge ? tempEdge->getVertex() : nullptr),
-//						center, v1);
-//				Log("%p %p %p",
-//						((tempEdge && tempEdge->getOpposite()) ?
-//								tempEdge->getOpposite()->getVertex() : nullptr),
-//						center, v1);
-//				Log("%s %s %s", center->get().str().c_str(),
-//						v1->get().str().c_str(), v2->get().str().c_str());
-//
-////				tempEdge = mesh->getEdge(v1, center);
-//				tempEdge = mesh->getEdge(v2, v1);
-//
-//				Log("%p %p %p", (tempEdge ? tempEdge->getVertex() : nullptr),
-//						center, v1);
-//
-////				abc = abc && (tempEdge != nullptr);
-//			}
-//
-////			Log("%d %p %d", (!exist), tempEdge,
-////					true);//(tempEdge->getNext()->getVertex() == v2));
-//
-////			if (!exist && tempEdge
-////					&& (tempEdge->getNext()->getVertex() == v2)) {
-//			if (!exist && tempEdge
-//					&& (tempEdge->getNext()->getVertex() == center)) {
-//				Log("%s", tag.c_str());
-//				exist = true;
-//			}
-//
-////			Log("%s %s %s", center->get().str().c_str(),
-////					v1->get().str().c_str(), v2->get().str().c_str());
-//
-////			if (!exist && abc) {
-//			if (!exist) {
-//				mesh->addTriangle(center, v1, v2);
-//			}
+ for (auto i = 0; i < CardinalDirection::getCount(); ++i) {
+ auto direction = *CardinalDirection::getAtClockwiseIndex(i);
+
+ auto v1 =
+ intercardinals[*IntercardinalDirection::getAtClockwiseIndex(i)];
+ auto v2 = intercardinals[*IntercardinalDirection::getAtClockwiseIndex(
+ (i + 1) % 4)];
+
+ // Check if not have neighbor
+ //		if ( !neighbors[direction] || neighbors[direction]->isActive() ) {
+ if ((!neighbors[direction] || neighbors[direction]->isActive())
+ && !mesh->getOrCreateChildVertex(center, v1)->isActive()) {
+ Log("%s", tag.c_str());
+
+ auto cardinalMiddle = mesh->getOrCreateChildVertex(v1, v2);
+
+ Log("%p %p", mesh->getEdge(center, cardinalMiddle),
+ mesh->getEdge(cardinalMiddle, center));
+ Log("%s %s", center->get().str().c_str(),
+ cardinalMiddle->get().str().c_str());
+
+ // TODO If this condition must be an AND or OR
+ //			if (!(mesh->getEdge(center, cardinalMiddle)
+ //					&& mesh->getEdge(cardinalMiddle, center))) {
+ //
+ //				mesh->addTriangle(center, v1, cardinalMiddle);
+ //				mesh->addTriangle(center, v2, cardinalMiddle);
+ //			}
+
+ auto edge1 = mesh->getEdge(center, cardinalMiddle);
+ auto edge2 = mesh->getEdge(cardinalMiddle, center);
+
+ //			Log("ABC: %p %p", edge1, edge2);
+ //			Log("ABC: %s %s", center->get().str().c_str(),
+ //					cardinalMiddle->get().str().c_str());
+ //
+ //			if (edge2) {
+ //				Log("ABC: %p", edge2->getOpposite());
+ //			}
+
+ //			if ((edge1 == nullptr) ^ (edge2 == nullptr)) {
+ //
+ //				if (edge1) {
+ //					mesh->removeTriangle(edge1->getTriangle());
+ //					edge1 = nullptr;
+ //				}
+ //
+ //				if (edge2) {
+ //					mesh->removeTriangle(edge2->getTriangle());
+ //					edge2 = nullptr;
+ //				}
+ //			}
+
+ //			if (!(mesh->getEdge(center, cardinalMiddle)
+ //					&& mesh->getEdge(cardinalMiddle, center))) {
+
+ if (!edge1 && !edge2) {
+ mesh->addTriangle(center, v1, cardinalMiddle);
+ mesh->addTriangle(center, cardinalMiddle, v2);
+ }
+ //			}
+
+ } else if (neighbors[direction] && !neighbors[direction]->isActive()) {
+
+ Log("%s", tag.c_str());
+
+ //			auto tempEdge = mesh->getEdge(center, v1);
+ auto tempEdge = mesh->getEdge(v1, v2);
+ auto exist = false;
+ //			auto abc = true;
+ auto numberTriangles = 0;
+
+ {
+ if (tempEdge && (tempEdge->getNext()->getVertex() == center)) {
+ exist = true;
+ } else {
+
+ //					abc = abc && (tempEdge != nullptr);
+ tempEdge = mesh->getEdge(v2, v1);
+
+ Log("%p %p %p",
+ (tempEdge ? tempEdge->getVertex() : nullptr),
+ center, v1);
+
+ //					abc = abc && (tempEdge != nullptr);
+ }
+
+ Log("%s", tag.c_str());
+ if (!exist && tempEdge
+ && (tempEdge->getNext()->getVertex() == center)) {
+ Log("%s", tag.c_str());
+ exist = true;
+ }
+
+ Log("%s", tag.c_str());
+
+ if (exist) {
+ //				if (!exist && abc) {
+ numberTriangles = 1;
+ //				mesh->addTriangle(center, v1, v2);
+ }
+ }
+ Log("%s", tag.c_str());
+
+ if (!numberTriangles) {
+ tempEdge = mesh->getEdge(center,
+ mesh->getOrCreateChildVertex(v1, v2));
+
+ Log("%s", tag.c_str());
+ if (tempEdge) {
+ exist = true;
+ } else {
+ tempEdge = mesh->getEdge(
+ mesh->getOrCreateChildVertex(v1, v2), center);
+ }
+
+ Log("%s", tag.c_str());
+
+ if (!exist && tempEdge) {
+ exist = true;
+ }
+
+ if (exist) {
+ numberTriangles = 2;
+ }
+
+ Log("%s", tag.c_str());
+ }
+
+ if (numberTriangles == 0) {
+ //				Log("%s %d", tag.c_str(), i);
+ //				Log("%p %p", mesh->getEdge(v1, v2), mesh->getEdge(v2, v1));
+ //				Log("t1: %s\tt2: %s",
+ //						mesh->getEdge(v1, v2)->getTriangle()->str().c_str(),
+ //						mesh->getEdge(v2, v1)->getTriangle()->str().c_str());
+ ////				Log("%p %p", mesh->getEdge(v1, v2)->getVertex(), mesh->getEdge(v2, v1)->getVertex());
+ //				Log("%p %p %p", v1, v2, center);
+ //				Log("%s", center->get().str().c_str());
+ //				Log("%s %s", v1->get().str().c_str(), v2->get().str().c_str());
+
+ mesh->addTriangle(center, v1, v2);
+
+ } else if (numberTriangles == 2) {
+ Log("%s %d", tag.c_str(), i);
+
+ auto opp = tempEdge->getOpposite();
+
+ mesh->removeTriangle(tempEdge->getTriangle());
+ mesh->removeTriangle(opp->getTriangle());
+
+ mesh->addTriangle(center, v1, v2);
+ }
+
+ ////			if (tempEdge && (tempEdge->getNext()->getVertex() == v2)) {
+ //			if (tempEdge && (tempEdge->getNext()->getVertex() == center)) {
+ //				Log("%s", tag.c_str());
+ //				exist = true;
+ //			} else {
+ //
+ ////				abc = abc && (tempEdge != nullptr);
+ //
+ //				Log("%s", tag.c_str());
+ //
+ //				Log("%p %p %p", (tempEdge ? tempEdge->getVertex() : nullptr),
+ //						center, v1);
+ //				Log("%p %p %p",
+ //						((tempEdge && tempEdge->getOpposite()) ?
+ //								tempEdge->getOpposite()->getVertex() : nullptr),
+ //						center, v1);
+ //				Log("%s %s %s", center->get().str().c_str(),
+ //						v1->get().str().c_str(), v2->get().str().c_str());
+ //
+ ////				tempEdge = mesh->getEdge(v1, center);
+ //				tempEdge = mesh->getEdge(v2, v1);
+ //
+ //				Log("%p %p %p", (tempEdge ? tempEdge->getVertex() : nullptr),
+ //						center, v1);
+ //
+ ////				abc = abc && (tempEdge != nullptr);
+ //			}
+ //
+ ////			Log("%d %p %d", (!exist), tempEdge,
+ ////					true);//(tempEdge->getNext()->getVertex() == v2));
+ //
+ ////			if (!exist && tempEdge
+ ////					&& (tempEdge->getNext()->getVertex() == v2)) {
+ //			if (!exist && tempEdge
+ //					&& (tempEdge->getNext()->getVertex() == center)) {
+ //				Log("%s", tag.c_str());
+ //				exist = true;
+ //			}
+ //
+ ////			Log("%s %s %s", center->get().str().c_str(),
+ ////					v1->get().str().c_str(), v2->get().str().c_str());
+ //
+ ////			if (!exist && abc) {
+ //			if (!exist) {
+ //				mesh->addTriangle(center, v1, v2);
+ //			}
+ }
+ }
+
+ Log("%s", tag.c_str());
+ }
+ */
+
+DirectionArray<IntercardinalDirection, Vertex*> Quadtree2::getRelativeIntercardinals(
+		const IntercardinalDirection& direction, Vertex* center,
+		DirectionArray<IntercardinalDirection, Vertex*>& parentIntercardinals) {
+
+	auto i = direction.getClockwiseIndex();
+
+	const IntercardinalDirection* directions[] = {
+			IntercardinalDirection::getAtClockwiseIndex(i),
+			IntercardinalDirection::getAtClockwiseIndex((i + 1) % 4),
+			IntercardinalDirection::getAtClockwiseIndex((i + 2) % 4),
+			IntercardinalDirection::getAtClockwiseIndex((i + 3) % 4) };
+
+	return {
+		{
+			*directions[0],
+			parentIntercardinals[*directions[0]]
+		}, {
+			*directions[1],
+			mesh->getOrCreateChildVertex(parentIntercardinals[*directions[0]],
+					parentIntercardinals[*directions[1]])
+		}, {
+			*directions[2], center
+		}, {
+			*directions[3],
+			mesh->getOrCreateChildVertex(parentIntercardinals[*directions[0]],
+					parentIntercardinals[*directions[3]])
 		}
-	}
-
-	Log("%s", tag.c_str());
+	};
 }
 
 DirectionArray<CardinalDirection, Vertex*> Quadtree2::getNeighborhood(

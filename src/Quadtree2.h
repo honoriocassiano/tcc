@@ -35,17 +35,22 @@ public:
 private:
 
 	void remesh(Vertex* center,
-			const DirectionArray<IntercardinalDirection, Vertex*>& intercardinals,
+			DirectionArray<IntercardinalDirection, Vertex*>& intercardinals,
 			const DirectionArray<CardinalDirection, Vertex*>& neighbors,
 			const std::string& tag = "main");
 
 	float calculateRoughness(const Vertex* center,
 			const DirectionArray<IntercardinalDirection, Vertex*>& intercardinals);
 
-	DirectionArray<CardinalDirection, Vertex*> getNeighborhood(
-			Vertex* center, const IntercardinalDirection& direction,
+	DirectionArray<CardinalDirection, Vertex*> getNeighborhood(Vertex* center,
+			const IntercardinalDirection& direction,
 			const DirectionArray<IntercardinalDirection, Vertex*>& intercardinals,
 			const DirectionArray<CardinalDirection, Vertex*>& neighbors);
+
+	DirectionArray<IntercardinalDirection, Vertex*> getRelativeIntercardinals(
+			const IntercardinalDirection& direction,
+			Vertex* center,
+			DirectionArray<IntercardinalDirection, Vertex*>& parentIntercardinals);
 
 	void updateActives(const Vec3f& cameraPosition, Vertex* center,
 			DirectionArray<IntercardinalDirection, Vertex*>& intercardinals,
