@@ -18,26 +18,17 @@ DirectionArray<DType, Element>::DirectionArray(const std::vector<const DType*>& 
 	}
 }
 
-//template<class DType, class Element>
-//DirectionArray<DType, Element>::DirectionArray(
-//		const std::vector<DType>& allElements, Element values...) {
-//
-//	auto params = std::make_tuple(values);
-//	auto size = std::tuple_size<decltype(params)>::value;
-//
-//	assert((size == 1 && size == allElements.size()) && "Invalid number of arguments");
-//
-//	if( size == 1 ) {
-//		for(auto i = 0; i < allElements.size(); ++i) {
-//			elements[allElements[i]] = std::get<0>(params);
-//		}
-//	} else {
-//		for(int i = 0; i < allElements.size(); ++i) {
-//			//elements[allElements[i]] = std::get<i>(params);
-//			elements[allElements[i]] = params[i];
-//		}
-//	}
-//}
+template<class DType, class Element>
+inline DirectionArray<DType, Element>::DirectionArray(
+		std::initializer_list<std::pair< typename std::add_const<DType>::type, Element> > values) :
+		elements(values) {
+
+	for (auto d: DType::getAll()) {
+		if ( elements.find(*d) == elements.end() ) {
+			throw std::runtime_error("All members must be initialized!");
+		}
+	}
+}
 
 template<class DType, class Element>
 DirectionArray<DType, Element>::DirectionArray(
