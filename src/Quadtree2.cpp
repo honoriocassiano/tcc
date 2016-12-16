@@ -141,15 +141,22 @@ void Quadtree2::updateActives(const Vec3f& cameraPosition, Vertex* center,
 		auto l = (middleVertex->get() - cameraPosition).Length();
 
 // TODO Change this value
-		auto c = 1.0f;
-		auto d2 = calculateRoughness(center, intercardinals);
-		auto f = l / (d * C * std::max(d2, 1.0f));
-
-		if (f < 1.0f) {
+		if ((l / d) < C) {
 			middleVertex->setActive(true);
 		} else {
 			middleVertex->setActive(false);
 		}
+		/*
+		 auto c = 1.0f;
+		 auto d2 = calculateRoughness(center, intercardinals);
+		 auto f = l / (d * C * std::max(d2, 1.0f));
+
+		 if (f < 1.0f) {
+		 middleVertex->setActive(true);
+		 } else {
+		 middleVertex->setActive(false);
+		 }
+		 */
 	}
 
 	// Unset active if any vertex in the neighborhood differ by more than 1
@@ -297,6 +304,8 @@ void Quadtree2::remesh(Vertex* center,
 
 	std::vector<Triangle*> currentTriangles;
 
+	Log("%s", tag.c_str());
+
 	for (auto d : IntercardinalDirection::getAll()) {
 
 		//auto edge = mesh->getEdge(center, intercardinals[*d]);
@@ -308,18 +317,22 @@ void Quadtree2::remesh(Vertex* center,
 		}
 	}
 
+	Log("%s", tag.c_str());
+
 	DirectionArray<IntercardinalDirection, bool> currentSubdivided(
 			IntercardinalDirection::getAll(), false);
 
 	DirectionArray<IntercardinalDirection, bool> willBeSubdivided { {
 			IntercardinalDirection::NW, mesh->getOrCreateChildVertex(center,
-					intercardinals[IntercardinalDirection::NW]) }, {
+					intercardinals[IntercardinalDirection::NW])->isActive() }, {
 			IntercardinalDirection::NE, mesh->getOrCreateChildVertex(center,
-					intercardinals[IntercardinalDirection::NE]) }, {
+					intercardinals[IntercardinalDirection::NE])->isActive() }, {
 			IntercardinalDirection::SE, mesh->getOrCreateChildVertex(center,
-					intercardinals[IntercardinalDirection::SE]) }, {
+					intercardinals[IntercardinalDirection::SE])->isActive() }, {
 			IntercardinalDirection::SW, mesh->getOrCreateChildVertex(center,
-					intercardinals[IntercardinalDirection::SW]) } };
+					intercardinals[IntercardinalDirection::SW])->isActive() } };
+
+	Log("%s", tag.c_str());
 
 	// Get vertices that are subdivided
 	for (auto i = 0; i < 4; ++i) {
@@ -348,6 +361,7 @@ void Quadtree2::remesh(Vertex* center,
 
 		// Update mesh
 		if (currentSubdivided[direction] && !willBeSubdivided[direction]) {
+			Log("%s", tag.c_str());
 
 			for (auto& t : localTriangles) {
 				mesh->removeTriangle(t);
@@ -362,27 +376,36 @@ void Quadtree2::remesh(Vertex* center,
 
 		} else if (!currentSubdivided[direction]
 				&& willBeSubdivided[direction]) {
+			Log("%s", tag.c_str());
 
 			auto e1 = mesh->getEdge(center, intercardinals[direction]);
-			auto e2 = mesh->getEdge(center, intercardinals[direction]);
+			auto e2 = mesh->getEdge(intercardinals[direction], center);
+
+			Log("%s", tag.c_str());
 
 			if (e1 && e1->getTriangle()) {
 				mesh->removeTriangle(e1->getTriangle());
 			}
 
+			Log("%s", tag.c_str());
+
 			if (e2 && e2->getTriangle()) {
 				mesh->removeTriangle(e2->getTriangle());
 			}
+
+			Log("%s", tag.c_str());
 
 			auto middleInter = mesh->getOrCreateChildVertex(center,
 					intercardinals[direction]);
 
 			remesh(middleInter, relativeInter,
 					getNeighborhood(center, direction, intercardinals,
-							neighbors), std::string(" > ") + std::to_string(i));
+							neighbors),
+					tag + " > " + std::to_string(direction));
 
 		} else if (currentSubdivided[direction]
 				&& willBeSubdivided[direction]) {
+			Log("%s", tag.c_str());
 
 			for (auto j = 0; j < 4; ++j) {
 				auto ic = *IntercardinalDirection::getAtClockwiseIndex(j);
@@ -442,10 +465,54 @@ void Quadtree2::remesh(Vertex* center,
 
 				remesh(middleTemp, relativeInter,
 						getNeighborhood(center, *dirTemp, intercardinals,
-								neighbors), std::string(""));
+								neighbors),
+						tag + " > " + std::to_string(*dirTemp));
 			}
 
 		} // Else, do nothing;
+	}
+
+	Log("%s", tag.c_str());
+
+	// First subdivision case
+	if (currentTriangles.size() == 0 && center->isActive()) {
+		for (auto i = 0; i < 4; ++i) {
+			Log("%s [%d]", tag.c_str(), i);
+
+			auto c = *CardinalDirection::getAtClockwiseIndex(i);
+
+			auto ic = *IntercardinalDirection::getAtClockwiseIndex(i);
+			auto nextIc = *IntercardinalDirection::getAtClockwiseIndex(
+					(i + 1) % 4);
+
+			auto middle = mesh->getOrCreateChildVertex(intercardinals[ic],
+					intercardinals[nextIc]);
+
+			if (neighbors[c] && !neighbors[c]->isActive()) {
+				Log("%s", tag.c_str());
+
+				mesh->addTriangle(center, intercardinals[ic],
+						intercardinals[nextIc]);
+			} else {
+				Log("%s", tag.c_str());
+
+				auto tempMid = mesh->getOrCreateChildVertex(center,
+						intercardinals[ic]);
+
+				if (!tempMid->isActive()) {
+					mesh->addTriangle(center, intercardinals[ic], middle);
+				}
+
+				Log("%s", tag.c_str());
+
+				tempMid = mesh->getOrCreateChildVertex(center,
+						intercardinals[nextIc]);
+
+				if (!tempMid->isActive()) {
+					mesh->addTriangle(center, middle, intercardinals[nextIc]);
+				}
+			}
+		}
 	}
 
 	/*
