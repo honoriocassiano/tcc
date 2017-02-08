@@ -67,7 +67,7 @@ QuadCube::~QuadCube() {
 
 void QuadCube::draw(bool wireframe, bool generateNoise) {
 	for (auto& m : faces) {
-		MeshDrawer::draw(m->getMesh(), wireframe, generateNoise);
+//		MeshDrawer::draw(m->getMesh(), wireframe, generateNoise);
 	}
 }
 

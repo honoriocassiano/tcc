@@ -9,7 +9,7 @@
 
 #define CAST(X) static_cast<Direction>(X)
 
-std::vector<const IntercardinalDirection*> IntercardinalDirection::all = { &NW,
+std::vector<const IntercardinalDirection*> IntercardinalDirection::_all = { &NW,
 		&NE, &SW, &SE };
 
 const IntercardinalDirection IntercardinalDirection::NW =
@@ -25,8 +25,8 @@ std::size_t IntercardinalDirection::getCount() {
 	return 4;
 }
 
-const std::vector<const IntercardinalDirection*>& IntercardinalDirection::getAll() {
-	return all;
+const std::vector<const IntercardinalDirection*>& IntercardinalDirection::all() {
+	return _all;
 }
 
 const IntercardinalDirection* IntercardinalDirection::getAtMatrixIndex(

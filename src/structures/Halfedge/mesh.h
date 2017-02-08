@@ -16,6 +16,7 @@ class VertexParent;
 
 class CelestialBody;
 class MeshDrawer;
+class QuadtreeMesh;
 
 // ======================================================================
 // ======================================================================
@@ -94,6 +95,8 @@ private:
   BoundingBox *bbox;
   Bag<VertexParent*> *vertex_parents;
 
+
+  friend class QuadtreeMesh;
 };
 
 // ======================================================================

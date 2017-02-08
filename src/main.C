@@ -31,16 +31,16 @@ int main(int argc, char **argv) {
 //	auto se = mesh->addVertex(Vec3f(0.5, -0.5, 0));
 //	auto sw = mesh->addVertex(Vec3f(-0.5, -0.5, 0));
 
-	auto nw = mesh->addVertex(Vec3f(-0.5, 0.5, 0.5));
-	auto ne = mesh->addVertex(Vec3f(0.5, 0.5, 0.5));
-	auto se = mesh->addVertex(Vec3f(0.5, -0.5, 0.5));
-	auto sw = mesh->addVertex(Vec3f(-0.5, -0.5, 0.5));
+//	auto nw = mesh->addVertex(Vec3f(-0.5, 0.5, 0.5));
+//	auto ne = mesh->addVertex(Vec3f(0.5, 0.5, 0.5));
+//	auto se = mesh->addVertex(Vec3f(0.5, -0.5, 0.5));
+//	auto sw = mesh->addVertex(Vec3f(-0.5, -0.5, 0.5));
 
-//	Log("%d", IntercardinalDirection::NW.getClockwiseIndex());
-//	Log("%d", IntercardinalDirection::NE.getClockwiseIndex());
-//	Log("%d", IntercardinalDirection::SW.getClockwiseIndex());
-//	Log("%d", IntercardinalDirection::SE.getClockwiseIndex());
-//
+	auto ne = mesh->addVertex(Vec3f(-0.5, 0.5, 0.5));
+	auto nw = mesh->addVertex(Vec3f(0.5, 0.5, 0.5));
+	auto sw = mesh->addVertex(Vec3f(0.5, -0.5, 0.5));
+	auto se = mesh->addVertex(Vec3f(-0.5, -0.5, 0.5));
+
 //	Log("***********************************************************");
 //
 //	for(auto& d : IntercardinalDirection::getAll()) {
@@ -57,8 +57,13 @@ int main(int argc, char **argv) {
 	quadtree->update2(Vec3f(0.7, 0.7, 10.51));
 //	quadtree->update2(Vec3f(0.7, 0.7, 10.51));
 //	quadtree->update2(Vec3f(0.7, 0.7, 10.51));
-	quadtree->update2(Vec3f(0.7, 0.7, 2.76));
-//	quadtree->update2(Vec3f(0.7, 0.7, 2.76));
+
+	Log("******************************************");
+	Log("UPDATE!!!");
+	Log("******************************************");
+
+//	quadtree->update2(Vec3f(0.9, 0.9, 2.76));
+
 //	quadtree->update2(Vec3f(0.7, 0.7, 2.76));
 //	quadtree->update2(Vec3f(0.7, 0.7, 2.76));
 //	quadtree->update2(Vec3f(0.7, 0.7, 0.51));

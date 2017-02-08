@@ -14,12 +14,21 @@
 #include "structures/Halfedge/edge.h"
 #include "structures/Halfedge/triangle.h"
 
+class Quadtree2;
+
 class QuadtreeMesh : public Mesh {
 public:
 	QuadtreeMesh();
 	virtual ~QuadtreeMesh();
 
 	Vertex* getOrCreateChildVertex(Vertex *p1, Vertex *p2);
+
+private:
+	Bag<Triangle*>* getTriangles() {
+		return triangles;
+	}
+
+	friend class Quadtree2;
 };
 
 #endif /* SRC_QUADTREEMESH_H_ */

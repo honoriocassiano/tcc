@@ -27,12 +27,12 @@ public:
 
 	static std::size_t getCount();
 
-	static const std::vector<const IntercardinalDirection*>& getAll();
+	static const std::vector<const IntercardinalDirection*>& all();
 
 private:
 	IntercardinalDirection(int mIndex, int cIndex);
 
-	static std::vector<const IntercardinalDirection*> all;
+	static std::vector<const IntercardinalDirection*> _all;
 };
 
 namespace std {

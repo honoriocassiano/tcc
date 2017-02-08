@@ -23,7 +23,7 @@ inline DirectionArray<DType, Element>::DirectionArray(
 		std::initializer_list<std::pair< typename std::add_const<DType>::type, Element> > values) :
 		elements(values) {
 
-	for (auto d: DType::getAll()) {
+	for (auto d: DType::all()) {
 		if ( elements.find(*d) == elements.end() ) {
 			throw std::runtime_error("All members must be initialized!");
 		}

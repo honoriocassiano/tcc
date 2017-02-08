@@ -27,14 +27,14 @@ public:
 	static const CardinalDirection* getAtMatrixIndex(int index);
 	static const CardinalDirection* getAtClockwiseIndex(int index);
 
-	static const std::vector<const CardinalDirection*>& getAll();
+	static const std::vector<const CardinalDirection*>& all();
 
 private:
 	CardinalDirection(int mIndex, int cIndex) :
 			Direction(mIndex, cIndex) {
 	}
 
-	static std::vector<const CardinalDirection*> all;
+	static std::vector<const CardinalDirection*> _all;
 };
 
 namespace std {

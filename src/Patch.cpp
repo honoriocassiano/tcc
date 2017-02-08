@@ -690,7 +690,7 @@ void Patch::tessellate(const Vec3f& cameraPosition) {
 }
 
 void Patch::render() {
-	MeshDrawer::draw(m_Mesh, m_Wireframe);
+//	MeshDrawer::draw(m_Mesh, m_Wireframe);
 }
 
 void Patch::toggleWireframe() {
