@@ -39,6 +39,11 @@ private:
 			const DirectionArray<CardinalDirection, Vertex*>& neighbors,
 			const std::string& tag = "main");
 
+	void recursiveDeleteVertices(Vertex* center,
+			const IntercardinalDirection& direction,
+			DirectionArray<IntercardinalDirection, Vertex*>& intercardinals,
+			std::size_t level = 0);
+
 	float calculateRoughness(const Vertex* center,
 			const DirectionArray<IntercardinalDirection, Vertex*>& intercardinals);
 
@@ -48,9 +53,12 @@ private:
 			const DirectionArray<CardinalDirection, Vertex*>& neighbors);
 
 	DirectionArray<IntercardinalDirection, Vertex*> getRelativeIntercardinals(
-			const IntercardinalDirection& direction,
-			Vertex* center,
+			const IntercardinalDirection& direction, Vertex* center,
 			DirectionArray<IntercardinalDirection, Vertex*>& parentIntercardinals);
+
+	DirectionArray<IntercardinalDirection, Vertex*> getRelativeIntercardinalsWithoutCreate(
+				const IntercardinalDirection& direction, Vertex* center,
+				DirectionArray<IntercardinalDirection, Vertex*>& parentIntercardinals);
 
 	void updateActives(const Vec3f& cameraPosition, Vertex* center,
 			DirectionArray<IntercardinalDirection, Vertex*>& intercardinals,

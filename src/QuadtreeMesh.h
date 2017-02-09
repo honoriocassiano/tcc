@@ -16,7 +16,7 @@
 
 class Quadtree2;
 
-class QuadtreeMesh : public Mesh {
+class QuadtreeMesh: public Mesh {
 public:
 	QuadtreeMesh();
 	virtual ~QuadtreeMesh();
@@ -32,6 +32,10 @@ private:
 
 	Bag<Edge*>* getEdges() {
 		return edges;
+	}
+
+	Array<Vertex*>* getVertices() {
+		return vertices;
 	}
 
 	friend class Quadtree2;

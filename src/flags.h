@@ -8,6 +8,6 @@
 #ifndef SRC_FLAGS_H_
 #define SRC_FLAGS_H_
 
-#define DEBUG 0
+#define DEBUG 1
 
 #endif /* SRC_FLAGS_H_ */

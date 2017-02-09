@@ -143,6 +143,16 @@ void Quadtree2::updateActives(const Vec3f& cameraPosition, Vertex* center,
 		if ((l / d) < C) {
 			middleVertex->setActive(true);
 		} else {
+
+			if (middleVertex->isActive()) {
+
+				auto relativeIntercardinals = getRelativeIntercardinals(
+						direction, center, intercardinals);
+
+				recursiveDeleteVertices(middleVertex, direction,
+						relativeIntercardinals);
+			}
+
 			middleVertex->setActive(false);
 		}
 		/*
@@ -934,6 +944,34 @@ void Quadtree2::remesh(Vertex* center, DA<ID, Vertex*>& intercardinals,
  }
  */
 
+DA<ID, Vertex*> Quadtree2::getRelativeIntercardinalsWithoutCreate(
+		const ID& direction, Vertex* center,
+		DA<ID, Vertex*>& parentIntercardinals) {
+
+	auto i = direction.getClockwiseIndex();
+
+	const ID* directions[] = { ID::getAtClockwiseIndex(i),
+			ID::getAtClockwiseIndex((i + 1) % 4), ID::getAtClockwiseIndex(
+					(i + 2) % 4), ID::getAtClockwiseIndex((i + 3) % 4) };
+
+	return {
+		{
+			*directions[0],
+			parentIntercardinals[*directions[0]]
+		}, {
+			*directions[1],
+			mesh->getChildVertex(parentIntercardinals[*directions[0]],
+					parentIntercardinals[*directions[1]])
+		}, {
+			*directions[2], center
+		}, {
+			*directions[3],
+			mesh->getChildVertex(parentIntercardinals[*directions[0]],
+					parentIntercardinals[*directions[3]])
+		}
+	};
+}
+
 DA<ID, Vertex*> Quadtree2::getRelativeIntercardinals(const ID& direction,
 		Vertex* center, DA<ID, Vertex*>& parentIntercardinals) {
 
@@ -949,12 +987,16 @@ DA<ID, Vertex*> Quadtree2::getRelativeIntercardinals(const ID& direction,
 			parentIntercardinals[*directions[0]]
 		}, {
 			*directions[1],
+//			mesh->getChildVertex(parentIntercardinals[*directions[0]],
+//								parentIntercardinals[*directions[1]])
 			mesh->getOrCreateChildVertex(parentIntercardinals[*directions[0]],
 					parentIntercardinals[*directions[1]])
 		}, {
 			*directions[2], center
 		}, {
 			*directions[3],
+//			mesh->getChildVertex(parentIntercardinals[*directions[0]],
+//								parentIntercardinals[*directions[3]])
 			mesh->getOrCreateChildVertex(parentIntercardinals[*directions[0]],
 					parentIntercardinals[*directions[3]])
 		}
@@ -1158,6 +1200,50 @@ void Quadtree2::update(const Vec3f& cameraPosition, const std::string& tag) {
 void Quadtree2::render() {
 }
 
+void Quadtree2::recursiveDeleteVertices(Vertex* center,
+		const IntercardinalDirection& direction,
+		DirectionArray<IntercardinalDirection, Vertex*>& intercardinals,
+		std::size_t level) {
+
+	for (int i = 0; i < 4; ++i) {
+		auto& direction = *ID::getAtClockwiseIndex(i);
+		auto& e = intercardinals[direction];
+
+		if (!e) {
+			Log("CONTINUE, PORRA");
+			continue;
+		}
+
+		auto middleVertex = mesh->getChildVertex(center, e);
+
+		if (middleVertex) {
+
+			auto relativeIntercardinals =
+					getRelativeIntercardinalsWithoutCreate(direction, center,
+							intercardinals);
+
+			recursiveDeleteVertices(middleVertex, direction,
+					relativeIntercardinals, level + 1);
+
+			auto deleted = mesh->deleteChildIfExist(center, e);
+
+			{
+				auto ic1 = *ID::getAtClockwiseIndex(i);
+				auto ic2 = *ID::getAtClockwiseIndex((i + 1) % 4);
+
+				if (intercardinals[ic1] && intercardinals[ic2]) {
+					mesh->deleteChildIfExist(intercardinals[ic1],
+							intercardinals[ic2]);
+				}
+			}
+
+			if (level > 0) {
+				mesh->removeVertex(center);
+			}
+		}
+	}
+}
+
 //Quadtree2::Quadtree2(Vertex* nw, Vertex* ne, Vertex* sw, Vertex* se,
 //		Vertex* _center, Mesh* _mesh,
 //		const DA<CD, bool>& marked,
@@ -1169,15 +1255,9 @@ void Quadtree2::render() {
 Quadtree2::Quadtree2(Vertex* nw, Vertex* ne, Vertex* sw, Vertex* se,
 		Vertex* _center, QuadtreeMesh* _mesh, const DA<CD, bool>& marked,
 		Quadtree2* _parent) :
-		parent(_parent), mesh(_mesh), intercardinals(ID::all(), nullptr), children(
-				ID::all(), nullptr), neighbors(CD::all(), nullptr), center(
-				_center) {
-
-// TODO Delete this code when the new constructor will be created
-	intercardinals[ID::NW] = nw;
-	intercardinals[ID::NE] = ne;
-	intercardinals[ID::SW] = sw;
-	intercardinals[ID::SE] = se;
+		parent(_parent), mesh(_mesh), intercardinals { { ID::NW, nw }, { ID::NE,
+				ne }, { ID::SW, sw }, { ID::SE, se } }, children(ID::all(),
+				nullptr), neighbors(CD::all(), nullptr), center(_center) {
 
 	for (int i = 0; i < 4; ++i) {
 		auto& cd = *CD::getAtClockwiseIndex(i);
