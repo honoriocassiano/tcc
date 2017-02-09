@@ -62,15 +62,15 @@ int main(int argc, char **argv) {
 	Log("UPDATE!!!");
 	Log("******************************************");
 
-//	quadtree->update2(Vec3f(0.9, 0.9, 2.76));
+	quadtree->update2(Vec3f(0.9, 0.9, 2.76));
 
-//	quadtree->update2(Vec3f(0.7, 0.7, 2.76));
+	quadtree->update2(Vec3f(0.7, 0.7, 2.76));
 //	quadtree->update2(Vec3f(0.7, 0.7, 2.76));
 //	quadtree->update2(Vec3f(0.7, 0.7, 0.51));
 //	quadtree->update2(Vec3f(0.7, 0.7, 0.51));
 //	quadtree->update2(Vec3f(0.7, 0.7, 0.51));
 
-//	quadtree->update2(Vec3f(0.7, 0.7, 0.51));
+	quadtree->update2(Vec3f(0.2, 0.2, 0.51));
 //	quadtree->update(Vec3f(0.7, 0.7, 0.51));
 //	quadtree->update(Vec3f(0.5, 0.5, 0.51));
 //	quadtree->update(Vec3f(-0.5, -0.25, 0.51));

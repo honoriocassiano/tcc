@@ -233,6 +233,7 @@ void Quadtree2::update2(const Vec3f& cameraPosition, const std::string& tag) {
 //	updateActives(cameraPosition, center, intercardinals, neighbors);
 
 	mesh->getTriangles()->DeleteAllElements();
+	mesh->getEdges()->DeleteAllElements();
 
 	Log("COUNT: %d", mesh->getTriangles()->Count());
 

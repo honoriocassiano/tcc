@@ -28,6 +28,10 @@ private:
 		return triangles;
 	}
 
+	Bag<Edge*>* getEdges() {
+		return edges;
+	}
+
 	friend class Quadtree2;
 };
 
