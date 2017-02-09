@@ -23,6 +23,8 @@ public:
 
 	Vertex* getOrCreateChildVertex(Vertex *p1, Vertex *p2);
 
+	bool deleteChildIfExist(Vertex *p1, Vertex *p2);
+
 private:
 	Bag<Triangle*>* getTriangles() {
 		return triangles;
