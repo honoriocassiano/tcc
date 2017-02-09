@@ -17,7 +17,7 @@ using DA = DirectionArray<DType, Element>;
 using ID = IntercardinalDirection;
 using CD = CardinalDirection;
 
-float Quadtree2::C = 2.5;
+float Quadtree2::C = 20;
 
 #define MIDDLE(P1, P2) ( (P1 + P2 ) * 0.5)
 #define CAST(X, TYPE) static_cast<TYPE>(X)

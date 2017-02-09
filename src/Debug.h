@@ -8,7 +8,7 @@
 #ifndef SRC_DEBUG_H_
 #define SRC_DEBUG_H_
 
-#define DEBUG 1
+#include "flags.h"
 
 #include <stdio.h>
 #include <string.h>
