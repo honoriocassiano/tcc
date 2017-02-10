@@ -8,6 +8,7 @@
 #include "../Color.h"
 
 class Vertex;
+class VertexParent;
 
 // ==========================================================
 
@@ -18,7 +19,7 @@ public:
 	// ========================
 	// CONSTRUCTOR & DESTRUCTOR
 	Vertex(int i, const Vec3f &pos) :
-			position(pos), color(1.0f, 1.0f, 1.0f), active(false), level(0) {
+			position(pos), color(1.0f, 1.0f, 1.0f), active(false), level(0), parents(nullptr) {
 		index = i;
 	}
 	virtual ~Vertex() {
@@ -56,6 +57,10 @@ public:
 		return level;
 	}
 
+	VertexParent* getParents() {
+		return parents;
+	}
+
 	// =========
 	// MODIFIERS
 	void set(const Vec3f& v) {
@@ -67,6 +72,10 @@ public:
 
 	void setNormal(const Vec3f& v) {
 		normal = v;
+	}
+
+	void setParents(VertexParent* p) {
+		parents = p;
 	}
 
 	void setNormal(double x, double y, double z) {
@@ -105,6 +114,8 @@ private:
 	Color color;
 	bool active;
 	std::size_t level;
+
+	VertexParent* parents;
 
 	// this is the index from the original .obj file.
 	// technically not part of the half-edge data structure

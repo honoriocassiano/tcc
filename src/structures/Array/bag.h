@@ -93,9 +93,9 @@ public:
 		return Get(b, a);
 	}
 
-	BAG_ELEMENT Get(int a, int b, int c = 0) const {
+	BAG_ELEMENT Get(int a, int b) const {
 		assert(a != b);
-		int orig = hash(a, b, c);
+		int orig = hash(a, b, 0);
 		int x = orig;
 		while (1) {
 			assert(x >= 0 && x < size);

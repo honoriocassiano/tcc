@@ -39,6 +39,8 @@ private:
 			const DirectionArray<CardinalDirection, Vertex*>& neighbors,
 			const std::string& tag = "main");
 
+	void deleteUnusedVertices();
+
 	void recursiveDeleteVertices(Vertex* center,
 			const IntercardinalDirection& direction,
 			DirectionArray<IntercardinalDirection, Vertex*>& intercardinals,
@@ -60,9 +62,12 @@ private:
 				const IntercardinalDirection& direction, Vertex* center,
 				DirectionArray<IntercardinalDirection, Vertex*>& parentIntercardinals);
 
-	void updateActives(const Vec3f& cameraPosition, Vertex* center,
+	void updateActiveCenters(const Vec3f& cameraPosition, Vertex* center,
 			DirectionArray<IntercardinalDirection, Vertex*>& intercardinals,
 			const DirectionArray<CardinalDirection, Vertex*>& neighbors);
+
+	void updateActiveIntercardinals(Vertex* center,
+			DirectionArray<IntercardinalDirection, Vertex*>& intercardinals);
 
 	Quadtree2(Vertex* nw, Vertex* ne, Vertex* sw, Vertex* se, Vertex* center,
 			QuadtreeMesh * mesh,

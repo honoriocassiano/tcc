@@ -140,7 +140,11 @@ Vertex* Mesh::getChildVertex(Vertex *p1, Vertex *p2) const {
 }
 
 void Mesh::setParentsChild(Vertex *p1, Vertex *p2, Vertex *child) {
-	vertex_parents->Add(new VertexParent(p1, p2, child));
+
+	auto vp = new VertexParent(p1, p2, child);
+
+	vertex_parents->Add(vp);
+	child->setParents(vp);
 }
 
 Vertex* Mesh::deleteParentsChildRelation(Vertex *p1, Vertex *p2) {

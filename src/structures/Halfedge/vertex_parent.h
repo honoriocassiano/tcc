@@ -46,6 +46,14 @@ public:
 		return v;
 	}
 
+	Vertex* getParent1() const {
+		return p1;
+	}
+
+	Vertex* getParent2() const {
+		return p2;
+	}
+
 protected:
 
 	VertexParent(const VertexParent&) {

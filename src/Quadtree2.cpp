@@ -98,7 +98,41 @@ Quadtree2::~Quadtree2() {
 	}
 }
 
-void Quadtree2::updateActives(const Vec3f& cameraPosition, Vertex* center,
+void Quadtree2::updateActiveIntercardinals(Vertex* center,
+		DA<ID, Vertex*>& intercardinals) {
+
+	auto centerIsActive = center->isActive();
+
+	for (auto i = 0; i < 4; ++i) {
+		auto direction = *ID::getAtClockwiseIndex(i);
+
+		if (intercardinals[direction]) {
+			auto middleIntercardinal = mesh->getChildVertex(center,
+					intercardinals[direction]);
+
+			if (middleIntercardinal) {
+				auto relativeIntercardinals =
+						getRelativeIntercardinalsWithoutCreate(direction,
+								center, intercardinals);
+
+				updateActiveIntercardinals(middleIntercardinal,
+						relativeIntercardinals);
+			}
+		}
+	}
+
+	for (auto i = 0; i < 4; ++i) {
+		auto direction = *ID::getAtClockwiseIndex(i);
+
+		center->setActive(centerIsActive);
+
+		if (intercardinals[direction]) {
+			intercardinals[direction]->setActive(centerIsActive);
+		}
+	}
+}
+
+void Quadtree2::updateActiveCenters(const Vec3f& cameraPosition, Vertex* center,
 		DA<ID, Vertex*>& intercardinals, const DA<CD, Vertex*>& neighbors) {
 
 	for (auto i = 0; i < 4; ++i) {
@@ -139,19 +173,19 @@ void Quadtree2::updateActives(const Vec3f& cameraPosition, Vertex* center,
 
 		auto l = (middleVertex->get() - cameraPosition).Length();
 
-// TODO Change this value
+		// TODO Change this value
 		if ((l / d) < C) {
 			middleVertex->setActive(true);
 		} else {
 
-			if (middleVertex->isActive()) {
-
-				auto relativeIntercardinals = getRelativeIntercardinals(
-						direction, center, intercardinals);
-
-				recursiveDeleteVertices(middleVertex, direction,
-						relativeIntercardinals);
-			}
+//			if (middleVertex->isActive()) {
+//
+//				auto relativeIntercardinals = getRelativeIntercardinals(
+//						direction, center, intercardinals);
+//
+//				recursiveDeleteVertices(middleVertex, direction,
+//						relativeIntercardinals);
+//			}
 
 			middleVertex->setActive(false);
 		}
@@ -228,9 +262,32 @@ void Quadtree2::updateActives(const Vec3f& cameraPosition, Vertex* center,
 					mesh->getOrCreateChildVertex(e,
 							intercardinals[*ID::getAtClockwiseIndex((i + 3) % 4)]);
 
-			updateActives(cameraPosition, middleVertex, temp,
+			updateActiveCenters(cameraPosition, middleVertex, temp,
 					getNeighborhood(center, direction, intercardinals,
 							neighbors));
+		}
+	}
+
+//	for (auto i = 0; i < 4; ++i) {
+//		auto direction = *ID::getAtClockwiseIndex(i);
+//
+//		if(intercardinals[direction]) {
+//			intercardinals[direction]->setActive(center->isActive());
+//		}
+//	}
+}
+
+void Quadtree2::deleteUnusedVertices() {
+
+	for (int i = 0; i < mesh->getVertices()->Count(); ++i) {
+		auto v = (*mesh->getVertices())[i];
+
+		auto vp = v->getParents();
+
+		if (vp) {
+			if (!(vp->getParent1()->isActive() && vp->getParent2()->isActive())) {
+				mesh->deleteChildIfExist(vp->getParent1(), vp->getParent2());
+			}
 		}
 	}
 }
@@ -238,12 +295,16 @@ void Quadtree2::updateActives(const Vec3f& cameraPosition, Vertex* center,
 void Quadtree2::update2(const Vec3f& cameraPosition, const std::string& tag) {
 
 	// TODO Check this code
-	updateActives(cameraPosition, center, intercardinals,
+	updateActiveCenters(cameraPosition, center, intercardinals,
 			DA<CD, Vertex*>(CD::all(), nullptr));
 //	updateActives(cameraPosition, center, intercardinals, neighbors);
 
+	updateActiveIntercardinals(center, intercardinals);
+
 	mesh->getTriangles()->DeleteAllElements();
 	mesh->getEdges()->DeleteAllElements();
+
+	deleteUnusedVertices();
 
 	Log("COUNT: %d", mesh->getTriangles()->Count());
 
@@ -413,6 +474,8 @@ void Quadtree2::remesh(Vertex* center, DA<ID, Vertex*>& intercardinals,
 //						intercardinals[nextIc]);
 
 //				if (!tempMid->isActive()) {
+				Log("%p", middleInterCardinals[nextIc]);
+
 				if (!middleInterCardinals[nextIc]->isActive()) {
 					mesh->addTriangle(center, middle, intercardinals[nextIc]);
 				}
