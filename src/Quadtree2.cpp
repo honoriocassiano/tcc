@@ -279,7 +279,7 @@ void Quadtree2::updateActiveCenters(const Vec3f& cameraPosition, Vertex* center,
 
 void Quadtree2::deleteUnusedVertices() {
 
-	for (int i = 0; i < mesh->getVertices()->Count(); ++i) {
+	for (int i = mesh->getVertices()->Count() - 1; i >= 0; --i) {
 		auto v = (*mesh->getVertices())[i];
 
 		auto vp = v->getParents();
