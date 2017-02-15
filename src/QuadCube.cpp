@@ -10,7 +10,7 @@
 #include "MeshDrawer.h"
 
 QuadCube::QuadCube(const Vec3f& _position) :
-		mesh(new Mesh()), position(_position), faces { nullptr }, reference(
+		mesh(new QuadtreeMesh()), position(_position), faces { nullptr }, reference(
 				directions::Face::FRONT) {
 
 	using Face = directions::Face;
@@ -28,20 +28,35 @@ QuadCube::QuadCube(const Vec3f& _position) :
 	auto blb = mesh->addVertex(Vec3f(-0.5, -0.5, 0.5));
 	auto brb = mesh->addVertex(Vec3f(0.5, -0.5, 0.5));
 
-	faces[Face::FRONT] = new Quadtree(flt, frt, flb, frb, 0, maxLevel, mesh);
+//	faces[Face::FRONT] = new Quadtree2(flt, frt, flb, frb, 0, maxLevel, mesh);
+//
+//	// todo check
+//	faces[Face::BACK] = new Quadtree2(blt, brt, blb, brb, 0, maxLevel, mesh);
+//
+//	faces[Face::LEFT] = new Quadtree2(blt, flt, blb, flb, 0, maxLevel, mesh);
+//
+//	// todo check
+//	faces[Face::RIGHT] = new Quadtree2(brt, frt, brb, frb, 0, maxLevel, mesh);
+//
+//	faces[Face::TOP] = new Quadtree2(blt, brt, flt, frt, 0, maxLevel, mesh);
+//
+//	// todo check
+//	faces[Face::BOTTOM] = new Quadtree(blb, brb, flb, frb, 0, maxLevel, mesh);
+
+	faces[Face::FRONT] = new Quadtree2(flt, frt, flb, frb, mesh);
 
 	// todo check
-	faces[Face::BACK] = new Quadtree(blt, brt, blb, brb, 0, maxLevel, mesh);
+	faces[Face::BACK] = new Quadtree2(blt, brt, blb, brb, mesh);
 
-	faces[Face::LEFT] = new Quadtree(blt, flt, blb, flb, 0, maxLevel, mesh);
-
-	// todo check
-	faces[Face::RIGHT] = new Quadtree(brt, frt, brb, frb, 0, maxLevel, mesh);
-
-	faces[Face::TOP] = new Quadtree(blt, brt, flt, frt, 0, maxLevel, mesh);
+	faces[Face::LEFT] = new Quadtree2(blt, flt, blb, flb, mesh);
 
 	// todo check
-	faces[Face::BOTTOM] = new Quadtree(blb, brb, flb, frb, 0, maxLevel, mesh);
+	faces[Face::RIGHT] = new Quadtree2(brt, frt, brb, frb, mesh);
+
+	faces[Face::TOP] = new Quadtree2(blt, brt, flt, frt, mesh);
+
+	// todo check
+	faces[Face::BOTTOM] = new Quadtree2(blb, brb, flb, frb, mesh);
 
 //	faces[Face::FRONT] = new Quadtree(Vec3f(-0.5, -0.5, -0.5), Vec3f(1, 0, 0),
 //			Vec3f(0, 1, 0), 0, 20);
@@ -71,6 +86,12 @@ void QuadCube::draw(bool wireframe, bool generateNoise) {
 	}
 }
 
+void QuadCube::update(const Vec3f& cameraPosition) {
+	for (auto& f : faces) {
+		f->update2(cameraPosition);
+	}
+}
+
 void QuadCube::initNeighbours() {
 	using Face = directions::Face;
 
@@ -82,17 +103,17 @@ void QuadCube::initNeighbours() {
 	auto right = faces[Face::RIGHT];
 	auto top = faces[Face::TOP];
 
-	// FRONT
-	front->setNeighbours(top, right, bottom, left);
-
-	left->setNeighbours(top, back, front, bottom);
-
-	bottom->setNeighbours(back, right, left, front);
-
-	// INVERTED
-	back->setNeighbours(bottom, left, top, right);
-
-	right->setNeighbours(front, bottom, top, back);
-
-	top->setNeighbours(left, front, back, right);
+//	// FRONT
+//	front->setNeighbours(top, right, bottom, left);
+//
+//	left->setNeighbours(top, back, front, bottom);
+//
+//	bottom->setNeighbours(back, right, left, front);
+//
+//	// INVERTED
+//	back->setNeighbours(bottom, left, top, right);
+//
+//	right->setNeighbours(front, bottom, top, back);
+//
+//	top->setNeighbours(left, front, back, right);
 }

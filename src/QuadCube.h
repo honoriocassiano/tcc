@@ -8,9 +8,10 @@
 #ifndef SRC_QUADCUBE_H_
 #define SRC_QUADCUBE_H_
 
-#include "Quadtree.h"
+#include "Quadtree2.h"
 #include "structures/Halfedge/mesh.h"
 #include "geometry/Vector3.h"
+#include "QuadtreeMesh.h"
 
 namespace directions {
 
@@ -26,13 +27,15 @@ public:
 
 	void draw(bool wireframe = false, bool generateNoise = true);
 
+	void update(const Vec3f& cameraPosition);
+
 //private:
 
 	void initNeighbours();
 
-	Mesh * mesh;
+	QuadtreeMesh * mesh;
 	Vec3f position;
-	Quadtree* faces[6];
+	Quadtree2* faces[6];
 	directions::Face reference;
 };
 
