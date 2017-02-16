@@ -32,6 +32,9 @@ public:
 		return center;
 	}
 
+	float calcRoughness(Vertex* center,
+			DirectionArray<IntercardinalDirection, Vertex*>& intercardinals);
+
 	void setNeighbours(Vertex* n, Vertex* e, Vertex* s, Vertex* w);
 
 	Mesh* getMesh() {

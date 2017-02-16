@@ -9,7 +9,9 @@
 
 #include <math.h>
 #include <algorithm>
+
 #include "Perlin.h"
+#include "MathUtils.hpp"
 
 template<class DType, class Element>
 using DA = DirectionArray<DType, Element>;
@@ -840,6 +842,46 @@ void Quadtree2::setNeighbours(Vertex* n, Vertex* e, Vertex* s, Vertex* w) {
 	neighbors[CD::E] = e;
 	neighbors[CD::S] = s;
 	neighbors[CD::W] = w;
+}
+
+float Quadtree2::calcRoughness(Vertex* center,
+		DirectionArray<IntercardinalDirection, Vertex*>& intercardinals) {
+
+	float roughness = 0;
+	float d =
+			(intercardinals[ID::NW]->get() - intercardinals[ID::NE]->get()).Length();
+
+	for (int i = 0; i < 4; ++i) {
+		auto id1 = intercardinals[*ID::getAtClockwiseIndex(i)];
+		auto id2 = intercardinals[*ID::getAtClockwiseIndex((i + 1) % 4)];
+
+		auto cd = mesh->getChildVertex(id1, id2);
+
+		auto r = abs(
+				math::distanceFromPointToLine(id1->get(), id2->get(),
+						cd->get()));
+
+		if (r > roughness) {
+			roughness = r;
+		}
+	}
+
+	for (int i = 0; i < 2; ++i) {
+		auto id1 = intercardinals[*ID::getAtClockwiseIndex(i)];
+		auto id2 = intercardinals[*ID::getAtClockwiseIndex((i + 2) % 4)];
+
+		auto cd = mesh->getChildVertex(id1, id2);
+
+		auto r = abs(
+				math::distanceFromPointToLine(id1->get(), id2->get(),
+						cd->get()));
+
+		if (r > roughness) {
+			roughness = r;
+		}
+	}
+
+	return roughness / d;
 }
 
 #undef MIDDLE
