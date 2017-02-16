@@ -40,7 +40,7 @@ public:
 	const Element& operator[](const DType& position) const;
 
 private:
-	std::map<DType, Element> elements;
+	std::map<const DType*, Element> elements;
 };
 
 #include "DirectionArray.cpp"

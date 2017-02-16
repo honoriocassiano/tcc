@@ -14,17 +14,22 @@ template<class DType, class Element>
 DirectionArray<DType, Element>::DirectionArray(const std::vector<const DType*>& allElements, Element defaultValue) {
 
 	for(auto e : allElements) {
-		elements[*e] = defaultValue;
+		elements[e] = defaultValue;
 	}
 }
 
 template<class DType, class Element>
 inline DirectionArray<DType, Element>::DirectionArray(
-		std::initializer_list<std::pair< typename std::add_const<DType>::type, Element> > values) :
-		elements(values) {
+		std::initializer_list<std::pair< typename std::add_const<DType>::type, Element> > values) {
+//		std::initializer_list<std::pair< typename std::add_const<DType>::type, Element> > values) :
+//		elements(values) {
+
+	for(auto d : values) {
+		elements[&d.first] = d.second;
+	}
 
 	for (auto d: DType::all()) {
-		if ( elements.find(*d) == elements.end() ) {
+		if ( elements.find(d) == elements.end() ) {
 			throw std::runtime_error("All members must be initialized!");
 		}
 	}
@@ -61,13 +66,13 @@ inline const Element& DirectionArray<DType, Element>::getAt(
 template<class DType, class Element>
 inline Element& DirectionArray<DType, Element>::operator [](
 		const DType& position) {
-	return elements[position];
+	return elements[&position];
 }
 
 template<class DType, class Element>
 inline const Element& DirectionArray<DType, Element>::operator [](
 		const DType& position) const {
-	return elements.at(position);
+	return elements.at(&position);
 }
 
 #endif
