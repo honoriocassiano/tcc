@@ -30,7 +30,7 @@ public:
 
 	void update(const Vec3f& cameraPosition);
 
-//private:
+private:
 
 	void deleteUnusedVertices();
 
