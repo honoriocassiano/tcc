@@ -103,17 +103,17 @@ void QuadCube::initNeighbours() {
 	auto right = faces[Face::RIGHT];
 	auto top = faces[Face::TOP];
 
-//	// FRONT
-//	front->setNeighbours(top, right, bottom, left);
-//
-//	left->setNeighbours(top, back, front, bottom);
-//
-//	bottom->setNeighbours(back, right, left, front);
-//
-//	// INVERTED
-//	back->setNeighbours(bottom, left, top, right);
-//
-//	right->setNeighbours(front, bottom, top, back);
-//
-//	top->setNeighbours(left, front, back, right);
+	// FRONT
+	front->setNeighbours(top->getCenter(), right->getCenter(), bottom->getCenter(), left->getCenter());
+
+	left->setNeighbours(top->getCenter(), back->getCenter(), front->getCenter(), bottom->getCenter());
+
+	bottom->setNeighbours(back->getCenter(), right->getCenter(), left->getCenter(), front->getCenter());
+
+	// INVERTED
+	back->setNeighbours(bottom->getCenter(), left->getCenter(), top->getCenter(), right->getCenter());
+
+	right->setNeighbours(front->getCenter(), bottom->getCenter(), top->getCenter(), back->getCenter());
+
+	top->setNeighbours(left->getCenter(), front->getCenter(), back->getCenter(), right->getCenter());
 }

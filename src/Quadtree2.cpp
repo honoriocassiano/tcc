@@ -295,8 +295,7 @@ void Quadtree2::deleteUnusedVertices() {
 void Quadtree2::update2(const Vec3f& cameraPosition, const std::string& tag) {
 
 	// TODO Check this code
-	updateActiveCenters(cameraPosition, center, intercardinals,
-			DA<CD, Vertex*>(CD::all(), nullptr));
+	updateActiveCenters(cameraPosition, center, intercardinals, neighbors);
 //	updateActives(cameraPosition, center, intercardinals, neighbors);
 
 	updateActiveIntercardinals(center, intercardinals);
@@ -308,7 +307,7 @@ void Quadtree2::update2(const Vec3f& cameraPosition, const std::string& tag) {
 
 	Log("COUNT: %d", mesh->getTriangles()->Count());
 
-	remesh(center, intercardinals, DA<CD, Vertex*>(CD::all(), nullptr));
+	remesh(center, intercardinals, neighbors);
 }
 
 float Quadtree2::calculateRoughness(const Vertex* center,
@@ -1375,6 +1374,13 @@ Quadtree2::Quadtree2(Vertex* nw, Vertex* ne, Vertex* sw, Vertex* se,
 			mesh->setParentsChild(d1, center, tempVertex);
 		}
 	}
+}
+
+void Quadtree2::setNeighbours(Vertex* n, Vertex* e, Vertex* s, Vertex* w) {
+	neighbors[CD::N] = n;
+	neighbors[CD::E] = e;
+	neighbors[CD::S] = s;
+	neighbors[CD::W] = w;
 }
 
 #undef MIDDLE

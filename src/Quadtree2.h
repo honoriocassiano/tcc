@@ -28,6 +28,12 @@ public:
 	void update(const Vec3f& cameraPosition, const std::string& tag = "main");
 	void render();
 
+	Vertex* getCenter() {
+		return center;
+	}
+
+	void setNeighbours(Vertex* n, Vertex* e, Vertex* s, Vertex* w);
+
 	Mesh* getMesh() {
 		return mesh;
 	}
@@ -59,8 +65,8 @@ private:
 			DirectionArray<IntercardinalDirection, Vertex*>& parentIntercardinals);
 
 	DirectionArray<IntercardinalDirection, Vertex*> getRelativeIntercardinalsWithoutCreate(
-				const IntercardinalDirection& direction, Vertex* center,
-				DirectionArray<IntercardinalDirection, Vertex*>& parentIntercardinals);
+			const IntercardinalDirection& direction, Vertex* center,
+			DirectionArray<IntercardinalDirection, Vertex*>& parentIntercardinals);
 
 	void updateActiveCenters(const Vec3f& cameraPosition, Vertex* center,
 			DirectionArray<IntercardinalDirection, Vertex*>& intercardinals,
@@ -77,7 +83,7 @@ private:
 //			const DirectionArray<CardinalDirection, bool>& marked, const DirectionArray<CardinalDirection, bool>& willHaveNeighbor);
 
 	Quadtree2* parent;
-	DirectionArray<CardinalDirection, Quadtree2*> neighbors;
+	DirectionArray<CardinalDirection, Vertex*> neighbors;
 	DirectionArray<IntercardinalDirection, Quadtree2*> children;
 
 	QuadtreeMesh* mesh;

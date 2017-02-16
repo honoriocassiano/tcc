@@ -159,7 +159,8 @@ void SDLWindow::update(const Time& dt) {
 	 */
 	//******************************************************
 
-	(*getTree2())->update2(mCamera->getPosition());
+//	(*getTree2())->update2(mCamera->getPosition());
+	getCube()->update(mCamera->getPosition());
 
 //	MeshDrawer::draw(tree2->getMesh(), options);
 }
