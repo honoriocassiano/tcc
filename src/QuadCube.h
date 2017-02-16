@@ -12,6 +12,7 @@
 #include "structures/Halfedge/mesh.h"
 #include "geometry/Vector3.h"
 #include "QuadtreeMesh.h"
+#include "MeshDrawer.h"
 
 namespace directions {
 
@@ -25,11 +26,13 @@ public:
 	QuadCube(const Vec3f& position);
 	virtual ~QuadCube();
 
-	void draw(bool wireframe = false, bool generateNoise = true);
+	void draw(const DrawOptions& options);
 
 	void update(const Vec3f& cameraPosition);
 
 //private:
+
+	void deleteUnusedVertices();
 
 	void initNeighbours();
 

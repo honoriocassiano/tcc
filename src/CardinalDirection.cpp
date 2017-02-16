@@ -9,10 +9,10 @@
 
 std::vector<const CardinalDirection*> CardinalDirection::_all { &N, &E, &W, &S };
 
-const CardinalDirection CardinalDirection::N = CardinalDirection(0, 0);
-const CardinalDirection CardinalDirection::E = CardinalDirection(2, 1);
-const CardinalDirection CardinalDirection::W = CardinalDirection(1, 3);
-const CardinalDirection CardinalDirection::S = CardinalDirection(3, 2);
+const CardinalDirection CardinalDirection::N(0, 0);
+const CardinalDirection CardinalDirection::E(2, 1);
+const CardinalDirection CardinalDirection::W(1, 3);
+const CardinalDirection CardinalDirection::S(3, 2);
 
 std::size_t CardinalDirection::getCount() {
 	return 4;

@@ -80,16 +80,38 @@ QuadCube::~QuadCube() {
 	}
 }
 
-void QuadCube::draw(bool wireframe, bool generateNoise) {
-	for (auto& m : faces) {
+void QuadCube::draw(const DrawOptions& options) {
+//	for (auto& m : faces) {
+		MeshDrawer::draw(mesh, options);
 //		MeshDrawer::draw(m->getMesh(), wireframe, generateNoise);
+//	}
+}
+
+void QuadCube::deleteUnusedVertices() {
+
+	for (int i = mesh->getVertices()->Count() - 1; i >= 0; --i) {
+		auto v = (*mesh->getVertices())[i];
+
+		auto vp = v->getParents();
+
+		if (vp) {
+			if (!(vp->getParent1()->isActive() && vp->getParent2()->isActive())) {
+				mesh->deleteChildIfExist(vp->getParent1(), vp->getParent2());
+			}
+		}
 	}
 }
 
 void QuadCube::update(const Vec3f& cameraPosition) {
+
+	mesh->getTriangles()->DeleteAllElements();
+	mesh->getEdges()->DeleteAllElements();
+
 	for (auto& f : faces) {
 		f->update2(cameraPosition);
 	}
+
+	deleteUnusedVertices();
 }
 
 void QuadCube::initNeighbours() {

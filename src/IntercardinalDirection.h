@@ -14,6 +14,10 @@
 class IntercardinalDirection: public Direction {
 public:
 
+	IntercardinalDirection(IntercardinalDirection&&) = delete;
+	IntercardinalDirection(const IntercardinalDirection&) = delete;
+	IntercardinalDirection& operator=(const IntercardinalDirection&) = delete;
+
 	static const IntercardinalDirection NW;
 	static const IntercardinalDirection NE;
 	static const IntercardinalDirection SW;

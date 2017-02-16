@@ -20,7 +20,7 @@ DirectionArray<DType, Element>::DirectionArray(const std::vector<const DType*>& 
 
 template<class DType, class Element>
 inline DirectionArray<DType, Element>::DirectionArray(
-		std::initializer_list<std::pair< typename std::add_const<DType>::type, Element> > values) {
+		std::initializer_list<std::pair< typename std::add_const<DType>::type&, Element> > values) {
 //		std::initializer_list<std::pair< typename std::add_const<DType>::type, Element> > values) :
 //		elements(values) {
 

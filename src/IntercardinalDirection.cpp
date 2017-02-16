@@ -12,14 +12,10 @@
 std::vector<const IntercardinalDirection*> IntercardinalDirection::_all = { &NW,
 		&NE, &SW, &SE };
 
-const IntercardinalDirection IntercardinalDirection::NW =
-		IntercardinalDirection(0, 0);
-const IntercardinalDirection IntercardinalDirection::NE =
-		IntercardinalDirection(1, 1);
-const IntercardinalDirection IntercardinalDirection::SW =
-		IntercardinalDirection(2, 3);
-const IntercardinalDirection IntercardinalDirection::SE =
-		IntercardinalDirection(3, 2);
+const IntercardinalDirection IntercardinalDirection::NW(0, 0);
+const IntercardinalDirection IntercardinalDirection::NE(1, 1);
+const IntercardinalDirection IntercardinalDirection::SW(2, 3);
+const IntercardinalDirection IntercardinalDirection::SE(3, 2);
 
 std::size_t IntercardinalDirection::getCount() {
 	return 4;

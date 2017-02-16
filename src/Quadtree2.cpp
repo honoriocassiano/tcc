@@ -104,7 +104,7 @@ void Quadtree2::updateActiveIntercardinals(Vertex* center,
 	auto centerIsActive = center->isActive();
 
 	for (auto i = 0; i < 4; ++i) {
-		auto direction = *ID::getAtClockwiseIndex(i);
+		auto& direction = *ID::getAtClockwiseIndex(i);
 
 		if (intercardinals[direction]) {
 			auto middleIntercardinal = mesh->getChildVertex(center,
@@ -122,7 +122,7 @@ void Quadtree2::updateActiveIntercardinals(Vertex* center,
 	}
 
 	for (auto i = 0; i < 4; ++i) {
-		auto direction = *ID::getAtClockwiseIndex(i);
+		auto& direction = *ID::getAtClockwiseIndex(i);
 
 		center->setActive(centerIsActive);
 
@@ -137,7 +137,7 @@ void Quadtree2::updateActiveCenters(const Vec3f& cameraPosition, Vertex* center,
 
 	for (auto i = 0; i < 4; ++i) {
 
-		auto direction = *ID::getAtClockwiseIndex(i);
+		auto& direction = *ID::getAtClockwiseIndex(i);
 
 		auto& e = intercardinals[direction];
 
@@ -204,7 +204,7 @@ void Quadtree2::updateActiveCenters(const Vec3f& cameraPosition, Vertex* center,
 
 	// Unset active if any vertex in the neighborhood differ by more than 1
 	for (auto i = 0; i < 4; ++i) {
-		auto direction = *ID::getAtClockwiseIndex(i);
+		auto& direction = *ID::getAtClockwiseIndex(i);
 
 		auto& e = intercardinals[direction];
 
@@ -241,7 +241,7 @@ void Quadtree2::updateActiveCenters(const Vec3f& cameraPosition, Vertex* center,
 
 	for (auto i = 0; i < 4; ++i) {
 
-		auto direction = *ID::getAtClockwiseIndex(i);
+		auto& direction = *ID::getAtClockwiseIndex(i);
 
 		auto& e = intercardinals[direction];
 
@@ -300,10 +300,10 @@ void Quadtree2::update2(const Vec3f& cameraPosition, const std::string& tag) {
 
 	updateActiveIntercardinals(center, intercardinals);
 
-	mesh->getTriangles()->DeleteAllElements();
-	mesh->getEdges()->DeleteAllElements();
+//	mesh->getTriangles()->DeleteAllElements();
+//	mesh->getEdges()->DeleteAllElements();
 
-	deleteUnusedVertices();
+//	deleteUnusedVertices();
 
 	Log("COUNT: %d", mesh->getTriangles()->Count());
 
@@ -427,10 +427,10 @@ void Quadtree2::remesh(Vertex* center, DA<ID, Vertex*>& intercardinals,
 		for (auto i = 0; i < 4; ++i) {
 			Log("%s [%d]", tag.c_str(), i);
 
-			auto c = *CD::getAtClockwiseIndex(i);
+			auto& c = *CD::getAtClockwiseIndex(i);
 
-			auto ic = *ID::getAtClockwiseIndex(i);
-			auto nextIc = *ID::getAtClockwiseIndex((i + 1) % 4);
+			auto& ic = *ID::getAtClockwiseIndex(i);
+			auto& nextIc = *ID::getAtClockwiseIndex((i + 1) % 4);
 
 			auto middle = mesh->getOrCreateChildVertex(intercardinals[ic],
 					intercardinals[nextIc]);
@@ -484,7 +484,7 @@ void Quadtree2::remesh(Vertex* center, DA<ID, Vertex*>& intercardinals,
 
 	// Get vertices that are subdivided
 	for (auto i = 0; i < 4; ++i) {
-		auto direction = *ID::getAtClockwiseIndex(i);
+		auto& direction = *ID::getAtClockwiseIndex(i);
 
 		if (!updated[direction]) {
 			auto relativeIntercardinal = getRelativeIntercardinals(direction,
@@ -1290,8 +1290,8 @@ void Quadtree2::recursiveDeleteVertices(Vertex* center,
 			auto deleted = mesh->deleteChildIfExist(center, e);
 
 			{
-				auto ic1 = *ID::getAtClockwiseIndex(i);
-				auto ic2 = *ID::getAtClockwiseIndex((i + 1) % 4);
+				auto& ic1 = *ID::getAtClockwiseIndex(i);
+				auto& ic2 = *ID::getAtClockwiseIndex((i + 1) % 4);
 
 				if (intercardinals[ic1] && intercardinals[ic2]) {
 					mesh->deleteChildIfExist(intercardinals[ic1],

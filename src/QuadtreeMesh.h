@@ -39,6 +39,7 @@ private:
 	}
 
 	friend class Quadtree2;
+	friend class QuadCube;
 };
 
 #endif /* SRC_QUADTREEMESH_H_ */

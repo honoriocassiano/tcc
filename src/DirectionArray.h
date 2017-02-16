@@ -29,7 +29,7 @@ public:
 
 	DirectionArray(
 			std::initializer_list<
-					std::pair< typename std::add_const<DType>::type, Element> > values);
+					std::pair< typename std::add_const<DType>::type&, Element> > values);
 
 	virtual ~DirectionArray();
 

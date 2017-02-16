@@ -14,6 +14,10 @@
 class CardinalDirection: public Direction {
 public:
 
+	CardinalDirection(CardinalDirection&&) = delete;
+	CardinalDirection(const CardinalDirection&) = delete;
+	CardinalDirection& operator=(const CardinalDirection&) = delete;
+
 	static const CardinalDirection N;
 	static const CardinalDirection E;
 	static const CardinalDirection W;
