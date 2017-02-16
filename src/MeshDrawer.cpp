@@ -180,6 +180,14 @@ MeshDrawer::~MeshDrawer() {
 //	HandleGLError();
 //}
 
+//#define DX(x, y, z) (x* sqrtf(1.0 - (y*y/2.0) - (z*z/2.0) + (y*y*z*z/3.0)))
+//#define DY(x, y, z) (y* sqrtf(1.0 - (z*z/2.0) - (x*x/2.0) + (z*z*x*x/3.0)))
+//#define DZ(x, y, z) (z* sqrtf(1.0 - (x*x/2.0) - (y*y/2.0) + (x*x*y*y/3.0)))
+
+#define DX(x, y, z) (x* sqrtf(1.0 - (y*y) - (z*z) + (y*y*z*z/1.5)))
+#define DY(x, y, z) (y* sqrtf(1.0 - (z*z) - (x*x) + (z*z*x*x/1.5)))
+#define DZ(x, y, z) (z* sqrtf(1.0 - (x*x) - (y*y) + (x*x*y*y/1.5)))
+
 void MeshDrawer::draw(Mesh* mesh, const DrawOptions& options) {
 	mesh->computeFaceNormals();
 	mesh->computeVerticesNormals();
@@ -337,7 +345,9 @@ void MeshDrawer::draw(Mesh* mesh, const DrawOptions& options) {
 			if (options.noise) {
 				glVertex3f(a.x(), a.y(), Perlin::generate(a));
 			} else {
-				glVertex3f(a.x(), a.y(), a.z());
+//				glVertex3f(a.x(), a.y(), a.z());
+				glVertex3f(DX(a.x(), a.y(), a.z()), DY(a.x(), a.y(), a.z()),
+						DZ(a.x(), a.y(), a.z()));
 			}
 
 			//		glColor3f(n_b.r(), n_b.g(), n_b.b());
@@ -348,7 +358,9 @@ void MeshDrawer::draw(Mesh* mesh, const DrawOptions& options) {
 			if (options.noise) {
 				glVertex3f(b.x(), b.y(), Perlin::generate(b));
 			} else {
-				glVertex3f(b.x(), b.y(), b.z());
+//				glVertex3f(b.x(), b.y(), b.z());
+				glVertex3f(DX(b.x(), b.y(), b.z()), DY(b.x(), b.y(), b.z()),
+						DZ(b.x(), b.y(), b.z()));
 			}
 
 			//		glColor3f(n_c.r(), n_c.g(), n_c.b());
@@ -359,7 +371,9 @@ void MeshDrawer::draw(Mesh* mesh, const DrawOptions& options) {
 			if (options.noise) {
 				glVertex3f(c.x(), c.y(), Perlin::generate(c));
 			} else {
-				glVertex3f(c.x(), c.y(), c.z());
+//				glVertex3f(c.x(), c.y(), c.z());
+				glVertex3f(DX(c.x(), c.y(), c.z()), DY(c.x(), c.y(), c.z()),
+						DZ(c.x(), c.y(), c.z()));
 			}
 
 			//		if (options.normals) {
@@ -562,8 +576,6 @@ void MeshDrawer::drawHalfEdge(Mesh* mesh) {
 		glColor3f(1, 0, 0);
 
 		glVertex3f(v2[0], v2[1], v2[2]);
-
-
 
 		// ********************************************
 		// ********************************************
