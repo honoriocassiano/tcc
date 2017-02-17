@@ -180,13 +180,9 @@ MeshDrawer::~MeshDrawer() {
 //	HandleGLError();
 //}
 
-//#define DX(x, y, z) (x* sqrtf(1.0 - (y*y/2.0) - (z*z/2.0) + (y*y*z*z/3.0)))
-//#define DY(x, y, z) (y* sqrtf(1.0 - (z*z/2.0) - (x*x/2.0) + (z*z*x*x/3.0)))
-//#define DZ(x, y, z) (z* sqrtf(1.0 - (x*x/2.0) - (y*y/2.0) + (x*x*y*y/3.0)))
-
-#define DX(x, y, z) (x* sqrtf(1.0 - (y*y) - (z*z) + (y*y*z*z/1.5)))
-#define DY(x, y, z) (y* sqrtf(1.0 - (z*z) - (x*x) + (z*z*x*x/1.5)))
-#define DZ(x, y, z) (z* sqrtf(1.0 - (x*x) - (y*y) + (x*x*y*y/1.5)))
+#define DX(x, y, z) (2 * x * sqrtf(1.0 - (y*y) - (z*z) + (y*y*z*z/1.5)))
+#define DY(x, y, z) (2 * y * sqrtf(1.0 - (z*z) - (x*x) + (z*z*x*x/1.5)))
+#define DZ(x, y, z) (2 * z * sqrtf(1.0 - (x*x) - (y*y) + (x*x*y*y/1.5)))
 
 void MeshDrawer::draw(Mesh* mesh, const DrawOptions& options) {
 	mesh->computeFaceNormals();
