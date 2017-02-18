@@ -20,6 +20,7 @@ using ID = IntercardinalDirection;
 using CD = CardinalDirection;
 
 float Quadtree2::C = 20;
+float Quadtree2::c = 10;
 
 #define MIDDLE(P1, P2) ( (P1 + P2 ) * 0.5)
 #define CAST(X, TYPE) static_cast<TYPE>(X)
@@ -175,8 +176,11 @@ void Quadtree2::updateActiveCenters(const Vec3f& cameraPosition, Vertex* center,
 
 		auto l = (middleVertex->get() - cameraPosition).Length();
 
+		auto roughness = calcRoughness(center, intercardinals);
+
 		// TODO Change this value
 		if ((l / d) < C) {
+//		if ((l / (d * C * std::max(c * roughness, 1.0f))) < 1) {
 			middleVertex->setActive(true);
 		} else {
 

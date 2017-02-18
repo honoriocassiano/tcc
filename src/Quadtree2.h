@@ -94,6 +94,7 @@ private:
 	DirectionArray<IntercardinalDirection, Vertex*> intercardinals;
 
 	static float C;
+	static float c;
 };
 
 #endif /* SRC_QUADTREE2_H_ */

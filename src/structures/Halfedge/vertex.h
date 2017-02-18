@@ -43,6 +43,10 @@ public:
 		return position;
 	}
 
+	float getD2() const {
+		return d2;
+	}
+
 	const Vec3f& getNormal() const {
 		return normal;
 	}
@@ -78,6 +82,10 @@ public:
 		parents = p;
 	}
 
+	void setD2(float d2) {
+		this->d2 = d2;
+	}
+
 	void setNormal(double x, double y, double z) {
 		normal.Set(x, y, z);
 	}
@@ -111,6 +119,7 @@ private:
 	// REPRESENTATION
 	Vec3f position;
 	Vec3f normal;
+	float d2;
 	Color color;
 	bool active;
 	std::size_t level;
