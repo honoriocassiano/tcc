@@ -851,19 +851,25 @@ void Quadtree2::setNeighbours(Vertex* n, Vertex* e, Vertex* s, Vertex* w) {
 float Quadtree2::calcRoughness(Vertex* center,
 		DirectionArray<IntercardinalDirection, Vertex*>& intercardinals) {
 
+	Log("AAA");
+
 	float roughness = 0;
 	float d =
 			(intercardinals[ID::NW]->get() - intercardinals[ID::NE]->get()).Length();
 
 	for (int i = 0; i < 4; ++i) {
+
 		auto id1 = intercardinals[*ID::getAtClockwiseIndex(i)];
 		auto id2 = intercardinals[*ID::getAtClockwiseIndex((i + 1) % 4)];
 
-		auto cd = mesh->getChildVertex(id1, id2);
+//		auto cd = mesh->getOrCreateChildVertex(id1, id2);
+		auto cd = MIDDLE(id1->get(), id2->get());
 
-		auto r = abs(
-				math::distanceFromPointToLine(id1->get(), id2->get(),
-						cd->get()));
+//		auto r = abs(
+//				math::distanceFromPointToLine(id1->get(), id2->get(),
+//						cd->get()));
+
+		auto r = abs(math::distanceFromPointToLine(id1->get(), id2->get(), cd));
 
 		if (r > roughness) {
 			roughness = r;
