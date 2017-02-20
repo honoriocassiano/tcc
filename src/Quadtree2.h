@@ -35,6 +35,9 @@ public:
 	float calcRoughness(Vertex* center,
 			DirectionArray<IntercardinalDirection, Vertex*>& intercardinals);
 
+	float recursiveCalcRoughness(Vertex* center,
+				DirectionArray<IntercardinalDirection, Vertex*>& intercardinals, DirectionArray<CardinalDirection, Vertex*>& neighbors);
+
 	void setNeighbours(Vertex* n, Vertex* e, Vertex* s, Vertex* w);
 
 	Mesh* getMesh() {

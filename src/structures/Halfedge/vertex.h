@@ -19,7 +19,8 @@ public:
 	// ========================
 	// CONSTRUCTOR & DESTRUCTOR
 	Vertex(int i, const Vec3f &pos) :
-			position(pos), color(1.0f, 1.0f, 1.0f), active(false), level(0), parents(nullptr) {
+			position(pos), color(1.0f, 1.0f, 1.0f), active(false), level(0), parents1(
+					nullptr), parents2(nullptr) {
 		index = i;
 	}
 	virtual ~Vertex() {
@@ -61,8 +62,12 @@ public:
 		return level;
 	}
 
-	VertexParent* getParents() {
-		return parents;
+	VertexParent* getParents1() {
+		return parents1;
+	}
+
+	VertexParent* getParents2() {
+		return parents2;
 	}
 
 	// =========
@@ -78,8 +83,12 @@ public:
 		normal = v;
 	}
 
-	void setParents(VertexParent* p) {
-		parents = p;
+	void setParents1(VertexParent* p) {
+		parents1 = p;
+	}
+
+	void setParents2(VertexParent* p) {
+		parents2 = p;
 	}
 
 	void setD2(float d2) {
@@ -124,7 +133,8 @@ private:
 	bool active;
 	std::size_t level;
 
-	VertexParent* parents;
+	VertexParent* parents1;
+	VertexParent* parents2;
 
 	// this is the index from the original .obj file.
 	// technically not part of the half-edge data structure

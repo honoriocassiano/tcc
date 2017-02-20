@@ -46,6 +46,8 @@ Quadtree2::Quadtree2(Vertex* nw, Vertex* ne, Vertex* sw, Vertex* se,
 	center = mesh->addVertex(m);
 	center->setActive(true);
 
+	mesh->setParentsChild(nw, se, ne, sw, center);
+
 	// Create cardinals vertices
 	for (int i = 0; i < 4; ++i) {
 		auto& d1 = intercardinals[*ID::getAtClockwiseIndex(i)];
@@ -144,43 +146,19 @@ void Quadtree2::updateActiveCenters(const Vec3f& cameraPosition, Vertex* center,
 
 		auto& e = intercardinals[direction];
 
-//		auto middleVertex = mesh->getChildVertex(center, e);
 		auto middleVertex = mesh->getOrCreateChildVertex(center, e);
-
-//		if (middleVertex->isActive()) {
-//
-//			auto temp = DA<ID, Vertex*>(
-//					ID::getAll(), nullptr);
-//
-//			temp[*ID::getAtClockwiseIndex(i)] = e;
-//
-//			temp[*ID::getAtClockwiseIndex((i + 1) % 4)] =
-//					mesh->getOrCreateChildVertex(e,
-//							intercardinals[*ID::getAtClockwiseIndex(
-//									(i + 1) % 4)]);
-//			temp[*ID::getAtClockwiseIndex((i + 2) % 4)] =
-//					center;
-//
-//			temp[*ID::getAtClockwiseIndex((i + 3) % 4)] =
-//					mesh->getOrCreateChildVertex(e,
-//							intercardinals[*ID::getAtClockwiseIndex(
-//									(i + 3) % 4)]);
-//
-//			updateActives(cameraPosition, middleVertex, temp,
-//					getNeighborhood(center, direction, intercardinals,
-//							neighbors));
-//		}
 
 		auto d =
 				(intercardinals[ID::NE]->get() - intercardinals[ID::NW]->get()).Length();
 
 		auto l = (middleVertex->get() - cameraPosition).Length();
 
-		auto roughness = calcRoughness(center, intercardinals);
+//		auto roughness = calcRoughness(center, intercardinals);
 
-		// TODO Change this value
-		if ((l / d) < C) {
+// TODO Change this value
+//		if ((l / d) < C) {
 //		if ((l / (d * C * std::max(c * roughness, 1.0f))) < 1) {
+		if ((l / (d * C * std::max(c * center->getD2(), 1.0f))) < 1) {
 			middleVertex->setActive(true);
 		} else {
 
@@ -288,7 +266,7 @@ void Quadtree2::deleteUnusedVertices() {
 	for (int i = mesh->getVertices()->Count() - 1; i >= 0; --i) {
 		auto v = (*mesh->getVertices())[i];
 
-		auto vp = v->getParents();
+		auto vp = v->getParents1();
 
 		if (vp) {
 			if (!(vp->getParent1()->isActive() && vp->getParent2()->isActive())) {
@@ -299,6 +277,8 @@ void Quadtree2::deleteUnusedVertices() {
 }
 
 void Quadtree2::update2(const Vec3f& cameraPosition, const std::string& tag) {
+
+//	recursiveCalcRoughness(center, intercardinals, neighbors);
 
 	// TODO Check this code
 	updateActiveCenters(cameraPosition, center, intercardinals, neighbors);
@@ -771,6 +751,87 @@ void Quadtree2::recursiveDeleteVertices(Vertex* center,
 	}
 }
 
+#define K (C / (2 * (C - 1)))
+
+float Quadtree2::recursiveCalcRoughness(Vertex* center,
+		DA<ID, Vertex*>& intercardinals, DA<CD, Vertex*>& neighbors) {
+
+	auto newD2 = std::numeric_limits<float>::infinity();
+	auto currentD2 = calcRoughness(center, intercardinals);
+	float iD2[4] { 0.0f };
+
+	/*
+	 for (int i = 0; i < 4; ++i) {
+	 auto& direction = *ID::getAtClockwiseIndex(i);
+
+	 auto id = intercardinals[direction];
+
+	 if (id) {
+	 auto relativeCenter = mesh->getChildVertex(center, id);
+
+	 if (relativeCenter) {
+	 auto relativeIntercardinals = getRelativeIntercardinals(
+	 direction, center, intercardinals);
+
+	 iD2[i] = recursiveCalcRoughness(relativeCenter,
+	 relativeIntercardinals);
+	 }
+	 }
+	 }
+	 */
+
+	for (int i = 0; i < 4; ++i) {
+		auto& direction = *CD::getAtClockwiseIndex(i);
+
+		auto n = neighbors[direction];
+
+		if (n) {
+
+			DA<ID, Vertex*> relativeIntercardinals { { ID::NW,
+					n->getParents1()->getParent1() }, { ID::SE,
+					n->getParents1()->getParent2() }, { ID::NE,
+					n->getParents2()->getParent1() }, { ID::SW,
+					n->getParents2()->getParent2() } };
+
+//				auto relativeNeighbors = getNeighborhood(n, )
+		}
+//			auto id = intercardinals[direction];
+//
+//			if (id) {
+//				auto relativeCenter = mesh->getChildVertex(center, id);
+//
+//				if (relativeCenter) {
+//					auto relativeIntercardinals = getRelativeIntercardinals(
+//							direction, center, intercardinals);
+//
+//					iD2[i] = recursiveCalcRoughness(relativeCenter,
+//							relativeIntercardinals);
+//				}
+//			}
+	}
+
+	for (auto id2 : iD2) {
+		if ((id2 / currentD2) < K && ((id2 / currentD2) < newD2)) {
+			newD2 = currentD2; //(id2 / currentD2);
+		}
+	}
+
+	if (newD2 < std::numeric_limits<float>::infinity()) {
+
+		auto temp = newD2 * K;
+
+		center->setD2(temp);
+
+		for (auto& d : ID::all()) {
+			intercardinals[*d]->setD2(temp);
+		}
+	}
+
+	return newD2;
+}
+
+#undef K
+
 //Quadtree2::Quadtree2(Vertex* nw, Vertex* ne, Vertex* sw, Vertex* se,
 //		Vertex* _center, Mesh* _mesh,
 //		const DA<CD, bool>& marked,
@@ -851,8 +912,6 @@ void Quadtree2::setNeighbours(Vertex* n, Vertex* e, Vertex* s, Vertex* w) {
 float Quadtree2::calcRoughness(Vertex* center,
 		DirectionArray<IntercardinalDirection, Vertex*>& intercardinals) {
 
-	Log("AAA");
-
 	float roughness = 0;
 	float d =
 			(intercardinals[ID::NW]->get() - intercardinals[ID::NE]->get()).Length();
@@ -880,11 +939,11 @@ float Quadtree2::calcRoughness(Vertex* center,
 		auto id1 = intercardinals[*ID::getAtClockwiseIndex(i)];
 		auto id2 = intercardinals[*ID::getAtClockwiseIndex((i + 2) % 4)];
 
-		auto cd = mesh->getChildVertex(id1, id2);
+//		Log("%p %p %p", id1, id2, center);
 
 		auto r = abs(
 				math::distanceFromPointToLine(id1->get(), id2->get(),
-						cd->get()));
+						center->get()));
 
 		if (r > roughness) {
 			roughness = r;

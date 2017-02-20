@@ -55,7 +55,7 @@ void QuadCube::deleteUnusedVertices() {
 	for (int i = mesh->getVertices()->Count() - 1; i >= 0; --i) {
 		auto v = (*mesh->getVertices())[i];
 
-		auto vp = v->getParents();
+		auto vp = v->getParents1();
 
 		if (vp) {
 			if (!(vp->getParent1()->isActive() && vp->getParent2()->isActive())) {

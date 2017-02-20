@@ -144,7 +144,20 @@ void Mesh::setParentsChild(Vertex *p1, Vertex *p2, Vertex *child) {
 	auto vp = new VertexParent(p1, p2, child);
 
 	vertex_parents->Add(vp);
-	child->setParents(vp);
+	child->setParents1(vp);
+}
+
+void Mesh::setParentsChild(Vertex *p1_1, Vertex *p1_2, Vertex *p2_1,
+		Vertex *p2_2, Vertex *child) {
+
+	auto vp1 = new VertexParent(p1_1, p1_2, child);
+	auto vp2 = new VertexParent(p2_1, p2_2, child);
+
+	vertex_parents->Add(vp1);
+	vertex_parents->Add(vp2);
+
+	child->setParents1(vp1);
+	child->setParents2(vp2);
 }
 
 Vertex* Mesh::deleteParentsChildRelation(Vertex *p1, Vertex *p2) {

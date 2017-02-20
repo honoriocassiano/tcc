@@ -40,6 +40,10 @@ public:
   // this creates a relationship between 3 vertices (2 parents, 1 child)
   void setParentsChild(Vertex *p1, Vertex *p2, Vertex *child);
 
+  // this creates a relationship between 5 vertices (4 parents, 1 child)
+  void setParentsChild(Vertex *p1_1, Vertex *p1_2, Vertex *p2_1,
+  		Vertex *p2_2, Vertex *child);
+
   // Delete the relation between parents and child and return child
   Vertex* deleteParentsChildRelation(Vertex *p1, Vertex *p2);
 

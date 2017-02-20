@@ -23,6 +23,10 @@
 
 int main(int argc, char **argv) {
 
+	std::cout << "********************************************\n";
+	std::cout << "**************** BOM DIA!!!!! **************\n";
+	std::cout << "********************************************\n" << std::endl;
+
 //	assert( 1 == 0 && "aaaa" );
 	QuadtreeMesh* mesh = new QuadtreeMesh();
 
