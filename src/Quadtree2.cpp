@@ -156,9 +156,9 @@ void Quadtree2::updateActiveCenters(const Vec3f& cameraPosition, Vertex* center,
 //		auto roughness = calcRoughness(center, intercardinals);
 
 // TODO Change this value
-//		if ((l / d) < C) {
+		if ((l / d) < C) {
 //		if ((l / (d * C * std::max(c * roughness, 1.0f))) < 1) {
-		if ((l / (d * C * std::max(c * center->getD2(), 1.0f))) < 1) {
+//		if ((l / (d * C * std::max(c * center->getD2(), 1.0f))) < 1) {
 			middleVertex->setActive(true);
 		} else {
 
@@ -831,6 +831,31 @@ float Quadtree2::recursiveCalcRoughness(Vertex* center,
 }
 
 #undef K
+
+void Quadtree2::updateRoughness() {
+	recursiveUpdateRoughness(center, intercardinals);
+}
+
+void Quadtree2::recursiveUpdateRoughness(Vertex* center,
+		DA<ID, Vertex*>& intercardinals) {
+
+	for (int i = 0; i < 4; ++i) {
+		auto& direction = *ID::getAtClockwiseIndex(i);
+
+		auto id = intercardinals[direction];
+
+		auto relCenter = mesh->getChildVertex(id, center);
+
+		if (relCenter) {
+			auto relIntercardinals = getRelativeIntercardinals(direction,
+					center, intercardinals);
+
+			recursiveUpdateRoughness(relCenter, relIntercardinals);
+		}
+	}
+
+	center->setD2(calcRoughness(center, intercardinals));
+}
 
 //Quadtree2::Quadtree2(Vertex* nw, Vertex* ne, Vertex* sw, Vertex* se,
 //		Vertex* _center, Mesh* _mesh,

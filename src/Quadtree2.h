@@ -44,6 +44,8 @@ public:
 		return mesh;
 	}
 
+	void updateRoughness();
+
 private:
 
 	void remesh(Vertex* center,
@@ -52,6 +54,9 @@ private:
 			const std::string& tag = "main");
 
 	void deleteUnusedVertices();
+
+	void recursiveUpdateRoughness(Vertex* center,
+			DirectionArray<IntercardinalDirection, Vertex*>& intercardinals);
 
 	void recursiveDeleteVertices(Vertex* center,
 			const IntercardinalDirection& direction,
