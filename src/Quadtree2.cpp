@@ -103,6 +103,34 @@ Quadtree2::~Quadtree2() {
 	}
 }
 
+void Quadtree2::updateD2() {
+	recursiveUpdateD2(center, intercardinals, neighbors);
+}
+
+#define K (C / (2 * (C - 1)))
+
+void Quadtree2::recursiveUpdateD2(Vertex* center,
+		DA<ID, Vertex*>& intercardinals, DA<CD, Vertex*>& neighbors) {
+
+	float neighborsD2[4] { 0.0f };
+
+	for (int i = 0; i < 4; ++i) {
+
+		auto& direction = *CD::getAtClockwiseIndex(i);
+
+		if (neighbors[direction]) {
+			neighborsD2[i] = neighbors[direction]->getD2();
+		}
+	}
+
+	if ((*std::min_element(neighborsD2, neighborsD2 + 4) / center->getD2()) < K) {
+
+	}
+}
+
+#undef K
+
+
 void Quadtree2::updateActiveIntercardinals(Vertex* center,
 		DA<ID, Vertex*>& intercardinals) {
 

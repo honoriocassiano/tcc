@@ -89,9 +89,7 @@ int main(int argc, char **argv) {
 //	quadtree->update(Vec3f(0, 0, -0.01));
 //
 //	Log("t: %d", mesh->numTriangles());
-
 //	delete quadtree;
-
 	/*
 	 srand(time(NULL));
 

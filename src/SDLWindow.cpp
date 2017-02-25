@@ -327,6 +327,11 @@ void SDLWindow::processEvents(const SDL_Event& e) {
 			break;
 		}
 
+		case SDLK_d: {
+			TOGGLE_DEBUG();
+			break;
+		}
+
 		case SDLK_n: {
 			options.normals = !options.normals;
 			break;

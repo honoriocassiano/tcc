@@ -45,6 +45,7 @@ public:
 	}
 
 	void updateRoughness();
+	void updateD2();
 
 private:
 
@@ -57,6 +58,10 @@ private:
 
 	void recursiveUpdateRoughness(Vertex* center,
 			DirectionArray<IntercardinalDirection, Vertex*>& intercardinals);
+
+	void recursiveUpdateD2(Vertex* center,
+			DirectionArray<IntercardinalDirection, Vertex*>& intercardinals,
+			DirectionArray<CardinalDirection, Vertex*>& neighbors);
 
 	void recursiveDeleteVertices(Vertex* center,
 			const IntercardinalDirection& direction,
