@@ -387,9 +387,9 @@ void Mesh::computeFaceNormals() {
 void Mesh::computeVerticesNormals() {
 	Iterator<Edge*> *iter = edges->StartIteration();
 
-	bool verticesStatus[edges->Count()];
+	bool verticesStatus[this->vertices->Count()] { false };
 
-	memset(verticesStatus, false, sizeof(verticesStatus));
+//	memset(verticesStatus, false, sizeof(verticesStatus));
 
 	Edge *e = NULL;
 
