@@ -249,7 +249,7 @@ bool SDLWindow::initSDL() {
 		return false;
 	}
 
-	SDL_GLContext mGLContext = SDL_GL_CreateContext(mWindow);
+	mGLContext = SDL_GL_CreateContext(mWindow);
 
 	return true;
 }
