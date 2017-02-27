@@ -76,6 +76,9 @@ public:
 		}
 		assert(x >= 0);
 		data[x] = data[count - 1];
+
+		data[x]->setIndex(x);
+
 		count--;
 	}
 

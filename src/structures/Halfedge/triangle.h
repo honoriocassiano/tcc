@@ -29,10 +29,16 @@ public:
 
 	// here's the hash function to use for triangles so they
 	// can be efficiently accessed within the Bag data structure
-	static void extract_func(Triangle *t, int &a, int &b, int &c) {
-		a = (*t)[0]->getIndex();
-		b = (*t)[1]->getIndex();
-		c = (*t)[2]->getIndex();
+//	static void extract_func(Triangle *t, int &a, int &b, int &c) {
+//		a = (*t)[0]->getIndex();
+//		b = (*t)[1]->getIndex();
+//		c = (*t)[2]->getIndex();
+//	}
+	static void extract_func(Triangle *t, long long int &a, long long int &b,
+			long long int &c) {
+		a = (long long int) (void*) (*t)[0];
+		b = (long long int) (void*) (*t)[1];
+		c = (long long int) (void*) (*t)[2];
 	}
 
 	// Return edge what contains vertex opposite to hypotenuse

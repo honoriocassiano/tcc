@@ -67,22 +67,21 @@ void QuadCube::deleteUnusedVertices() {
 
 void QuadCube::update(const Vec3f& cameraPosition) {
 
+
 	mesh->getTriangles()->DeleteAllElements();
 	mesh->getEdges()->DeleteAllElements();
 
-	for (auto& f : faces) {
-		f->updateRoughness();
-	}
 
-	for (auto& f : faces) {
-		f->updateRoughness();
-	}
+//	for (auto& f : faces) {
+//		f->updateRoughness();
+//	}
 
 	for (auto& f : faces) {
 		f->update2(cameraPosition);
 	}
 
 	deleteUnusedVertices();
+
 }
 
 void QuadCube::initNeighbours() {

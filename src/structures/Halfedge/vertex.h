@@ -79,6 +79,11 @@ public:
 		position.Set(x, y, z);
 	}
 
+	void setIndex(int index) {
+#warning "TODO Put this code on a new interface"
+		this->index = index;
+	}
+
 	void setNormal(const Vec3f& v) {
 		normal = v;
 	}

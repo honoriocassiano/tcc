@@ -46,7 +46,7 @@ Quadtree2::Quadtree2(Vertex* nw, Vertex* ne, Vertex* sw, Vertex* se,
 	center = mesh->addVertex(m);
 	center->setActive(true);
 
-	mesh->setParentsChild(nw, se, ne, sw, center);
+//	mesh->setParentsChild(nw, se, ne, sw, center);
 
 	// Create cardinals vertices
 	for (int i = 0; i < 4; ++i) {
@@ -319,7 +319,7 @@ void Quadtree2::update2(const Vec3f& cameraPosition, const std::string& tag) {
 
 //	deleteUnusedVertices();
 
-	Log("COUNT: %d", mesh->getTriangles()->Count());
+//	Log("COUNT: %d", mesh->getTriangles()->Count());
 
 	remesh(center, intercardinals, neighbors);
 }

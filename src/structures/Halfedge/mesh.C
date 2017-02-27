@@ -16,6 +16,8 @@
 #define INITIAL_EDGE 10000
 #define INITIAL_TRIANGLE 10000
 
+#define P_TO_I(p) ( reinterpret_cast<long long int>(static_cast<void *>(p)) )
+
 // =======================================================================
 // CONSTRUCTORS & DESTRUCTORS
 // =======================================================================
@@ -128,12 +130,15 @@ void Mesh::removeTriangle(Triangle *t) {
 
 Edge* Mesh::getEdge(Vertex *a, Vertex *b) const {
 	assert(edges != NULL);
-	return edges->Get(a->getIndex(), b->getIndex());
+//	return edges->Get(a->getIndex(), b->getIndex());
+	return edges->Get(P_TO_I(a), P_TO_I(b));
 }
 
 Vertex* Mesh::getChildVertex(Vertex *p1, Vertex *p2) const {
-	VertexParent *vp = vertex_parents->GetReorder(p1->getIndex(),
-			p2->getIndex());
+//	VertexParent *vp = vertex_parents->GetReorder(p1->getIndex(),
+//			p2->getIndex());
+	VertexParent *vp = vertex_parents->GetReorder(P_TO_I(p1),
+			P_TO_I(p2));
 	if (vp == NULL)
 		return NULL;
 	return vp->get();
@@ -161,8 +166,10 @@ void Mesh::setParentsChild(Vertex *p1_1, Vertex *p1_2, Vertex *p2_1,
 }
 
 Vertex* Mesh::deleteParentsChildRelation(Vertex *p1, Vertex *p2) {
-	VertexParent *vp = vertex_parents->GetReorder(p1->getIndex(),
-			p2->getIndex());
+//	VertexParent *vp = vertex_parents->GetReorder(p1->getIndex(),
+//			p2->getIndex());
+	VertexParent *vp = vertex_parents->GetReorder(P_TO_I(p1),
+			P_TO_I(p2));
 	if (vp == NULL)
 		return NULL;
 

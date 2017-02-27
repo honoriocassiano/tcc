@@ -34,9 +34,18 @@ public:
 	~VertexParent();
 
 	// to be put in a bag...
-	static void extract_func(VertexParent *e, int &a, int &b, int &c) {
-		a = min2(e->p1->getIndex(), e->p2->getIndex());
-		b = max2(e->p1->getIndex(), e->p2->getIndex());
+//	static void extract_func(VertexParent *e, int &a, int &b, int &c) {
+//		auto d = (std::size_t)(void *) e->p1;
+//		a = min2(e->p1->getIndex(), e->p2->getIndex());
+//		b = max2(e->p1->getIndex(), e->p2->getIndex());
+//		c = 0;
+//	}
+	static void extract_func(VertexParent *e, long long int &a, long long int &b,
+			long long int &c) {
+		a = min2((long long int ) (void * ) e->p1,
+				(long long int) (void * ) e->p2);
+		b = max2((long long int ) (void * ) e->p1,
+				(long long int ) (void * ) e->p2);
 		c = 0;
 	}
 
