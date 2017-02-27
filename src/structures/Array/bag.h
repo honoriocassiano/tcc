@@ -134,9 +134,9 @@ public:
 	void EndIteration(Iterator<BAG_ELEMENT> *&iter) {
 		assert(num_iterators > 0);
 		num_iterators--;
-		assert(iter != NULL);
+		assert(iter != nullptr);
 		delete iter;
-		iter = NULL;
+		iter = nullptr;
 		//printf ("end iteration %d   %d\n", num_iterators, (int)this);
 	}
 
