@@ -20,7 +20,7 @@ using ID = IntercardinalDirection;
 using CD = CardinalDirection;
 
 float Quadtree2::C = 20;
-float Quadtree2::c = 10;
+float Quadtree2::c = 30;
 
 #define MIDDLE(P1, P2) ( (P1 + P2 ) * 0.5)
 #define CAST(X, TYPE) static_cast<TYPE>(X)
@@ -48,7 +48,7 @@ Quadtree2::Quadtree2(Vertex* nw, Vertex* ne, Vertex* sw, Vertex* se,
 
 //	mesh->setParentsChild(nw, se, ne, sw, center);
 
-	// Create cardinals vertices
+// Create cardinals vertices
 	for (int i = 0; i < 4; ++i) {
 		auto& d1 = intercardinals[*ID::getAtClockwiseIndex(i)];
 		auto& d2 = intercardinals[*ID::getAtClockwiseIndex((i + 1) % 4)];
@@ -130,7 +130,6 @@ void Quadtree2::recursiveUpdateD2(Vertex* center,
 
 #undef K
 
-
 void Quadtree2::updateActiveIntercardinals(Vertex* center,
 		DA<ID, Vertex*>& intercardinals) {
 
@@ -184,9 +183,9 @@ void Quadtree2::updateActiveCenters(const Vec3f& cameraPosition, Vertex* center,
 //		auto roughness = calcRoughness(center, intercardinals);
 
 // TODO Change this value
-		if ((l / d) < C) {
+//		if ((l / d) < C) {
 //		if ((l / (d * C * std::max(c * roughness, 1.0f))) < 1) {
-//		if ((l / (d * C * std::max(c * center->getD2(), 1.0f))) < 1) {
+		if ((l / (d * C * std::max(c * center->getD2(), 1.0f))) < 1) {
 			middleVertex->setActive(true);
 		} else {
 
@@ -308,7 +307,7 @@ void Quadtree2::update2(const Vec3f& cameraPosition, const std::string& tag) {
 
 //	recursiveCalcRoughness(center, intercardinals, neighbors);
 
-	// TODO Check this code
+// TODO Check this code
 	updateActiveCenters(cameraPosition, center, intercardinals, neighbors);
 //	updateActives(cameraPosition, center, intercardinals, neighbors);
 
@@ -404,17 +403,17 @@ void Quadtree2::remesh(Vertex* center, DA<ID, Vertex*>& intercardinals,
 			{ ID::SW, mesh->getOrCreateChildVertex(center,
 					intercardinals[ID::SW]) } };
 
-	DA<ID, bool> updated { { ID::NW, !mesh->getOrCreateChildVertex(center,
-			intercardinals[ID::NW])->isActive() },
-			{ ID::NE, !mesh->getOrCreateChildVertex(center,
-					intercardinals[ID::NE])->isActive() }, { ID::SE,
-					!mesh->getOrCreateChildVertex(center,
-							intercardinals[ID::SE])->isActive() }, { ID::SW,
-					!mesh->getOrCreateChildVertex(center,
-							intercardinals[ID::SW])->isActive() } };
-
-	Log("[%s] -> NW: %d, NE: %d, SE: %d, SW: %d", tag.c_str(), updated[ID::NW],
-			updated[ID::NE], updated[ID::SE], updated[ID::SW]);
+//	DA<ID, bool> updated { { ID::NW, !mesh->getOrCreateChildVertex(center,
+//			intercardinals[ID::NW])->isActive() },
+//			{ ID::NE, !mesh->getOrCreateChildVertex(center,
+//					intercardinals[ID::NE])->isActive() }, { ID::SE,
+//					!mesh->getOrCreateChildVertex(center,
+//							intercardinals[ID::SE])->isActive() }, { ID::SW,
+//					!mesh->getOrCreateChildVertex(center,
+//							intercardinals[ID::SW])->isActive() } };
+//
+//	Log("[%s] -> NW: %d, NE: %d, SE: %d, SW: %d", tag.c_str(), updated[ID::NW],
+//			updated[ID::NE], updated[ID::SE], updated[ID::SW]);
 
 //	if (currentTriangles.size() == 0 && center->isActive()) {
 	if (center->isActive()) {
@@ -430,27 +429,30 @@ void Quadtree2::remesh(Vertex* center, DA<ID, Vertex*>& intercardinals,
 					intercardinals[nextIc]);
 
 			if (neighbors[c] && !neighbors[c]->isActive()) {
-				Log("%s", tag.c_str());
+//				Log("%s", tag.c_str());
 
 				if (!middleInterCardinals[ic]->isActive()
 						&& !middleInterCardinals[nextIc]->isActive()) {
-					Log("%s", tag.c_str());
+//					Log("%s", tag.c_str());
 
 					mesh->addTriangle(center, intercardinals[ic],
 							intercardinals[nextIc]);
 
 				} else if (middleInterCardinals[ic]->isActive()) {
-					Log("%s", tag.c_str());
+//					Log("%s", tag.c_str());
 
 //					mesh->addTriangle(center, intercardinals[ic], middle);
-					mesh->addTriangle(center, middle, intercardinals[ic]);
-				} else {
-					Log("%s", tag.c_str());
 
+//					mesh->addTriangle(center, middle, intercardinals[ic]);
 					mesh->addTriangle(center, middle, intercardinals[nextIc]);
+				} else {
+//					Log("%s", tag.c_str());
+
+					mesh->addTriangle(center, middle, intercardinals[ic]);
+//					mesh->addTriangle(center, middle, intercardinals[nextIc]);
 				}
 			} else {
-				Log("%s", tag.c_str());
+//				Log("%s", tag.c_str());
 
 				if (!middleInterCardinals[ic]->isActive()) {
 					mesh->addTriangle(center, middle, intercardinals[ic]);
@@ -467,7 +469,8 @@ void Quadtree2::remesh(Vertex* center, DA<ID, Vertex*>& intercardinals,
 	for (auto i = 0; i < 4; ++i) {
 		auto& direction = *ID::getAtClockwiseIndex(i);
 
-		if (!updated[direction]) {
+//		if (!updated[direction]) {
+		if (mesh->getOrCreateChildVertex(center, intercardinals[direction])->isActive()) {
 			auto relativeIntercardinal = getRelativeIntercardinals(direction,
 					center, intercardinals);
 
@@ -858,8 +861,6 @@ float Quadtree2::recursiveCalcRoughness(Vertex* center,
 	return newD2;
 }
 
-#undef K
-
 void Quadtree2::updateRoughness() {
 	recursiveUpdateRoughness(center, intercardinals);
 }
@@ -883,6 +884,86 @@ void Quadtree2::recursiveUpdateRoughness(Vertex* center,
 	}
 
 	center->setD2(calcRoughness(center, intercardinals));
+}
+
+void Quadtree2::updateRoughness2() {
+	recursiveUpdateRoughness2(center, intercardinals, nullptr, &neighbors);
+}
+
+float Quadtree2::recursiveUpdateRoughness2(Vertex* center,
+		DirectionArray<IntercardinalDirection, Vertex*>& intercardinals,
+		DirectionArray<CardinalDirection, Vertex*>* parentNeighbors,
+		DirectionArray<CardinalDirection, Vertex*>* neighbors) {
+
+	bool hasNext = false;
+	float nextRoughness = -1.0f;
+
+	for (int i = 0; i < 4; ++i) {
+		auto& id = *ID::getAtClockwiseIndex(i);
+
+		auto relCenter = mesh->getChildVertex(center, intercardinals[id]);
+
+		if (relCenter) {
+			auto relIntercardinals = getRelativeIntercardinals(id, center,
+					intercardinals);
+
+			auto relNeighbors = getNeighborhood(center, id, intercardinals,
+					*neighbors);
+
+//			if(!parentNeighbors) {
+			nextRoughness = recursiveUpdateRoughness2(relCenter,
+					relIntercardinals, neighbors, &relNeighbors);
+//			} else {
+//				nextRoughness = recursiveUpdateRoughness2(relCenter, relIntercardinals,
+//									relNeighbors);
+//			}
+
+//			auto relNeighbors = getNeighborhood(center, id, intercardinals,
+//					parentNeighbors);
+//
+//			nextRoughness = recursiveUpdateRoughness2(relCenter, relIntercardinals,
+//					relNeighbors);
+		} else {
+			hasNext = true;
+		}
+	}
+
+	auto minD2 = std::numeric_limits<float>::max();
+
+	if (parentNeighbors) {
+		for (int i = 0; i < 4; ++i) {
+			auto& cd = *CD::getAtClockwiseIndex(i);
+
+			if ((*parentNeighbors)[cd]->getD2() < minD2) {
+				minD2 = (*parentNeighbors)[cd]->getD2();
+			}
+
+//		if (parentNeighbors[cd]->getD2() < minD2) {
+//			minD2 = parentNeighbors[cd]->getD2();
+//		}
+		}
+	}
+
+	float currRoughness = 0.0f;
+
+	if ((minD2 / center->getD2()) < K) {
+
+		if (nextRoughness >= 0.0f) {
+			currRoughness = nextRoughness * K;
+		} else {
+			currRoughness = center->getD2();
+		}
+
+		for (int i = 0; i < 4; ++i) {
+			auto& id = *ID::getAtClockwiseIndex(i);
+
+			if (intercardinals[id]) {
+				intercardinals[id]->setD2(currRoughness);
+			}
+		}
+	}
+
+	return currRoughness;
 }
 
 //Quadtree2::Quadtree2(Vertex* nw, Vertex* ne, Vertex* sw, Vertex* se,

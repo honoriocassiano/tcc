@@ -45,6 +45,7 @@ public:
 	}
 
 	void updateRoughness();
+	void updateRoughness2();
 	void updateD2();
 
 private:
@@ -70,6 +71,11 @@ private:
 
 	float calculateRoughness(const Vertex* center,
 			const DirectionArray<IntercardinalDirection, Vertex*>& intercardinals);
+
+	float recursiveUpdateRoughness2(Vertex* center,
+				DirectionArray<IntercardinalDirection, Vertex*>& intercardinals,
+				DirectionArray<CardinalDirection, Vertex*>* parentNeighbors,
+				DirectionArray<CardinalDirection, Vertex*>* neighbors);
 
 	DirectionArray<CardinalDirection, Vertex*> getNeighborhood(Vertex* center,
 			const IntercardinalDirection& direction,

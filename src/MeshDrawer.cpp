@@ -411,12 +411,19 @@ void MeshDrawer::draw(Mesh* mesh, const DrawOptions& options) {
 	} else {
 		glDisable(GL_LIGHTING);
 		glPointSize(1.25);
-		glColor3f(1, 1, 1);
 		glBegin(GL_POINTS);
 		for (int i = 0; i < mesh->vertices->Count(); ++i) {
 			auto v = (*mesh->vertices)[i];
 
-			glVertex3f(v->x(), v->y(), v->z());
+//			glVertex3f(v->x(), v->y(), v->z());
+			if (v->isActive()) {
+				glColor3f(1, 0, 0);
+			} else {
+				glColor3f(1, 1, 1);
+			}
+
+			glVertex3f(DX(v->x(), v->y(), v->z()), DY(v->x(), v->y(), v->z()),
+					DZ(v->x(), v->y(), v->z()));
 		}
 		glEnd();
 		glEnable(GL_LIGHTING);
@@ -552,53 +559,80 @@ void MeshDrawer::drawHalfEdge(Mesh* mesh) {
 		m.Transform(dirV2);
 
 		glColor3f(1, 1, 0);
-		glVertex3f(v0[0], v0[1], v0[2]);
+//		glVertex3f(v0[0], v0[1], v0[2]);
+		glVertex3f(DX(v0[0], v0[1], v0[2]), DY(v0[0], v0[1], v0[2]), DZ(v0[0], v0[1], v0[2]));
 
 		glColor3f(1, 0, 0);
-		glVertex3f(v1[0], v1[1], v1[2]);
+		glVertex3f(DX(v1[0], v1[1], v1[2]), DY(v1[0], v1[1], v1[2]), DZ(v1[0], v1[1], v1[2]));
+//		glVertex3f(v1[0], v1[1], v1[2]);
 
 		// ********************************************
 		// ********************************************
 
-		glVertex3f(v1[0], v1[1], v1[2]);
+		glVertex3f(DX(v1[0], v1[1], v1[2]), DY(v1[0], v1[1], v1[2]),
+				DZ(v1[0], v1[1], v1[2]));
 
-//		glColor3f(1, 0, 0);
-		glVertex3f(v1[0] + dirV0[0], v1[1] + dirV0[1], v1[2] + dirV0[2]);
+		//		glColor3f(1, 0, 0);
+		glVertex3f(DX(v1[0] + dirV0[0], v1[1] + dirV0[1], v1[2] + dirV0[2]),
+				DY(v1[0] + dirV0[0], v1[1] + dirV0[1], v1[2] + dirV0[2]),
+				DZ(v1[0] + dirV0[0], v1[1] + dirV0[1], v1[2] + dirV0[2]));
+//		glVertex3f(v1[0], v1[1], v1[2]);
+//
+////		glColor3f(1, 0, 0);
+//		glVertex3f(v1[0] + dirV0[0], v1[1] + dirV0[1], v1[2] + dirV0[2]);
 
 		// ********************************************
 		// ********************************************
 
 		glColor3f(1, 1, 0);
 
-		glVertex3f(v1[0], v1[1], v1[2]);
+//		glVertex3f(v1[0], v1[1], v1[2]);
+		glVertex3f(DX(v1[0], v1[1], v1[2]), DY(v1[0], v1[1], v1[2]),
+				DZ(v1[0], v1[1], v1[2]));
 
 		glColor3f(1, 0, 0);
 
-		glVertex3f(v2[0], v2[1], v2[2]);
+		glVertex3f(DX(v2[0], v2[1], v2[2]), DY(v2[0], v2[1], v2[2]),
+				DZ(v2[0], v2[1], v2[2]));
+//		glVertex3f(v2[0], v2[1], v2[2]);
 
 		// ********************************************
 		// ********************************************
 
-		glVertex3f(v2[0], v2[1], v2[2]);
+//		glVertex3f(v2[0], v2[1], v2[2]);
+		glVertex3f(DX(v2[0], v2[1], v2[2]), DY(v2[0], v2[1], v2[2]),
+				DZ(v2[0], v2[1], v2[2]));
 
 //		glColor3f(1, 0, 0);
-		glVertex3f(v2[0] + dirV1[0], v2[1] + dirV1[1], v2[2] + dirV1[2]);
+//		glVertex3f(v2[0] + dirV1[0], v2[1] + dirV1[1], v2[2] + dirV1[2]);
+		glVertex3f(DX(v2[0] + dirV1[0], v2[1] + dirV1[1], v2[2] + dirV1[2]),
+				DY(v2[0] + dirV1[0], v2[1] + dirV1[1], v2[2] + dirV1[2]),
+				DZ(v2[0] + dirV1[0], v2[1] + dirV1[1], v2[2] + dirV1[2]));
 
 		// ********************************************
 		// ********************************************
 		glColor3f(1, 1, 0);
 
-		glVertex3f(v2[0], v2[1], v2[2]);
+//		glVertex3f(v2[0], v2[1], v2[2]);
+		glVertex3f(DX(v2[0], v2[1], v2[2]), DY(v2[0], v2[1], v2[2]),
+				DZ(v2[0], v2[1], v2[2]));
 
 		glColor3f(1, 0, 0);
 
-		glVertex3f(v0[0], v0[1], v0[2]);
+//		glVertex3f(v0[0], v0[1], v0[2]);
+		glVertex3f(DX(v0[0], v0[1], v0[2]), DY(v0[0], v0[1], v0[2]),
+				DZ(v0[0], v0[1], v0[2]));
 
 		// ********************************************
 		// ********************************************
 
-		glVertex3f(v0[0], v0[1], v0[2]);
-		glVertex3f(v0[0] + dirV2[0], v0[1] + dirV2[1], v0[2] + dirV2[2]);
+		glVertex3f(DX(v0[0], v0[1], v0[2]), DY(v0[0], v0[1], v0[2]),
+				DZ(v0[0], v0[1], v0[2]));
+		glVertex3f(DX(v0[0] + dirV2[0], v0[1] + dirV2[1], v0[2] + dirV2[2]),
+				DY(v0[0] + dirV2[0], v0[1] + dirV2[1], v0[2] + dirV2[2]),
+				DZ(v0[0] + dirV2[0], v0[1] + dirV2[1], v0[2] + dirV2[2]));
+//		glVertex3f(v0[0], v0[1], v0[2]);
+//		glVertex3f(v0[0] + dirV2[0], v0[1] + dirV2[1], v0[2] + dirV2[2]);
 
 		// ********************************************
 		// ********************************************
