@@ -24,7 +24,8 @@ int HandleGLErrorWindow2() {
 	GLenum error;
 	int i = 0;
 	while ((error = glGetError()) != GL_NO_ERROR) {
-		Error("Not rectangle!\n");
+//		Error("Not rectangle!\n");
+		fprintf(stderr, "%u\n", error);
 		i++;
 	}
 	if (i == 0)

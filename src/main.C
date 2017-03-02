@@ -83,7 +83,7 @@ int main(int argc, char **argv) {
 
 //	Log("t: %d", mesh->numTriangles());
 
-	SDLWindow window(640, 480);
+	SDLWindow window(800, 600);
 	window.run();
 
 //	quadtree->update(Vec3f(0, 0, -0.01));

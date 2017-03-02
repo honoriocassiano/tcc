@@ -193,11 +193,13 @@ void MeshDrawer::draw(Mesh* mesh, const DrawOptions& options) {
 
 	// this offset prevents "z-fighting" bewteen the edges and faces
 	// the edges will always win.
-	glEnable(GL_POLYGON_OFFSET_FILL);
-	glPolygonOffset(1.1, 4.0);
+//	glEnable(GL_POLYGON_OFFSET_FILL);
+//	glPolygonOffset(1.1, 4.0);
 
 	if (options.wireframe) {
 		glPolygonMode( GL_FRONT_AND_BACK, GL_LINE);
+
+		glDisable(GL_LIGHTING);
 
 		if (options.halfEdge) {
 			drawHalfEdge(mesh);
@@ -335,8 +337,6 @@ void MeshDrawer::draw(Mesh* mesh, const DrawOptions& options) {
 			//		printf("(%f, %f, %f)\n", va->getColor().r(), va->getColor().g(), va->getColor().b());
 
 			//***************************************
-			constexpr float maxHeight = 5.0f;
-
 			glColor3f(va->getColor().r(), va->getColor().g(),
 					va->getColor().b());
 			glNormal3f(n_a.x(), n_a.y(), n_a.z());
@@ -390,7 +390,7 @@ void MeshDrawer::draw(Mesh* mesh, const DrawOptions& options) {
 		mesh->triangles->EndIteration(iter);
 		glEnd();
 
-		glDisable(GL_POLYGON_OFFSET_FILL);
+//		glDisable(GL_POLYGON_OFFSET_FILL);
 
 		if (options.normals) {
 			iter = mesh->triangles->StartIteration();
@@ -407,6 +407,8 @@ void MeshDrawer::draw(Mesh* mesh, const DrawOptions& options) {
 
 			mesh->triangles->EndIteration(iter);
 		}
+
+		glEnable(GL_LIGHTING);
 
 	} else {
 		glDisable(GL_LIGHTING);
@@ -517,7 +519,7 @@ void MeshDrawer::drawHalfEdge(Mesh* mesh) {
 
 	auto it = mesh->triangles->StartIteration();
 
-	glDisable(GL_LIGHTING);
+//	glDisable(GL_LIGHTING);
 //	glColor3f(1, 1, 0);
 	glBegin(GL_LINES);
 //	glBegin(GL_TRIANGLES);
@@ -560,10 +562,12 @@ void MeshDrawer::drawHalfEdge(Mesh* mesh) {
 
 		glColor3f(1, 1, 0);
 //		glVertex3f(v0[0], v0[1], v0[2]);
-		glVertex3f(DX(v0[0], v0[1], v0[2]), DY(v0[0], v0[1], v0[2]), DZ(v0[0], v0[1], v0[2]));
+		glVertex3f(DX(v0[0], v0[1], v0[2]), DY(v0[0], v0[1], v0[2]),
+				DZ(v0[0], v0[1], v0[2]));
 
 		glColor3f(1, 0, 0);
-		glVertex3f(DX(v1[0], v1[1], v1[2]), DY(v1[0], v1[1], v1[2]), DZ(v1[0], v1[1], v1[2]));
+		glVertex3f(DX(v1[0], v1[1], v1[2]), DY(v1[0], v1[1], v1[2]),
+				DZ(v1[0], v1[1], v1[2]));
 //		glVertex3f(v1[0], v1[1], v1[2]);
 
 		// ********************************************
@@ -641,7 +645,7 @@ void MeshDrawer::drawHalfEdge(Mesh* mesh) {
 	mesh->triangles->EndIteration(it);
 
 	glEnd();
-	glEnable(GL_LIGHTING);
+//	glEnable(GL_LIGHTING);
 }
 
 bool MeshDrawer::isClockwise(const Triangle* triangle) {
