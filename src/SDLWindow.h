@@ -24,18 +24,6 @@
 #include "MeshDrawer.h"
 #include "Quadtree2.h"
 
-class Quadtree* getTree();
-
-Quadtree2** getTree2();
-
-QuadCube* getCube();
-
-//******************************************************
-#include "Landscape.h"
-
-Landscape* getLandscape();
-//******************************************************
-
 class SDLWindow {
 public:
 	SDLWindow(int width, int height);
@@ -60,6 +48,8 @@ private:
 	void processRealtimeEvents();
 	void processEvents(const SDL_Event& e);
 
+	QuadCube* cube;
+
 	std::vector<CelestialBody*> mBodies;
 	std::vector<int> mIndices;
 
@@ -68,6 +58,7 @@ private:
 
 	PerspectiveCamera2* mCamera;
 	Clock * mClock;
+	bool freezed;
 	bool mIsRunning;
 	SDL_GLContext mGLContext;
 

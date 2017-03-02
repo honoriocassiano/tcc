@@ -19,8 +19,8 @@ using DA = DirectionArray<DType, Element>;
 using ID = IntercardinalDirection;
 using CD = CardinalDirection;
 
-float Quadtree2::C = 20;
-float Quadtree2::c = 30;
+float Quadtree2::C = 15;
+float Quadtree2::c = 20;
 
 #define MIDDLE(P1, P2) ( (P1 + P2 ) * 0.5)
 #define CAST(X, TYPE) static_cast<TYPE>(X)
@@ -214,6 +214,7 @@ void Quadtree2::updateActiveCenters(const Vec3f& cameraPosition, Vertex* center,
 	}
 
 	// Unset active if any vertex in the neighborhood differ by more than 1
+	/*
 	for (auto i = 0; i < 4; ++i) {
 		auto& direction = *ID::getAtClockwiseIndex(i);
 
@@ -249,6 +250,7 @@ void Quadtree2::updateActiveCenters(const Vec3f& cameraPosition, Vertex* center,
 			}
 		}
 	}
+	*/
 
 	for (auto i = 0; i < 4; ++i) {
 

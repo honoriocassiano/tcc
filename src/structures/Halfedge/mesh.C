@@ -61,8 +61,6 @@ void Mesh::removeVertex(Vertex* vertex) {
 	vertices->Remove(vertex);
 
 	delete vertex;
-
-	vertex = NULL;
 }
 
 Triangle* Mesh::addTriangle(Vertex *a, Vertex *b, Vertex *c) {

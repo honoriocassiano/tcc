@@ -36,7 +36,8 @@ public:
 			DirectionArray<IntercardinalDirection, Vertex*>& intercardinals);
 
 	float recursiveCalcRoughness(Vertex* center,
-				DirectionArray<IntercardinalDirection, Vertex*>& intercardinals, DirectionArray<CardinalDirection, Vertex*>& neighbors);
+			DirectionArray<IntercardinalDirection, Vertex*>& intercardinals,
+			DirectionArray<CardinalDirection, Vertex*>& neighbors);
 
 	void setNeighbours(Vertex* n, Vertex* e, Vertex* s, Vertex* w);
 
@@ -47,6 +48,9 @@ public:
 	void updateRoughness();
 	void updateRoughness2();
 	void updateD2();
+
+	static float C;
+	static float c;
 
 private:
 
@@ -73,9 +77,9 @@ private:
 			const DirectionArray<IntercardinalDirection, Vertex*>& intercardinals);
 
 	float recursiveUpdateRoughness2(Vertex* center,
-				DirectionArray<IntercardinalDirection, Vertex*>& intercardinals,
-				DirectionArray<CardinalDirection, Vertex*>* parentNeighbors,
-				DirectionArray<CardinalDirection, Vertex*>* neighbors);
+			DirectionArray<IntercardinalDirection, Vertex*>& intercardinals,
+			DirectionArray<CardinalDirection, Vertex*>* parentNeighbors,
+			DirectionArray<CardinalDirection, Vertex*>* neighbors);
 
 	DirectionArray<CardinalDirection, Vertex*> getNeighborhood(Vertex* center,
 			const IntercardinalDirection& direction,
@@ -112,8 +116,8 @@ private:
 	Vertex* center;
 	DirectionArray<IntercardinalDirection, Vertex*> intercardinals;
 
-	static float C;
-	static float c;
+//	static float C;
+//	static float c;
 };
 
 #endif /* SRC_QUADTREE2_H_ */

@@ -16,40 +16,9 @@
 #include "Quadtree.h"
 #include "MeshDrawer.h"
 
-Quadtree* tree = new Quadtree(Vec3f(0, 0, 0), Vec3f(1, 0, 0), Vec3f(0, 1, 0), 0,
-		20);
-
-QuadCube* cube = new QuadCube(Vec3f(0, 0, 0));
-//Quadtree* tree = new Quadtree(Vec3f(0, 0, 0), Vec3f(50, 0, -10), Vec3f(0, 50, -10), 0, 20);
-
-Quadtree2* tree2 = nullptr;
-
-Quadtree2** getTree2() {
-	return &tree2;
-}
-
-Quadtree* getTree() {
-	return tree;
-}
-
-QuadCube* getCube() {
-	return cube;
-}
-//******************************************************
-
-//******************************************************
-//Landscape* landscape = new Landscape(0.5f);
-//Vec3f position(0.5, 0.5, 10);
-//Vec3f position(2.5, 2.5, 100);
-//const Vec3f position(100, 0, 40);
 const Vec3f position(6.2, 1.2, -28.8);
 int globalI = 0;
 
-/*
- Landscape* getLandscape() {
- return landscape;
- }
- */
 //******************************************************
 int HandleGLErrorWindow2() {
 	GLenum error;
@@ -63,9 +32,14 @@ int HandleGLErrorWindow2() {
 	return 0;
 }
 
+extern bool wasInited;
+
 SDLWindow::SDLWindow(int width, int height) :
-		mCamera(nullptr), mClock(new Clock()), mIsRunning(false), mWindow(
+		cube(new QuadCube(Vec3f(0, 0, 0))), mCamera(nullptr), mClock(
+				new Clock()), freezed(false), mIsRunning(false), mWindow(
 				nullptr), mWidth(width), mHeight(height) {
+
+	wasInited = true;
 
 //	options.normals = true;
 //	options.wireframe = true;
@@ -125,7 +99,9 @@ void SDLWindow::run() {
 
 		Time dt = mClock->getTime();
 
-		update(dt);
+		if (!freezed) {
+			update(dt);
+		}
 
 		mClock->restart();
 
@@ -158,9 +134,8 @@ void SDLWindow::update(const Time& dt) {
 	 //	}
 	 */
 	//******************************************************
-
 //	(*getTree2())->update2(mCamera->getPosition());
-	getCube()->update(mCamera->getPosition());
+	cube->update(mCamera->getPosition());
 
 //	MeshDrawer::draw(tree2->getMesh(), options);
 }
@@ -225,7 +200,7 @@ void SDLWindow::display() {
 
 //	cube->draw(true, false);
 	//cube->draw(false, false);
-	getCube()->draw(options);
+	cube->draw(options);
 //	MeshDrawer::draw(tree2->getMesh(), options);
 
 //	landscape->render();
@@ -332,6 +307,11 @@ void SDLWindow::processEvents(const SDL_Event& e) {
 			break;
 		}
 
+		case SDLK_f: {
+			freezed = !freezed;
+			break;
+		}
+
 		case SDLK_n: {
 			options.normals = !options.normals;
 			break;
@@ -348,14 +328,14 @@ void SDLWindow::processEvents(const SDL_Event& e) {
 		}
 
 		case SDLK_t: {
-			(*getTree2())->getMesh()->printTriangles();
-			Log("Triangles: %d", (*getTree2())->getMesh()->numTriangles());
+//			cube->getMesh()->printTriangles();
+//			Log("Triangles: %d", (*getTree2())->getMesh()->numTriangles());
 			break;
 		}
 
 		case SDLK_v: {
-			(*getTree2())->getMesh()->printVertices();
-			Log("Vertices: %d", (*getTree2())->getMesh()->numVertices());
+//			(*getTree2())->getMesh()->printVertices();
+//			Log("Vertices: %d", (*getTree2())->getMesh()->numVertices());
 			break;
 		}
 
@@ -371,6 +351,26 @@ void SDLWindow::processEvents(const SDL_Event& e) {
 
 		case SDLK_w: {
 			options.wireframe = !options.wireframe;
+			break;
+		}
+
+		case SDLK_e: {
+			Quadtree2::c++;
+			break;
+		}
+
+		case SDLK_r: {
+			Quadtree2::c--;
+			break;
+		}
+
+		case SDLK_y: {
+			Quadtree2::C--;
+			break;
+		}
+
+		case SDLK_u: {
+			Quadtree2::C++;
 			break;
 		}
 

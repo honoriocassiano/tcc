@@ -28,7 +28,7 @@ int main(int argc, char **argv) {
 	std::cout << "********************************************\n" << std::endl;
 
 //	assert( 1 == 0 && "aaaa" );
-	QuadtreeMesh* mesh = new QuadtreeMesh();
+//	QuadtreeMesh* mesh = new QuadtreeMesh();
 
 //	auto nw = mesh->addVertex(Vec3f(-0.5, 0.5, 0));
 //	auto ne = mesh->addVertex(Vec3f(0.5, 0.5, 0));
@@ -40,10 +40,10 @@ int main(int argc, char **argv) {
 //	auto se = mesh->addVertex(Vec3f(0.5, -0.5, 0.5));
 //	auto sw = mesh->addVertex(Vec3f(-0.5, -0.5, 0.5));
 
-	auto ne = mesh->addVertex(Vec3f(-0.5, 0.5, 0.5));
-	auto nw = mesh->addVertex(Vec3f(0.5, 0.5, 0.5));
-	auto sw = mesh->addVertex(Vec3f(0.5, -0.5, 0.5));
-	auto se = mesh->addVertex(Vec3f(-0.5, -0.5, 0.5));
+//	auto ne = mesh->addVertex(Vec3f(-0.5, 0.5, 0.5));
+//	auto nw = mesh->addVertex(Vec3f(0.5, 0.5, 0.5));
+//	auto sw = mesh->addVertex(Vec3f(0.5, -0.5, 0.5));
+//	auto se = mesh->addVertex(Vec3f(-0.5, -0.5, 0.5));
 
 //	Log("***********************************************************");
 //
@@ -51,10 +51,10 @@ int main(int argc, char **argv) {
 //		Log("%d %d", (*d).getClockwiseIndex(), (*d).getMatrixIndex());
 //	}
 
-	Quadtree2** temp = getTree2(); //new Quadtree2(nw, ne, sw, se, mesh);
-	*temp = new Quadtree2(nw, ne, sw, se, mesh);
+//	Quadtree2** temp = getTree2(); //new Quadtree2(nw, ne, sw, se, mesh);
+//	*temp = new Quadtree2(nw, ne, sw, se, mesh);
 
-	Quadtree2* quadtree = *temp; //new Quadtree2(nw, ne, sw, se, mesh);
+//	Quadtree2* quadtree = *temp; //new Quadtree2(nw, ne, sw, se, mesh);
 
 //	Log("t: %d", mesh->numTriangles());
 
@@ -62,9 +62,9 @@ int main(int argc, char **argv) {
 //	quadtree->update2(Vec3f(0.7, 0.7, 10.51));
 //	quadtree->update2(Vec3f(0.7, 0.7, 10.51));
 
-	Log("******************************************");
-	Log("UPDATE!!!");
-	Log("******************************************");
+//	Log("******************************************");
+//	Log("UPDATE!!!");
+//	Log("******************************************");
 
 //	quadtree->update2(Vec3f(0.9, 0.9, 2.76));
 
