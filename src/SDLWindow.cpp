@@ -329,13 +329,19 @@ void SDLWindow::processEvents(const SDL_Event& e) {
 		}
 
 		case SDLK_t: {
-//			cube->getMesh()->printTriangles();
+			cube->getMesh()->printTriangles();
 //			Log("Triangles: %d", (*getTree2())->getMesh()->numTriangles());
 			break;
 		}
 
 		case SDLK_v: {
-//			(*getTree2())->getMesh()->printVertices();
+			cube->getMesh()->printVertices();
+//			Log("Vertices: %d", (*getTree2())->getMesh()->numVertices());
+			break;
+		}
+
+		case SDLK_k: {
+			cube->getMesh()->printTrianglesPointers();
 //			Log("Vertices: %d", (*getTree2())->getMesh()->numVertices());
 			break;
 		}

@@ -387,6 +387,30 @@ void Mesh::computeFaceNormals() {
 	triangles->EndIteration(iter);
 }
 
+void Mesh::printTrianglesPointers(int limit) {
+
+	auto it = triangles->StartIteration();
+	int i = 0;
+
+	while (Triangle *t = it->GetNext()) {
+
+		auto edge = t->getEdge();
+
+		auto p0 = edge->getVertex();
+		auto p1 = edge->getNext()->getVertex();
+		auto p2 = edge->getNext()->getNext()->getVertex();
+
+//		Log(
+		printf(
+				"%d - v0: %p, v1: %p, v2: %p\n",
+				i, p0, p1, p2);
+
+		++i;
+	}
+
+	triangles->EndIteration(it);
+}
+
 void Mesh::computeVerticesNormals() {
 	Iterator<Edge*> *iter = edges->StartIteration();
 
@@ -412,7 +436,8 @@ void Mesh::printVertices(int limit) {
 	int i = 0;
 
 	while (i < vertices->Count() && i < limit) {
-		Log("[%d] (%f, %f, %f)", i, (*vertices)[i]->x(), (*vertices)[i]->y(),
+		printf(
+		"[%d] (%f, %f, %f)\n", i, (*vertices)[i]->x(), (*vertices)[i]->y(),
 				(*vertices)[i]->z());
 
 		i++;
@@ -432,8 +457,9 @@ void Mesh::printTriangles(int limit) {
 		auto p1 = edge->getNext()->getVertex()->get();
 		auto p2 = edge->getNext()->getNext()->getVertex()->get();
 
-		Log(
-				"%d - v0: (%.5f, %.5f, %.5f), v1: (%.5f, %.5f, %.5f), v2: (%.5f, %.5f, %.5f)",
+//		Log(
+		printf(
+				"%d - v0: (%.5f, %.5f, %.5f), v1: (%.5f, %.5f, %.5f), v2: (%.5f, %.5f, %.5f)\n",
 				i, p0.x(), p0.y(), p0.z(), p1.x(), p1.y(), p1.z(), p2.x(),
 				p2.y(), p2.z());
 

@@ -103,19 +103,27 @@ void QuadCube::initNeighbours() {
 	front->setNeighbours(top->getCenter(), right->getCenter(),
 			bottom->getCenter(), left->getCenter());
 
-	left->setNeighbours(top->getCenter(), back->getCenter(), front->getCenter(),
-			bottom->getCenter());
+	// left->setNeighbours(top->getCenter(), back->getCenter(), front->getCenter(),
+	// 		bottom->getCenter());
+	left->setNeighbours(top->getCenter(), back->getCenter(),
+		bottom->getCenter(), front->getCenter());
 
+	// bottom->setNeighbours(back->getCenter(), right->getCenter(),
+	// 		left->getCenter(), front->getCenter());
 	bottom->setNeighbours(back->getCenter(), right->getCenter(),
-			left->getCenter(), front->getCenter());
+			front->getCenter(), left->getCenter());
 
 	// INVERTED
 	back->setNeighbours(bottom->getCenter(), left->getCenter(),
 			top->getCenter(), right->getCenter());
 
+	// right->setNeighbours(front->getCenter(), bottom->getCenter(),
+	// 		top->getCenter(), back->getCenter());
 	right->setNeighbours(front->getCenter(), bottom->getCenter(),
-			top->getCenter(), back->getCenter());
+			back->getCenter(), top->getCenter());
 
-	top->setNeighbours(left->getCenter(), front->getCenter(), back->getCenter(),
-			right->getCenter());
+	// top->setNeighbours(left->getCenter(), front->getCenter(),
+	// 	back->getCenter(), right->getCenter());
+	top->setNeighbours(left->getCenter(), front->getCenter(),
+		right->getCenter(), back->getCenter());
 }

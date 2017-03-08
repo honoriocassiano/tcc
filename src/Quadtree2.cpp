@@ -46,8 +46,6 @@ Quadtree2::Quadtree2(Vertex* nw, Vertex* ne, Vertex* sw, Vertex* se,
 	center = mesh->addVertex(m);
 	center->setActive(true);
 
-//	mesh->setParentsChild(nw, se, ne, sw, center);
-
 // Create cardinals vertices
 	for (int i = 0; i < 4; ++i) {
 		auto& d1 = intercardinals[*ID::getAtClockwiseIndex(i)];
@@ -215,42 +213,42 @@ void Quadtree2::updateActiveCenters(const Vec3f& cameraPosition, Vertex* center,
 
 	// Unset active if any vertex in the neighborhood differ by more than 1
 	/*
-	for (auto i = 0; i < 4; ++i) {
-		auto& direction = *ID::getAtClockwiseIndex(i);
+	 for (auto i = 0; i < 4; ++i) {
+	 auto& direction = *ID::getAtClockwiseIndex(i);
 
-		auto& e = intercardinals[direction];
+	 auto& e = intercardinals[direction];
 
-		auto middleVertex = mesh->getOrCreateChildVertex(center, e);
+	 auto middleVertex = mesh->getOrCreateChildVertex(center, e);
 
-		if (middleVertex->isActive()) {
-			auto neighborhood = getNeighborhood(middleVertex, direction,
-					intercardinals, neighbors);
+	 if (middleVertex->isActive()) {
+	 auto neighborhood = getNeighborhood(middleVertex, direction,
+	 intercardinals, neighbors);
 
-			bool differByOne = true;
+	 bool differByOne = true;
 
-			for (auto j = 0; j < 4; ++j) {
-				if (neighborhood[*CD::getAtClockwiseIndex(j)]
-						&& abs(
-								(int) middleVertex->getLevel()
-										- (int) neighborhood[*CD::getAtClockwiseIndex(
-												j)]->getLevel()) > 1) {
+	 for (auto j = 0; j < 4; ++j) {
+	 if (neighborhood[*CD::getAtClockwiseIndex(j)]
+	 && abs(
+	 (int) middleVertex->getLevel()
+	 - (int) neighborhood[*CD::getAtClockwiseIndex(
+	 j)]->getLevel()) > 1) {
 
-//				Log("level: %d", abs(
-//						(int)middleVertex->getLevel()
-//								- (int)neighborhood[*CD::getAtClockwiseIndex(
-//										j)]->getLevel()));
+	 //				Log("level: %d", abs(
+	 //						(int)middleVertex->getLevel()
+	 //								- (int)neighborhood[*CD::getAtClockwiseIndex(
+	 //										j)]->getLevel()));
 
-					differByOne = false;
-					break;
-				}
-			}
+	 differByOne = false;
+	 break;
+	 }
+	 }
 
-			if (!differByOne) {
-				middleVertex->setActive(false);
-			}
-		}
-	}
-	*/
+	 if (!differByOne) {
+	 middleVertex->setActive(false);
+	 }
+	 }
+	 }
+	 */
 
 	for (auto i = 0; i < 4; ++i) {
 
@@ -378,20 +376,6 @@ float Quadtree2::calculateRoughness(const Vertex* center,
 void Quadtree2::remesh(Vertex* center, DA<ID, Vertex*>& intercardinals,
 		const DA<CD, Vertex*>& neighbors, const std::string& tag) {
 
-	std::vector<Triangle*> currentTriangles;
-
-	Log("%s", tag.c_str());
-
-	for (auto d : ID::all()) {
-
-		auto edge = mesh->getEdge(intercardinals[*d], center);
-
-		if (edge) {
-			currentTriangles = mesh->getTrianglesByVertex(edge);
-			break;
-		}
-	}
-
 //	Log("******************************************");
 //	Log("%lu", currentTriangles.size());
 //	Log("******************************************");
@@ -405,22 +389,10 @@ void Quadtree2::remesh(Vertex* center, DA<ID, Vertex*>& intercardinals,
 			{ ID::SW, mesh->getOrCreateChildVertex(center,
 					intercardinals[ID::SW]) } };
 
-//	DA<ID, bool> updated { { ID::NW, !mesh->getOrCreateChildVertex(center,
-//			intercardinals[ID::NW])->isActive() },
-//			{ ID::NE, !mesh->getOrCreateChildVertex(center,
-//					intercardinals[ID::NE])->isActive() }, { ID::SE,
-//					!mesh->getOrCreateChildVertex(center,
-//							intercardinals[ID::SE])->isActive() }, { ID::SW,
-//					!mesh->getOrCreateChildVertex(center,
-//							intercardinals[ID::SW])->isActive() } };
-//
-//	Log("[%s] -> NW: %d, NE: %d, SE: %d, SW: %d", tag.c_str(), updated[ID::NW],
-//			updated[ID::NE], updated[ID::SE], updated[ID::SW]);
-
 //	if (currentTriangles.size() == 0 && center->isActive()) {
 	if (center->isActive()) {
 		for (auto i = 0; i < 4; ++i) {
-			Log("%s [%d]", tag.c_str(), i);
+//			Log("%s [%d]", tag.c_str(), i);
 
 			auto& c = *CD::getAtClockwiseIndex(i);
 
@@ -431,33 +403,27 @@ void Quadtree2::remesh(Vertex* center, DA<ID, Vertex*>& intercardinals,
 					intercardinals[nextIc]);
 
 			if (neighbors[c] && !neighbors[c]->isActive()) {
-//				Log("%s", tag.c_str());
 
 				if (!middleInterCardinals[ic]->isActive()
 						&& !middleInterCardinals[nextIc]->isActive()) {
-//					Log("%s", tag.c_str());
 
 					mesh->addTriangle(center, intercardinals[ic],
 							intercardinals[nextIc]);
 
 				} else if (middleInterCardinals[ic]->isActive()) {
-//					Log("%s", tag.c_str());
 
 //					mesh->addTriangle(center, intercardinals[ic], middle);
 
-//					mesh->addTriangle(center, middle, intercardinals[ic]);
 					mesh->addTriangle(center, middle, intercardinals[nextIc]);
 				} else {
-//					Log("%s", tag.c_str());
 
-					mesh->addTriangle(center, middle, intercardinals[ic]);
-//					mesh->addTriangle(center, middle, intercardinals[nextIc]);
+//					mesh->addTriangle(center, middle, intercardinals[ic]);
+					mesh->addTriangle(center, intercardinals[ic], middle);
 				}
 			} else {
-//				Log("%s", tag.c_str());
-
 				if (!middleInterCardinals[ic]->isActive()) {
-					mesh->addTriangle(center, middle, intercardinals[ic]);
+//					mesh->addTriangle(center, middle, intercardinals[ic]);
+					mesh->addTriangle(center, intercardinals[ic], middle);
 				}
 
 				if (!middleInterCardinals[nextIc]->isActive()) {
@@ -472,7 +438,9 @@ void Quadtree2::remesh(Vertex* center, DA<ID, Vertex*>& intercardinals,
 		auto& direction = *ID::getAtClockwiseIndex(i);
 
 //		if (!updated[direction]) {
-		if (mesh->getOrCreateChildVertex(center, intercardinals[direction])->isActive()) {
+		if (middleInterCardinals[direction]
+				&& middleInterCardinals[direction]->isActive()) {
+
 			auto relativeIntercardinal = getRelativeIntercardinals(direction,
 					center, intercardinals);
 

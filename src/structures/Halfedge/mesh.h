@@ -80,6 +80,8 @@ public:
 
   std::vector<Triangle*> getTrianglesByVertex(Edge * e);
 
+  void printTrianglesPointers(int limit = 1000);
+
   void printTriangles(int limit = 1000);
   void printVertices(int limit = 1000);
 

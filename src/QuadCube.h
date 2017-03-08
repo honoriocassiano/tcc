@@ -30,6 +30,10 @@ public:
 
 	void update(const Vec3f& cameraPosition);
 
+	QuadtreeMesh * getMesh() {
+		return mesh;
+	}
+
 private:
 
 	void deleteUnusedVertices();
