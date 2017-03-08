@@ -22,7 +22,7 @@ public:
 
 	virtual ~Quadtree();
 
-	void update2(const Vec3f& cameraPosition, const std::string& tag = "main");
+	void update(const Vec3f& cameraPosition, const std::string& tag = "main");
 
 	Vertex* getCenter() {
 		return center;

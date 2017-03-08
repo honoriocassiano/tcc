@@ -81,7 +81,7 @@ void QuadCube::update(const Vec3f& cameraPosition) {
 //	for (auto& f : faces) {
 	{
 		auto& f = faces[directions::FRONT];
-		f->update2(cameraPosition);
+		f->update(cameraPosition);
 	}
 
 	deleteUnusedVertices();

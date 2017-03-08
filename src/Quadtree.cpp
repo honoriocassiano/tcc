@@ -300,7 +300,7 @@ void Quadtree::deleteUnusedVertices() {
 	}
 }
 
-void Quadtree::update2(const Vec3f& cameraPosition, const std::string& tag) {
+void Quadtree::update(const Vec3f& cameraPosition, const std::string& tag) {
 
 // TODO Check this code
 	updateActiveCenters(cameraPosition, center, intercardinals, neighbors);
