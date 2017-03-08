@@ -60,15 +60,7 @@ Quadtree::Quadtree(Vertex* nw, Vertex* ne, Vertex* sw, Vertex* se,
 }
 
 Quadtree::~Quadtree() {
-	delete center;
-
-	for (auto& e : ID::all()) {
-//	for (int i = 0; i < ID::getAll().size(); ++i) {
-
-//		auto e = *ID::getAtClockwiseIndex(i);
-
-//		delete intercardinals[*e];
-	}
+	mesh->removeVertex(center);
 }
 
 #define K (C / (2 * (C - 1)))
