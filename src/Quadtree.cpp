@@ -98,32 +98,7 @@ Quadtree::~Quadtree() {
 	}
 }
 
-void Quadtree::updateD2() {
-	recursiveUpdateD2(center, intercardinals, neighbors);
-}
-
 #define K (C / (2 * (C - 1)))
-
-void Quadtree::recursiveUpdateD2(Vertex* center,
-		DA<ID, Vertex*>& intercardinals, DA<CD, Vertex*>& neighbors) {
-
-	float neighborsD2[4] { 0.0f };
-
-	for (int i = 0; i < 4; ++i) {
-
-		auto& direction = *CD::getAtClockwiseIndex(i);
-
-		if (neighbors[direction]) {
-			neighborsD2[i] = neighbors[direction]->getD2();
-		}
-	}
-
-	if ((*std::min_element(neighborsD2, neighborsD2 + 4) / center->getD2()) < K) {
-
-	}
-}
-
-#undef K
 
 void Quadtree::updateActiveIntercardinals(Vertex* center,
 		DA<ID, Vertex*>& intercardinals) {
@@ -517,7 +492,7 @@ void Quadtree::recursiveDeleteVertices(Vertex* center,
 
 #define K (C / (2 * (C - 1)))
 
-void Quadtree::updateRoughness() {
+void Quadtree::updateRoughnessTopDown() {
 	recursiveUpdateRoughness(center, intercardinals);
 }
 
@@ -542,7 +517,7 @@ void Quadtree::recursiveUpdateRoughness(Vertex* center,
 	center->setD2(calculateRoughness(center, intercardinals));
 }
 
-void Quadtree::updateRoughness2() {
+void Quadtree::updateRoughnessBottomUp() {
 	recursiveUpdateRoughness2(center, intercardinals, nullptr, &neighbors);
 }
 

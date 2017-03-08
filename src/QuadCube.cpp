@@ -71,11 +71,11 @@ void QuadCube::update(const Vec3f& cameraPosition) {
 	mesh->getEdges()->DeleteAllElements();
 
 	for (auto& f : faces) {
-		f->updateRoughness();
+		f->updateRoughnessTopDown();
 	}
 
 	for (auto& f : faces) {
-		f->updateRoughness2();
+		f->updateRoughnessBottomUp();
 	}
 
 //	for (auto& f : faces) {

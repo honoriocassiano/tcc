@@ -37,9 +37,8 @@ public:
 		return mesh;
 	}
 
-	void updateRoughness();
-	void updateRoughness2();
-	void updateD2();
+	void updateRoughnessTopDown();
+	void updateRoughnessBottomUp();
 
 	static float C;
 	static float c;
@@ -55,10 +54,6 @@ private:
 
 	void recursiveUpdateRoughness(Vertex* center,
 			DirectionArray<IntercardinalDirection, Vertex*>& intercardinals);
-
-	void recursiveUpdateD2(Vertex* center,
-			DirectionArray<IntercardinalDirection, Vertex*>& intercardinals,
-			DirectionArray<CardinalDirection, Vertex*>& neighbors);
 
 	void recursiveDeleteVertices(Vertex* center,
 			const IntercardinalDirection& direction,
