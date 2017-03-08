@@ -8,7 +8,7 @@
 #ifndef SRC_QUADCUBE_H_
 #define SRC_QUADCUBE_H_
 
-#include "Quadtree2.h"
+#include "Quadtree.h"
 #include "structures/Halfedge/mesh.h"
 #include "geometry/Vector3.h"
 #include "QuadtreeMesh.h"
@@ -42,7 +42,7 @@ private:
 
 	QuadtreeMesh * mesh;
 	Vec3f position;
-	Quadtree2* faces[6];
+	Quadtree* faces[6];
 	directions::Face reference;
 };
 

@@ -22,7 +22,7 @@
 #include "PerspectiveCamera2.h"
 #include "QuadCube.h"
 #include "MeshDrawer.h"
-#include "Quadtree2.h"
+#include "Quadtree.h"
 
 class SDLWindow {
 public:

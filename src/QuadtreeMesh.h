@@ -14,7 +14,7 @@
 #include "structures/Halfedge/edge.h"
 #include "structures/Halfedge/triangle.h"
 
-class Quadtree2;
+class Quadtree;
 
 class QuadtreeMesh: public Mesh {
 public:
@@ -38,7 +38,7 @@ private:
 		return vertices;
 	}
 
-	friend class Quadtree2;
+	friend class Quadtree;
 	friend class QuadCube;
 };
 

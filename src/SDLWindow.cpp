@@ -361,22 +361,22 @@ void SDLWindow::processEvents(const SDL_Event& e) {
 		}
 
 		case SDLK_e: {
-			Quadtree2::c++;
+			Quadtree::c++;
 			break;
 		}
 
 		case SDLK_r: {
-			Quadtree2::c--;
+			Quadtree::c--;
 			break;
 		}
 
 		case SDLK_y: {
-			Quadtree2::C--;
+			Quadtree::C--;
 			break;
 		}
 
 		case SDLK_u: {
-			Quadtree2::C++;
+			Quadtree::C++;
 			break;
 		}
 

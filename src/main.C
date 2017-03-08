@@ -7,7 +7,7 @@
 
 #include "SDLWindow.h"
 
-#include "Quadtree2.h"
+#include "Quadtree.h"
 #include "QuadtreeMesh.h"
 
 #include "DirectionArray.h"

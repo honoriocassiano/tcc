@@ -1,12 +1,12 @@
 /*
- * Quadtree2.h
+ * Quadtree.h
  *
  *  Created on: 19 de nov de 2016
  *      Author: cassiano
  */
 
-#ifndef SRC_QUADTREE2_H_
-#define SRC_QUADTREE2_H_
+#ifndef SRC_QUADTREE_H_
+#define SRC_QUADTREE_H_
 
 #include "DirectionArray.h"
 #include "QuadtreeMesh.h"
@@ -15,12 +15,12 @@
 
 #include <string>
 
-class Quadtree2 {
+class Quadtree {
 public:
-	Quadtree2(Vertex* nw, Vertex* ne, Vertex* sw, Vertex* se,
+	Quadtree(Vertex* nw, Vertex* ne, Vertex* sw, Vertex* se,
 			QuadtreeMesh * mesh = new QuadtreeMesh());
 
-	virtual ~Quadtree2();
+	virtual ~Quadtree();
 
 	void update2(const Vec3f& cameraPosition, const std::string& tag = "main");
 
@@ -94,13 +94,13 @@ private:
 	void updateActiveIntercardinals(Vertex* center,
 			DirectionArray<IntercardinalDirection, Vertex*>& intercardinals);
 
-	Quadtree2* parent;
+	Quadtree* parent;
 	DirectionArray<CardinalDirection, Vertex*> neighbors;
-	DirectionArray<IntercardinalDirection, Quadtree2*> children;
+	DirectionArray<IntercardinalDirection, Quadtree*> children;
 
 	QuadtreeMesh* mesh;
 	Vertex* center;
 	DirectionArray<IntercardinalDirection, Vertex*> intercardinals;
 };
 
-#endif /* SRC_QUADTREE2_H_ */
+#endif /* SRC_QUADTREE_H_ */

@@ -26,14 +26,14 @@ QuadCube::QuadCube(const Vec3f& _position) :
 	auto blb = mesh->addVertex(Vec3f(-0.5, -0.5, 0.5));
 	auto brb = mesh->addVertex(Vec3f(0.5, -0.5, 0.5));
 
-	faces[Face::FRONT] = new Quadtree2(flt, frt, flb, frb, mesh);
-	faces[Face::BACK] = new Quadtree2(blt, brt, blb, brb, mesh);
+	faces[Face::FRONT] = new Quadtree(flt, frt, flb, frb, mesh);
+	faces[Face::BACK] = new Quadtree(blt, brt, blb, brb, mesh);
 
-	faces[Face::LEFT] = new Quadtree2(blt, flt, blb, flb, mesh);
-	faces[Face::RIGHT] = new Quadtree2(brt, frt, brb, frb, mesh);
+	faces[Face::LEFT] = new Quadtree(blt, flt, blb, flb, mesh);
+	faces[Face::RIGHT] = new Quadtree(brt, frt, brb, frb, mesh);
 
-	faces[Face::TOP] = new Quadtree2(blt, brt, flt, frt, mesh);
-	faces[Face::BOTTOM] = new Quadtree2(blb, brb, flb, frb, mesh);
+	faces[Face::TOP] = new Quadtree(blt, brt, flt, frt, mesh);
+	faces[Face::BOTTOM] = new Quadtree(blb, brb, flb, frb, mesh);
 
 	initNeighbours();
 }
