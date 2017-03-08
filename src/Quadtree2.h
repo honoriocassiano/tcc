@@ -23,8 +23,6 @@ public:
 	virtual ~Quadtree2();
 
 	void update2(const Vec3f& cameraPosition, const std::string& tag = "main");
-	void update(const Vec3f& cameraPosition, const std::string& tag = "main");
-	void render();
 
 	Vertex* getCenter() {
 		return center;
@@ -71,9 +69,6 @@ private:
 			DirectionArray<IntercardinalDirection, Vertex*>& intercardinals,
 			std::size_t level = 0);
 
-	float calculateRoughness(const Vertex* center,
-			const DirectionArray<IntercardinalDirection, Vertex*>& intercardinals);
-
 	float recursiveUpdateRoughness2(Vertex* center,
 			DirectionArray<IntercardinalDirection, Vertex*>& intercardinals,
 			DirectionArray<CardinalDirection, Vertex*>* parentNeighbors,
@@ -99,13 +94,6 @@ private:
 	void updateActiveIntercardinals(Vertex* center,
 			DirectionArray<IntercardinalDirection, Vertex*>& intercardinals);
 
-	Quadtree2(Vertex* nw, Vertex* ne, Vertex* sw, Vertex* se, Vertex* center,
-			QuadtreeMesh * mesh,
-			const DirectionArray<CardinalDirection, bool>& marked,
-			Quadtree2* parent);
-//	Quadtree2(Vertex* nw, Vertex* ne, Vertex* sw, Vertex* se, Vertex* center, Mesh * mesh,
-//			const DirectionArray<CardinalDirection, bool>& marked, const DirectionArray<CardinalDirection, bool>& willHaveNeighbor);
-
 	Quadtree2* parent;
 	DirectionArray<CardinalDirection, Vertex*> neighbors;
 	DirectionArray<IntercardinalDirection, Quadtree2*> children;
@@ -113,9 +101,6 @@ private:
 	QuadtreeMesh* mesh;
 	Vertex* center;
 	DirectionArray<IntercardinalDirection, Vertex*> intercardinals;
-
-//	static float C;
-//	static float c;
 };
 
 #endif /* SRC_QUADTREE2_H_ */
