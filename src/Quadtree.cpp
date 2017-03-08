@@ -49,14 +49,6 @@ Quadtree::Quadtree(Vertex* nw, Vertex* ne, Vertex* sw, Vertex* se,
 		auto& d2 = intercardinals[*ID::getAtClockwiseIndex((i + 1) % 4)];
 
 		mesh->getOrCreateChildVertex(d1, d2);
-		/*
-		 if (!mesh->getChildVertex(d1, d2)) {
-
-		 auto tempVertex = mesh->addVertex(MIDDLE(d1->get(), d2->get()));
-
-		 mesh->setParentsChild(d1, d2, tempVertex);
-		 }
-		 */
 	}
 
 // Create middle points between center and intercardinals
@@ -64,26 +56,7 @@ Quadtree::Quadtree(Vertex* nw, Vertex* ne, Vertex* sw, Vertex* se,
 		auto& d1 = intercardinals[*ID::getAtClockwiseIndex(i)];
 
 		mesh->getOrCreateChildVertex(center, d1);
-		/*
-		 if (!mesh->getChildVertex(center, d1)) {
-		 auto tempVertex = mesh->addVertex(MIDDLE(center->get(), d1->get()));
-
-		 mesh->setParentsChild(d1, center, tempVertex);
-		 }
-		 */
 	}
-
-	/*
-	 // Create triangles
-	 for (int i = 0; i < 4; ++i) {
-	 auto& d1 = intercardinals[*ID::getAtClockwiseIndex(
-	 i)];
-	 auto& d2 = intercardinals[*ID::getAtClockwiseIndex(
-	 (i + 1) % 4)];
-
-	 mesh->addTriangle(center, d1, d2);
-	 }
-	 */
 }
 
 Quadtree::~Quadtree() {
@@ -158,69 +131,9 @@ void Quadtree::updateActiveCenters(const Vec3f& cameraPosition, Vertex* center,
 		if ((l / (d * C * std::max(c * center->getD2(), 1.0f))) < 1) {
 			middleVertex->setActive(true);
 		} else {
-
-//			if (middleVertex->isActive()) {
-//
-//				auto relativeIntercardinals = getRelativeIntercardinals(
-//						direction, center, intercardinals);
-//
-//				recursiveDeleteVertices(middleVertex, direction,
-//						relativeIntercardinals);
-//			}
-
 			middleVertex->setActive(false);
 		}
-		/*
-		 auto c = 1.0f;
-		 auto d2 = calculateRoughness(center, intercardinals);
-		 auto f = l / (d * C * std::max(d2, 1.0f));
-
-		 if (f < 1.0f) {
-		 middleVertex->setActive(true);
-		 } else {
-		 middleVertex->setActive(false);
-		 }
-		 */
 	}
-
-	// Unset active if any vertex in the neighborhood differ by more than 1
-	/*
-	 for (auto i = 0; i < 4; ++i) {
-	 auto& direction = *ID::getAtClockwiseIndex(i);
-
-	 auto& e = intercardinals[direction];
-
-	 auto middleVertex = mesh->getOrCreateChildVertex(center, e);
-
-	 if (middleVertex->isActive()) {
-	 auto neighborhood = getNeighborhood(middleVertex, direction,
-	 intercardinals, neighbors);
-
-	 bool differByOne = true;
-
-	 for (auto j = 0; j < 4; ++j) {
-	 if (neighborhood[*CD::getAtClockwiseIndex(j)]
-	 && abs(
-	 (int) middleVertex->getLevel()
-	 - (int) neighborhood[*CD::getAtClockwiseIndex(
-	 j)]->getLevel()) > 1) {
-
-	 //				Log("level: %d", abs(
-	 //						(int)middleVertex->getLevel()
-	 //								- (int)neighborhood[*CD::getAtClockwiseIndex(
-	 //										j)]->getLevel()));
-
-	 differByOne = false;
-	 break;
-	 }
-	 }
-
-	 if (!differByOne) {
-	 middleVertex->setActive(false);
-	 }
-	 }
-	 }
-	 */
 
 	for (auto i = 0; i < 4; ++i) {
 
@@ -250,14 +163,6 @@ void Quadtree::updateActiveCenters(const Vec3f& cameraPosition, Vertex* center,
 							neighbors));
 		}
 	}
-
-//	for (auto i = 0; i < 4; ++i) {
-//		auto direction = *ID::getAtClockwiseIndex(i);
-//
-//		if(intercardinals[direction]) {
-//			intercardinals[direction]->setActive(center->isActive());
-//		}
-//	}
 }
 
 void Quadtree::deleteUnusedVertices() {
@@ -539,19 +444,8 @@ float Quadtree::recursiveUpdateRoughness2(Vertex* center,
 			auto relNeighbors = getNeighborhood(center, id, intercardinals,
 					*neighbors);
 
-//			if(!parentNeighbors) {
 			nextRoughness = recursiveUpdateRoughness2(relCenter,
 					relIntercardinals, neighbors, &relNeighbors);
-//			} else {
-//				nextRoughness = recursiveUpdateRoughness2(relCenter, relIntercardinals,
-//									relNeighbors);
-//			}
-
-//			auto relNeighbors = getNeighborhood(center, id, intercardinals,
-//					parentNeighbors);
-//
-//			nextRoughness = recursiveUpdateRoughness2(relCenter, relIntercardinals,
-//					relNeighbors);
 		} else {
 			hasNext = true;
 		}
@@ -566,10 +460,6 @@ float Quadtree::recursiveUpdateRoughness2(Vertex* center,
 			if ((*parentNeighbors)[cd]->getD2() < minD2) {
 				minD2 = (*parentNeighbors)[cd]->getD2();
 			}
-
-//		if (parentNeighbors[cd]->getD2() < minD2) {
-//			minD2 = parentNeighbors[cd]->getD2();
-//		}
 		}
 	}
 
@@ -631,8 +521,6 @@ float Quadtree::calculateRoughness(Vertex* center,
 	for (int i = 0; i < 2; ++i) {
 		auto id1 = intercardinals[*ID::getAtClockwiseIndex(i)];
 		auto id2 = intercardinals[*ID::getAtClockwiseIndex((i + 2) % 4)];
-
-//		Log("%p %p %p", id1, id2, center);
 
 		auto r = abs(
 				math::distanceFromPointToLine(id1->get(), id2->get(),
