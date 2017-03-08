@@ -7,11 +7,6 @@
 
 #include "SDLWindow.h"
 
-#include "Patch.h"
-#include "Landscape.h"
-
-#include "Object.h"
-#include "Quadtree.h"
 #include "Quadtree2.h"
 #include "QuadtreeMesh.h"
 

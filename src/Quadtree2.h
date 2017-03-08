@@ -13,8 +13,6 @@
 #include "IntercardinalDirection.h"
 #include "CardinalDirection.h"
 
-#include "Quadtree.h"
-
 #include <string>
 
 class Quadtree2 {

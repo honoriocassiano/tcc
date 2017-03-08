@@ -13,7 +13,6 @@
 #include "Debug.h"
 
 //******************************************************
-#include "Quadtree.h"
 #include "MeshDrawer.h"
 
 const Vec3f position(6.2, 1.2, -28.8);

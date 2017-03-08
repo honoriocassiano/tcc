@@ -36,8 +36,6 @@ Quadtree2::Quadtree2(Vertex* nw, Vertex* ne, Vertex* sw, Vertex* se,
 	intercardinals[ID::SW] = sw;
 	intercardinals[ID::SE] = se;
 
-	using namespace directions;
-
 	auto temp1 = (nw->get() + ne->get()) * 0.5;
 	auto temp2 = (sw->get() + se->get()) * 0.5;
 
