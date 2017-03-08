@@ -305,20 +305,10 @@ void Quadtree2::deleteUnusedVertices() {
 
 void Quadtree2::update2(const Vec3f& cameraPosition, const std::string& tag) {
 
-//	recursiveCalcRoughness(center, intercardinals, neighbors);
-
 // TODO Check this code
 	updateActiveCenters(cameraPosition, center, intercardinals, neighbors);
-//	updateActives(cameraPosition, center, intercardinals, neighbors);
 
 	updateActiveIntercardinals(center, intercardinals);
-
-//	mesh->getTriangles()->DeleteAllElements();
-//	mesh->getEdges()->DeleteAllElements();
-
-//	deleteUnusedVertices();
-
-//	Log("COUNT: %d", mesh->getTriangles()->Count());
 
 	remesh(center, intercardinals, neighbors);
 }
@@ -376,10 +366,6 @@ float Quadtree2::calculateRoughness(const Vertex* center,
 void Quadtree2::remesh(Vertex* center, DA<ID, Vertex*>& intercardinals,
 		const DA<CD, Vertex*>& neighbors, const std::string& tag) {
 
-//	Log("******************************************");
-//	Log("%lu", currentTriangles.size());
-//	Log("******************************************");
-
 	DA<ID, Vertex*> middleInterCardinals { { ID::NW,
 			mesh->getOrCreateChildVertex(center, intercardinals[ID::NW]) },
 			{ ID::NE, mesh->getOrCreateChildVertex(center,
@@ -392,7 +378,6 @@ void Quadtree2::remesh(Vertex* center, DA<ID, Vertex*>& intercardinals,
 //	if (currentTriangles.size() == 0 && center->isActive()) {
 	if (center->isActive()) {
 		for (auto i = 0; i < 4; ++i) {
-//			Log("%s [%d]", tag.c_str(), i);
 
 			auto& c = *CD::getAtClockwiseIndex(i);
 
@@ -410,24 +395,27 @@ void Quadtree2::remesh(Vertex* center, DA<ID, Vertex*>& intercardinals,
 					mesh->addTriangle(center, intercardinals[ic],
 							intercardinals[nextIc]);
 
-				} else if (middleInterCardinals[ic]->isActive()) {
+				} else if (middleInterCardinals[ic]->isActive()
+						^ middleInterCardinals[nextIc]->isActive()) {
 
-//					mesh->addTriangle(center, intercardinals[ic], middle);
-
-					mesh->addTriangle(center, middle, intercardinals[nextIc]);
-				} else {
-
-//					mesh->addTriangle(center, middle, intercardinals[ic]);
-					mesh->addTriangle(center, intercardinals[ic], middle);
+					mesh->addTriangle(center, middle,
+							intercardinals[ic]->isActive() ?
+									intercardinals[nextIc] :
+									intercardinals[ic]);
 				}
 			} else {
-				if (!middleInterCardinals[ic]->isActive()) {
-//					mesh->addTriangle(center, middle, intercardinals[ic]);
-					mesh->addTriangle(center, intercardinals[ic], middle);
-				}
 
-				if (!middleInterCardinals[nextIc]->isActive()) {
-					mesh->addTriangle(center, middle, intercardinals[nextIc]);
+				if (!middleInterCardinals[ic]->isActive()
+						|| !middleInterCardinals[nextIc]->isActive()) {
+
+					if (!middleInterCardinals[ic]->isActive()) {
+						mesh->addTriangle(center, middle, intercardinals[ic]);
+					}
+
+					if (!middleInterCardinals[nextIc]->isActive()) {
+						mesh->addTriangle(center, middle,
+								intercardinals[nextIc]);
+					}
 				}
 			}
 		}
