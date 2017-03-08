@@ -28,12 +28,8 @@ public:
 		return center;
 	}
 
-	float calcRoughness(Vertex* center,
+	float calculateRoughness(Vertex* center,
 			DirectionArray<IntercardinalDirection, Vertex*>& intercardinals);
-
-	float recursiveCalcRoughness(Vertex* center,
-			DirectionArray<IntercardinalDirection, Vertex*>& intercardinals,
-			DirectionArray<CardinalDirection, Vertex*>& neighbors);
 
 	void setNeighbours(Vertex* n, Vertex* e, Vertex* s, Vertex* w);
 

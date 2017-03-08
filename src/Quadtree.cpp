@@ -517,83 +517,6 @@ void Quadtree::recursiveDeleteVertices(Vertex* center,
 
 #define K (C / (2 * (C - 1)))
 
-float Quadtree::recursiveCalcRoughness(Vertex* center,
-		DA<ID, Vertex*>& intercardinals, DA<CD, Vertex*>& neighbors) {
-
-	auto newD2 = std::numeric_limits<float>::infinity();
-	auto currentD2 = calcRoughness(center, intercardinals);
-	float iD2[4] { 0.0f };
-
-	/*
-	 for (int i = 0; i < 4; ++i) {
-	 auto& direction = *ID::getAtClockwiseIndex(i);
-
-	 auto id = intercardinals[direction];
-
-	 if (id) {
-	 auto relativeCenter = mesh->getChildVertex(center, id);
-
-	 if (relativeCenter) {
-	 auto relativeIntercardinals = getRelativeIntercardinals(
-	 direction, center, intercardinals);
-
-	 iD2[i] = recursiveCalcRoughness(relativeCenter,
-	 relativeIntercardinals);
-	 }
-	 }
-	 }
-	 */
-
-	for (int i = 0; i < 4; ++i) {
-		auto& direction = *CD::getAtClockwiseIndex(i);
-
-		auto n = neighbors[direction];
-
-		if (n) {
-
-			DA<ID, Vertex*> relativeIntercardinals { { ID::NW,
-					n->getParents1()->getParent1() }, { ID::SE,
-					n->getParents1()->getParent2() }, { ID::NE,
-					n->getParents2()->getParent1() }, { ID::SW,
-					n->getParents2()->getParent2() } };
-
-//				auto relativeNeighbors = getNeighborhood(n, )
-		}
-//			auto id = intercardinals[direction];
-//
-//			if (id) {
-//				auto relativeCenter = mesh->getChildVertex(center, id);
-//
-//				if (relativeCenter) {
-//					auto relativeIntercardinals = getRelativeIntercardinals(
-//							direction, center, intercardinals);
-//
-//					iD2[i] = recursiveCalcRoughness(relativeCenter,
-//							relativeIntercardinals);
-//				}
-//			}
-	}
-
-	for (auto id2 : iD2) {
-		if ((id2 / currentD2) < K && ((id2 / currentD2) < newD2)) {
-			newD2 = currentD2; //(id2 / currentD2);
-		}
-	}
-
-	if (newD2 < std::numeric_limits<float>::infinity()) {
-
-		auto temp = newD2 * K;
-
-		center->setD2(temp);
-
-		for (auto& d : ID::all()) {
-			intercardinals[*d]->setD2(temp);
-		}
-	}
-
-	return newD2;
-}
-
 void Quadtree::updateRoughness() {
 	recursiveUpdateRoughness(center, intercardinals);
 }
@@ -616,7 +539,7 @@ void Quadtree::recursiveUpdateRoughness(Vertex* center,
 		}
 	}
 
-	center->setD2(calcRoughness(center, intercardinals));
+	center->setD2(calculateRoughness(center, intercardinals));
 }
 
 void Quadtree::updateRoughness2() {
@@ -706,7 +629,7 @@ void Quadtree::setNeighbours(Vertex* n, Vertex* e, Vertex* s, Vertex* w) {
 	neighbors[CD::W] = w;
 }
 
-float Quadtree::calcRoughness(Vertex* center,
+float Quadtree::calculateRoughness(Vertex* center,
 		DirectionArray<IntercardinalDirection, Vertex*>& intercardinals) {
 
 	float roughness = 0;
