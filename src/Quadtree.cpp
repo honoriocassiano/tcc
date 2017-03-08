@@ -490,8 +490,6 @@ void Quadtree::recursiveDeleteVertices(Vertex* center,
 	}
 }
 
-#define K (C / (2 * (C - 1)))
-
 void Quadtree::updateRoughnessTopDown() {
 	recursiveUpdateRoughness(center, intercardinals);
 }
@@ -648,6 +646,7 @@ float Quadtree::calculateRoughness(Vertex* center,
 	return roughness / d;
 }
 
+#undef K
 #undef MIDDLE
 #undef CAST
 
