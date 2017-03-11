@@ -43,6 +43,8 @@ Quadtree::Quadtree(Vertex* nw, Vertex* ne, Vertex* sw, Vertex* se,
 	center = mesh->addVertex(m);
 	center->setActive(true);
 
+	mesh->setParentsChild(nw, se, ne, sw, center);
+
 // Create cardinals vertices
 	for (int i = 0; i < 4; ++i) {
 		auto& d1 = intercardinals[*ID::getAtClockwiseIndex(i)];
@@ -150,9 +152,12 @@ void Quadtree::updateActiveCenters(const Vec3f& cameraPosition, Vertex* center,
 					mesh->getOrCreateChildVertex(e,
 							intercardinals[*ID::getAtClockwiseIndex((i + 3) % 4)]);
 
+//			updateActiveCenters(cameraPosition, middleVertex, temp,
+//					getNeighborhood(center, direction, intercardinals,
+//							neighbors));
+
 			updateActiveCenters(cameraPosition, middleVertex, temp,
-					getNeighborhood(center, direction, intercardinals,
-							neighbors));
+								getNeighborhood(middleVertex, temp));
 		}
 	}
 }
@@ -251,10 +256,13 @@ void Quadtree::remesh(Vertex* center, DA<ID, Vertex*>& intercardinals,
 			auto relativeIntercardinal = getRelativeIntercardinals(direction,
 					center, intercardinals);
 
+//			remesh(middleInterCardinals[direction], relativeIntercardinal,
+//					getNeighborhood(center, direction, intercardinals,
+//							neighbors),
+//					tag + " > " + std::to_string(direction));
 			remesh(middleInterCardinals[direction], relativeIntercardinal,
-					getNeighborhood(center, direction, intercardinals,
-							neighbors),
-					tag + " > " + std::to_string(direction));
+								getNeighborhood(middleInterCardinals[direction], relativeIntercardinal),
+								tag + " > " + std::to_string(direction));
 		}
 	}
 }
@@ -318,27 +326,87 @@ DA<ID, Vertex*> Quadtree::getRelativeIntercardinals(const ID& direction,
 	};
 }
 
-DA<CD, Vertex*> Quadtree::getNeighborhood(Vertex* center, const ID& direction,
-		const DA<ID, Vertex*>& intercardinals,
-		const DA<CD, Vertex*>& neighbors) {
+//DA<CD, Vertex*> Quadtree::getNeighborhood(Vertex* center, const ID& direction,
+//		const DA<ID, Vertex*>& intercardinals,
+//		const DA<CD, Vertex*>& neighbors) {
+DA<CD, Vertex*> Quadtree::getNeighborhood(Vertex* center,
+		const DA<ID, Vertex*>& intercardinals) {
 
 	auto tempNeighbors = DA<CD, Vertex*>(CD::all(), nullptr);
 
-	auto i = direction.getClockwiseIndex();
+	for (int i = 0; i < 4; ++i) {
 
-	tempNeighbors[*CD::getAtClockwiseIndex(i)] =
-			neighbors[*CD::getAtClockwiseIndex(i)];
+		auto& c = *CD::getAtClockwiseIndex(i);
 
-	tempNeighbors[*CD::getAtClockwiseIndex((i + 1) % 4)] =
-			mesh->getOrCreateChildVertex(center,
-					intercardinals[*ID::getAtClockwiseIndex((i + 1) % 4)]);
+		auto& itc = *ID::getAtClockwiseIndex(i);
+		auto& nextItc = *ID::getAtClockwiseIndex((i + 1) % 4);
 
-	tempNeighbors[*CD::getAtClockwiseIndex((i + 2) % 4)] =
-			mesh->getOrCreateChildVertex(center,
-					intercardinals[*ID::getAtClockwiseIndex((i + 3) % 4)]);
+		auto it = mesh->vertex_parents->StartIteration();
 
-	tempNeighbors[*CD::getAtClockwiseIndex((i + 3) % 4)] =
-			neighbors[*CD::getAtClockwiseIndex((i + 3) % 4)];
+		std::vector<VertexParent*> relatives1, relatives2;
+		relatives1.reserve(8);
+		relatives2.reserve(8);
+
+		while (auto vp = it->GetNext()) {
+			bool match = (intercardinals[itc] == vp->getParent1())
+					|| (intercardinals[itc] == vp->getParent2());
+
+			relatives1.push_back(vp);
+		}
+
+		mesh->vertex_parents->EndIteration(it);
+
+		it = mesh->vertex_parents->StartIteration();
+
+		while (auto vp = it->GetNext()) {
+			bool match = (intercardinals[nextItc] == vp->getParent1())
+					|| (intercardinals[nextItc] == vp->getParent2());
+
+			relatives2.push_back(vp);
+		}
+
+		mesh->vertex_parents->EndIteration(it);
+
+		Vertex* neighbor = nullptr;
+
+		// Find neighbor
+		for (auto& j1 : relatives1) {
+
+			bool b = false;
+			for (auto& j2 : relatives2) {
+
+				auto v = (j1->get() == j2->get()) ? j1->get() : nullptr;
+
+				if (v && (v != center)) {
+					neighbor = v;
+
+					b = true;
+					break;
+				}
+			}
+
+			if(b) {
+				break;
+			}
+		}
+
+		tempNeighbors[c] = neighbor;
+	}
+//	auto i = direction.getClockwiseIndex();
+//
+//	tempNeighbors[*CD::getAtClockwiseIndex(i)] =
+//			neighbors[*CD::getAtClockwiseIndex(i)];
+//
+//	tempNeighbors[*CD::getAtClockwiseIndex((i + 1) % 4)] =
+//			mesh->getOrCreateChildVertex(center,
+//					intercardinals[*ID::getAtClockwiseIndex((i + 1) % 4)]);
+//
+//	tempNeighbors[*CD::getAtClockwiseIndex((i + 2) % 4)] =
+//			mesh->getOrCreateChildVertex(center,
+//					intercardinals[*ID::getAtClockwiseIndex((i + 3) % 4)]);
+//
+//	tempNeighbors[*CD::getAtClockwiseIndex((i + 3) % 4)] =
+//			neighbors[*CD::getAtClockwiseIndex((i + 3) % 4)];
 
 	return tempNeighbors;
 }
@@ -433,8 +501,9 @@ float Quadtree::recursiveUpdateRoughness2(Vertex* center,
 			auto relIntercardinals = getRelativeIntercardinals(id, center,
 					intercardinals);
 
-			auto relNeighbors = getNeighborhood(center, id, intercardinals,
-					*neighbors);
+//			auto relNeighbors = getNeighborhood(center, id, intercardinals,
+//					*neighbors);
+			auto relNeighbors = getNeighborhood(relCenter, relIntercardinals);
 
 			nextRoughness = recursiveUpdateRoughness2(relCenter,
 					relIntercardinals, neighbors, &relNeighbors);

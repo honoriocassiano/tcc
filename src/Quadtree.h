@@ -65,10 +65,13 @@ private:
 			DirectionArray<CardinalDirection, Vertex*>* parentNeighbors,
 			DirectionArray<CardinalDirection, Vertex*>* neighbors);
 
+//	DirectionArray<CardinalDirection, Vertex*> getNeighborhood(Vertex* center,
+//			const IntercardinalDirection& direction,
+//			const DirectionArray<IntercardinalDirection, Vertex*>& intercardinals,
+//			const DirectionArray<CardinalDirection, Vertex*>& neighbors);
+
 	DirectionArray<CardinalDirection, Vertex*> getNeighborhood(Vertex* center,
-			const IntercardinalDirection& direction,
-			const DirectionArray<IntercardinalDirection, Vertex*>& intercardinals,
-			const DirectionArray<CardinalDirection, Vertex*>& neighbors);
+			const DirectionArray<IntercardinalDirection, Vertex*>& intercardinals);
 
 	DirectionArray<IntercardinalDirection, Vertex*> getRelativeIntercardinals(
 			const IntercardinalDirection& direction, Vertex* center,

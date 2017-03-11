@@ -88,7 +88,7 @@ public:
   friend class CelestialBody;
   friend class MeshDrawer;
 
-private:
+protected:
 
   void computeFaceNormals();
   void computeVerticesNormals();
