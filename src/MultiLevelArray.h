@@ -18,8 +18,6 @@ public:
 	MultiLevelArray(std::size_t sizeByLevel = 100, std::size_t numLevels = 4);
 	virtual ~MultiLevelArray();
 
-	void add(const T& element, std::size_t level);
-
 	void fitAllLevels(bool exactFit = false);
 	void fit(std::size_t level, bool exactFit = false);
 	void fit(std::initializer_list<bool> fits);
@@ -42,7 +40,7 @@ public:
 
 		bool operator==(const Iterator& it2);
 		bool operator!=(const Iterator& it2);
-		Iterator& operator++(int);
+		Iterator& operator++();
 
 		inline const std::pair<std::size_t, std::size_t>& getPosition() const {
 			return position;
@@ -54,6 +52,8 @@ public:
 
 		std::pair<std::size_t, std::size_t> position;
 	};
+
+	Iterator add(const T& element, std::size_t level);
 
 	void remove(const Iterator& iterator)
 				throw (std::overflow_error);
@@ -76,10 +76,10 @@ private:
 template<class T>
 inline MultiLevelArray<T>::MultiLevelArray(std::size_t sizeByLevel,
 		std::size_t numLevels) :
-		sizes( { 0, sizeByLevel }, numLevels), data(
-				new T*[numLevels] { nullptr }), defaultSize(sizeByLevel) {
+		sizes( numLevels, { 0, sizeByLevel }), data(
+				new T*[numLevels]), defaultSize(sizeByLevel) {
 
-	for (auto i = 0; i < sizeByLevel; ++i) {
+	for (auto i = 0; i < numLevels; ++i) {
 		data[i] = new T[sizeByLevel];
 	}
 }
@@ -110,7 +110,7 @@ inline T& MultiLevelArray<T>::operator [](
 }
 
 template<class T>
-inline void MultiLevelArray<T>::add(const T& element, std::size_t level) {
+inline typename MultiLevelArray<T>::Iterator MultiLevelArray<T>::add(const T& element, std::size_t level) {
 	if (level >= sizes.size()) {
 		auto newData = new T*[level] { nullptr };
 
@@ -119,7 +119,7 @@ inline void MultiLevelArray<T>::add(const T& element, std::size_t level) {
 		}
 
 		for (auto i = sizes.size(); i < level; ++i) {
-			newData = new T[defaultSize];
+			newData[i] = new T[defaultSize];
 			sizes.push_back( { 0, defaultSize });
 		}
 
@@ -141,6 +141,8 @@ inline void MultiLevelArray<T>::add(const T& element, std::size_t level) {
 	data[level][sizes[level].first + 1] = element;
 
 	sizes[level].first++;
+
+	return Iterator(this, {level, sizes[level].first});
 }
 
 template<class T>
@@ -185,8 +187,7 @@ inline bool MultiLevelArray<T>::Iterator::operator !=(const Iterator& it2) {
 }
 
 template<class T>
-typename MultiLevelArray<T>::Iterator& MultiLevelArray<T>::Iterator::operator++(
-		int) {
+typename MultiLevelArray<T>::Iterator& MultiLevelArray<T>::Iterator::operator++() {
 
 	if (!allLevels) {
 		++this->position.second;
