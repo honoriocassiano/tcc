@@ -46,6 +46,8 @@ public:
 			return position;
 		}
 
+		T& operator*();
+
 	private:
 		MultiLevelArray<T> *array;
 		bool allLevels;
@@ -111,6 +113,7 @@ inline T& MultiLevelArray<T>::operator [](
 template<class T>
 inline typename MultiLevelArray<T>::Iterator MultiLevelArray<T>::add(
 		const T& element, std::size_t level) {
+
 	if (level >= sizes.size()) {
 		auto newData = new T*[level] { nullptr };
 
@@ -138,9 +141,9 @@ inline typename MultiLevelArray<T>::Iterator MultiLevelArray<T>::add(
 		data[level] = newData;
 	}
 
-	data[level][sizes[level].first + 1] = element;
+	data[level][sizes[level].first] = element;
 
-	sizes[level].first++;
+	++sizes[level].first;
 
 	return Iterator(this, { level, sizes[level].first });
 }
@@ -191,7 +194,8 @@ typename MultiLevelArray<T>::Iterator& MultiLevelArray<T>::Iterator::operator++(
 
 	++this->position.second;
 
-	if (this->position.second >= array->sizes[this->position.first].first) {
+	while ((this->position.second >= array->sizes[this->position.first].first)
+			&& (this->position.first < array->sizes.size())) {
 		++this->position.first;
 		this->position.second = 0;
 	}
@@ -304,6 +308,11 @@ inline bool MultiLevelArray<T>::checkBounds(
 
 	return (position.first < sizes.size())
 			&& (position.second < sizes[position.first].second);
+}
+
+template<class T>
+inline T& MultiLevelArray<T>::Iterator::operator *() {
+	return (*array)[position];
 }
 
 #endif /* SRC_MULTILEVELARRAY_H_ */
