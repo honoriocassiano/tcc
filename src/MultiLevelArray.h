@@ -114,14 +114,14 @@ template<class T>
 inline typename MultiLevelArray<T>::Iterator MultiLevelArray<T>::add(
 		const T& element, std::size_t level) {
 
-	if (level >= sizes.size()) {
-		auto newData = new T*[level] { nullptr };
+	if ( (level + 1) >= sizes.size()) {
+		auto newData = new T*[level+1] { nullptr };
 
 		for (auto i = 0; i < sizes.size(); ++i) {
 			newData[i] = data[i];
 		}
 
-		for (auto i = sizes.size(); i < level; ++i) {
+		for (auto i = sizes.size(); i <= level; ++i) {
 			newData[i] = new T[defaultSize];
 			sizes.push_back( { 0, defaultSize });
 		}
