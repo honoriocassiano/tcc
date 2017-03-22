@@ -145,7 +145,7 @@ inline typename MultiLevelArray<T>::Iterator MultiLevelArray<T>::add(
 
 	++sizes[level].first;
 
-	return Iterator(this, { level, sizes[level].first });
+	return Iterator(this, { level, sizes[level].first - 1 });
 }
 
 template<class T>
