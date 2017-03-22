@@ -55,8 +55,7 @@ public:
 
 	Iterator add(const T& element, std::size_t level);
 
-	void remove(const Iterator& iterator)
-				throw (std::overflow_error);
+	void remove(const Iterator& iterator) throw (std::overflow_error);
 
 	Iterator begin();
 	Iterator end();
@@ -76,8 +75,8 @@ private:
 template<class T>
 inline MultiLevelArray<T>::MultiLevelArray(std::size_t sizeByLevel,
 		std::size_t numLevels) :
-		sizes( numLevels, { 0, sizeByLevel }), data(
-				new T*[numLevels]), defaultSize(sizeByLevel) {
+		sizes(numLevels, { 0, sizeByLevel }), data(new T*[numLevels]), defaultSize(
+				sizeByLevel) {
 
 	for (auto i = 0; i < numLevels; ++i) {
 		data[i] = new T[sizeByLevel];
@@ -110,7 +109,8 @@ inline T& MultiLevelArray<T>::operator [](
 }
 
 template<class T>
-inline typename MultiLevelArray<T>::Iterator MultiLevelArray<T>::add(const T& element, std::size_t level) {
+inline typename MultiLevelArray<T>::Iterator MultiLevelArray<T>::add(
+		const T& element, std::size_t level) {
 	if (level >= sizes.size()) {
 		auto newData = new T*[level] { nullptr };
 
@@ -142,7 +142,7 @@ inline typename MultiLevelArray<T>::Iterator MultiLevelArray<T>::add(const T& el
 
 	sizes[level].first++;
 
-	return Iterator(this, {level, sizes[level].first});
+	return Iterator(this, { level, sizes[level].first });
 }
 
 template<class T>
@@ -189,14 +189,11 @@ inline bool MultiLevelArray<T>::Iterator::operator !=(const Iterator& it2) {
 template<class T>
 typename MultiLevelArray<T>::Iterator& MultiLevelArray<T>::Iterator::operator++() {
 
-	if (!allLevels) {
-		++this->position.second;
-	} else {
-		if ((++this->position.second)
-				== array->sizes[this->position.first].second) {
-			++this->position.first;
-			this->position.second = 0;
-		}
+	++this->position.second;
+
+	if (this->position.second >= array->sizes[this->position.first].first) {
+		++this->position.first;
+		this->position.second = 0;
 	}
 }
 
@@ -294,8 +291,9 @@ inline typename MultiLevelArray<T>::Iterator MultiLevelArray<T>::end(
 }
 
 template<class T>
-inline void MultiLevelArray<T>::remove(const MultiLevelArray<T>::Iterator& iterator)
-		throw (std::overflow_error) {
+inline void MultiLevelArray<T>::remove(
+		const MultiLevelArray<T>::Iterator& iterator)
+				throw (std::overflow_error) {
 
 	remove(iterator.getPosition());
 }
