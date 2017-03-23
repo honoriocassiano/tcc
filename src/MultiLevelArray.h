@@ -72,7 +72,7 @@ private:
 
 	bool checkBounds(const std::pair<std::size_t, std::size_t>& position);
 
-	std::vector<std::pair<std::size_t, std::size_t>> sizes;
+	std::vector<std::pair<std::size_t, std::size_t>> levelsInfo;
 	T** data;
 	std::size_t defaultSize;
 };
@@ -80,7 +80,7 @@ private:
 template<class T>
 inline MultiLevelArray<T>::MultiLevelArray(std::size_t sizeByLevel,
 		std::size_t numLevels) :
-		sizes(numLevels, { 0, sizeByLevel }), data(new T*[numLevels]), defaultSize(
+		levelsInfo(numLevels, { 0, sizeByLevel }), data(new T*[numLevels]), defaultSize(
 				sizeByLevel) {
 
 	for (auto i = 0; i < numLevels; ++i) {
@@ -91,7 +91,7 @@ inline MultiLevelArray<T>::MultiLevelArray(std::size_t sizeByLevel,
 template<class T>
 inline MultiLevelArray<T>::~MultiLevelArray() {
 
-	for (auto i = 0; i < sizes.size(); ++i) {
+	for (auto i = 0; i < levelsInfo.size(); ++i) {
 		delete data[i];
 	}
 
@@ -103,8 +103,8 @@ inline T& MultiLevelArray<T>::operator [](
 		const std::pair<std::size_t, std::size_t>& position)
 				throw (std::overflow_error) {
 
-	if ((position.first < sizes.size())
-			&& (position.second < sizes[position.first].second)) {
+	if ((position.first < levelsInfo.size())
+			&& (position.second < levelsInfo[position.first].second)) {
 		return data[position.first][position.second];
 	} else {
 		throw std::overflow_error(
@@ -117,25 +117,25 @@ template<class T>
 inline typename MultiLevelArray<T>::Iterator MultiLevelArray<T>::add(
 		const T& element, std::size_t level) {
 
-	if ( (level + 1) >= sizes.size()) {
+	if ( (level + 1) >= levelsInfo.size()) {
 		auto newData = new T*[level+1] { nullptr };
 
-		for (auto i = 0; i < sizes.size(); ++i) {
+		for (auto i = 0; i < levelsInfo.size(); ++i) {
 			newData[i] = data[i];
 		}
 
-		for (auto i = sizes.size(); i <= level; ++i) {
+		for (auto i = levelsInfo.size(); i <= level; ++i) {
 			newData[i] = new T[defaultSize];
-			sizes.push_back( { 0, defaultSize });
+			levelsInfo.push_back( { 0, defaultSize });
 		}
 
 		delete data;
 
 		data = newData;
-	} else if (sizes[level].first >= sizes[level].second) {
-		auto newData = new T[sizes[level].second << 1];
+	} else if (levelsInfo[level].first >= levelsInfo[level].second) {
+		auto newData = new T[levelsInfo[level].second << 1];
 
-		for (auto i = 0; i < sizes[level].second; ++i) {
+		for (auto i = 0; i < levelsInfo[level].second; ++i) {
 			newData[i] = data[level][i];
 		}
 
@@ -144,11 +144,11 @@ inline typename MultiLevelArray<T>::Iterator MultiLevelArray<T>::add(
 		data[level] = newData;
 	}
 
-	data[level][sizes[level].first] = element;
+	data[level][levelsInfo[level].first] = element;
 
-	++sizes[level].first;
+	++levelsInfo[level].first;
 
-	return Iterator(this, { level, sizes[level].first - 1 });
+	return Iterator(this, { level, levelsInfo[level].first - 1 });
 }
 
 template<class T>
@@ -156,8 +156,8 @@ inline const T& MultiLevelArray<T>::operator [](
 		const std::pair<std::size_t, std::size_t>& position) const
 				throw (std::overflow_error) {
 
-	if ((position.first < sizes.size())
-			&& (position.second < sizes[position.first].second)) {
+	if ((position.first < levelsInfo.size())
+			&& (position.second < levelsInfo[position.first].second)) {
 		return data[position.first][position.second];
 	} else {
 		throw std::overflow_error(
@@ -197,8 +197,8 @@ typename MultiLevelArray<T>::Iterator& MultiLevelArray<T>::Iterator::operator++(
 
 	++this->position.second;
 
-	while ((this->position.second >= array->sizes[this->position.first].first)
-			&& (this->position.first < array->sizes.size())) {
+	while ((this->position.second >= array->levelsInfo[this->position.first].first)
+			&& (this->position.first < array->levelsInfo.size())) {
 		++this->position.first;
 		this->position.second = 0;
 	}
@@ -211,7 +211,7 @@ inline typename MultiLevelArray<T>::Iterator MultiLevelArray<T>::begin() {
 
 template<class T>
 inline typename MultiLevelArray<T>::Iterator MultiLevelArray<T>::end() {
-	return Iterator(this, { sizes.size(), 0 });
+	return Iterator(this, { levelsInfo.size(), 0 });
 }
 
 template<class T>
@@ -223,7 +223,7 @@ inline typename MultiLevelArray<T>::Iterator MultiLevelArray<T>::begin(
 template<class T>
 void MultiLevelArray<T>::fitAllLevels(bool exactFit) {
 
-	for (auto i = 0; i < sizes.size(); ++i) {
+	for (auto i = 0; i < levelsInfo.size(); ++i) {
 
 		fit(i, exactFit);
 	}
@@ -231,7 +231,7 @@ void MultiLevelArray<T>::fitAllLevels(bool exactFit) {
 
 template<class T>
 void MultiLevelArray<T>::fit(std::size_t level, bool exactFit) {
-	auto& size = sizes[level];
+	auto& size = levelsInfo[level];
 
 	auto newData = data[level];
 
@@ -259,7 +259,7 @@ void MultiLevelArray<T>::fit(std::size_t level, bool exactFit) {
 template<class T>
 void MultiLevelArray<T>::fit(std::initializer_list<bool> fits) {
 
-	auto size = (fits.size() > sizes.size()) ? sizes.size() : fits.size();
+	auto size = (fits.size() > levelsInfo.size()) ? levelsInfo.size() : fits.size();
 	auto it = std::begin(fits);
 
 	for (auto level = 0; level < size; ++level) {
@@ -274,7 +274,7 @@ void MultiLevelArray<T>::remove(
 
 	if (checkBounds(position)) {
 
-		auto& size = sizes[position.first];
+		auto& size = levelsInfo[position.first];
 
 		// Remove if element exists
 		if (position.second < size.first) {
@@ -309,7 +309,7 @@ template<class T>
 std::size_t MultiLevelArray<T>::size() const {
 	std::size_t sum = 0;
 
-	for(const auto& s : sizes) {
+	for(const auto& s : levelsInfo) {
 		sum += s.first;
 	}
 
@@ -318,9 +318,9 @@ std::size_t MultiLevelArray<T>::size() const {
 
 template<class T>
 std::size_t MultiLevelArray<T>::size(std::size_t level) const {
-	if(level < sizes.size()) {
+	if(level < levelsInfo.size()) {
 
-		return sizes[level].first;
+		return levelsInfo[level].first;
 
 	} else {
 
@@ -333,8 +333,8 @@ template<class T>
 inline bool MultiLevelArray<T>::checkBounds(
 		const std::pair<std::size_t, std::size_t>& position) {
 
-	return (position.first < sizes.size())
-			&& (position.second < sizes[position.first].second);
+	return (position.first < levelsInfo.size())
+			&& (position.second < levelsInfo[position.first].second);
 }
 
 template<class T>
