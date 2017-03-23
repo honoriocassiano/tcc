@@ -181,8 +181,7 @@ inline MultiLevelArray<T>::Iterator::Iterator(MultiLevelArray<T>* array,
 template<class T>
 inline bool MultiLevelArray<T>::Iterator::operator ==(const Iterator& it2) {
 
-	return (this->array == it2.array)
-			&& (this->position == it2.position);
+	return (this->array == it2.array) && (this->position == it2.position);
 }
 
 template<class T>
@@ -194,13 +193,15 @@ inline bool MultiLevelArray<T>::Iterator::operator !=(const Iterator& it2) {
 template<class T>
 typename MultiLevelArray<T>::Iterator& MultiLevelArray<T>::Iterator::operator++() {
 
-	++this->position.second;
+	if (this->position.first < array->levelsInfo.size()) {
+		++this->position.second;
 
-	while ((this->position.second
-			>= array->levelsInfo[this->position.first].first)
-			&& (this->position.first < array->levelsInfo.size())) {
-		++this->position.first;
-		this->position.second = 0;
+		while ((this->position.second
+				>= array->levelsInfo[this->position.first].first)
+				&& (this->position.first < array->levelsInfo.size())) {
+			++this->position.first;
+			this->position.second = 0;
+		}
 	}
 }
 
@@ -208,7 +209,7 @@ template<class T>
 inline typename MultiLevelArray<T>::Iterator MultiLevelArray<T>::begin() {
 	std::size_t i = 0;
 
-	while(levelsInfo[i].first == 0) {
+	while (levelsInfo[i].first == 0) {
 		++i;
 	}
 
