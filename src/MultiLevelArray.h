@@ -53,7 +53,6 @@ public:
 
 	private:
 		MultiLevelArray<T> *array;
-		bool allLevels;
 
 		std::pair<std::size_t, std::size_t> position;
 	};
@@ -169,20 +168,20 @@ inline const T& MultiLevelArray<T>::operator [](
 template<class T>
 inline MultiLevelArray<T>::Iterator::Iterator(MultiLevelArray<T>* array,
 		std::size_t level, std::size_t position) :
-		array(array), allLevels(false), position { level, position } {
+		array(array), position { level, position } {
 }
 
 template<class T>
 inline MultiLevelArray<T>::Iterator::Iterator(MultiLevelArray<T>* array,
 		std::pair<std::size_t, std::size_t> position) :
-		array(array), allLevels(true), position(position) {
+		array(array), position(position) {
 
 }
 
 template<class T>
 inline bool MultiLevelArray<T>::Iterator::operator ==(const Iterator& it2) {
 
-	return (this->allLevels == it2.allLevels) && (this->array == it2.array)
+	return (this->array == it2.array)
 			&& (this->position == it2.position);
 }
 
@@ -207,7 +206,13 @@ typename MultiLevelArray<T>::Iterator& MultiLevelArray<T>::Iterator::operator++(
 
 template<class T>
 inline typename MultiLevelArray<T>::Iterator MultiLevelArray<T>::begin() {
-	return Iterator(this);
+	std::size_t i = 0;
+
+	while(levelsInfo[i].first == 0) {
+		++i;
+	}
+
+	return Iterator(this, i);
 }
 
 template<class T>
