@@ -31,6 +31,9 @@ public:
 			const std::pair<std::size_t, std::size_t>& position) const
 					throw (std::overflow_error);
 
+	std::size_t size() const;
+	std::size_t size(std::size_t level) const;
+
 	class Iterator {
 	public:
 		Iterator(MultiLevelArray<T> * array, std::size_t level,
@@ -300,6 +303,30 @@ inline void MultiLevelArray<T>::remove(
 				throw (std::overflow_error) {
 
 	remove(iterator.getPosition());
+}
+
+template<class T>
+std::size_t MultiLevelArray<T>::size() const {
+	std::size_t sum = 0;
+
+	for(const auto& s : sizes) {
+		sum += s.first;
+	}
+
+	return sum;
+}
+
+template<class T>
+std::size_t MultiLevelArray<T>::size(std::size_t level) const {
+	if(level < sizes.size()) {
+
+		return sizes[level].first;
+
+	} else {
+
+		return 0;
+
+	}
 }
 
 template<class T>
