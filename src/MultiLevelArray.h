@@ -117,8 +117,8 @@ template<class T>
 inline typename MultiLevelArray<T>::Iterator MultiLevelArray<T>::add(
 		const T& element, std::size_t level) {
 
-	if ( (level + 1) >= levelsInfo.size()) {
-		auto newData = new T*[level+1] { nullptr };
+	if ((level + 1) >= levelsInfo.size()) {
+		auto newData = new T*[level + 1] { nullptr };
 
 		for (auto i = 0; i < levelsInfo.size(); ++i) {
 			newData[i] = data[i];
@@ -197,7 +197,8 @@ typename MultiLevelArray<T>::Iterator& MultiLevelArray<T>::Iterator::operator++(
 
 	++this->position.second;
 
-	while ((this->position.second >= array->levelsInfo[this->position.first].first)
+	while ((this->position.second
+			>= array->levelsInfo[this->position.first].first)
 			&& (this->position.first < array->levelsInfo.size())) {
 		++this->position.first;
 		this->position.second = 0;
@@ -259,7 +260,8 @@ void MultiLevelArray<T>::fit(std::size_t level, bool exactFit) {
 template<class T>
 void MultiLevelArray<T>::fit(std::initializer_list<bool> fits) {
 
-	auto size = (fits.size() > levelsInfo.size()) ? levelsInfo.size() : fits.size();
+	auto size =
+			(fits.size() > levelsInfo.size()) ? levelsInfo.size() : fits.size();
 	auto it = std::begin(fits);
 
 	for (auto level = 0; level < size; ++level) {
@@ -309,7 +311,7 @@ template<class T>
 std::size_t MultiLevelArray<T>::size() const {
 	std::size_t sum = 0;
 
-	for(const auto& s : levelsInfo) {
+	for (const auto& s : levelsInfo) {
 		sum += s.first;
 	}
 
@@ -318,7 +320,7 @@ std::size_t MultiLevelArray<T>::size() const {
 
 template<class T>
 std::size_t MultiLevelArray<T>::size(std::size_t level) const {
-	if(level < levelsInfo.size()) {
+	if (level < levelsInfo.size()) {
 
 		return levelsInfo[level].first;
 
