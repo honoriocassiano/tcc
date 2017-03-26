@@ -120,7 +120,9 @@ template<class T>
 inline typename MultiLevelArray<T>::Iterator MultiLevelArray<T>::add(
 		const T& element, std::size_t level) {
 
-	if ((level + 1) >= levelsInfo.size()) {
+	std::size_t s = levelsInfo[level].second;
+
+	if (level >= levelsInfo.size()) {
 		auto newData = new T*[level + 1] { nullptr };
 
 		for (auto i = 0; i < levelsInfo.size(); ++i) {
@@ -135,6 +137,8 @@ inline typename MultiLevelArray<T>::Iterator MultiLevelArray<T>::add(
 		delete data;
 
 		data = newData;
+
+		s = defaultSize;
 	} else if (levelsInfo[level].first >= levelsInfo[level].second) {
 		auto newData = new T[levelsInfo[level].second << 1];
 
@@ -145,11 +149,14 @@ inline typename MultiLevelArray<T>::Iterator MultiLevelArray<T>::add(
 		delete data[level];
 
 		data[level] = newData;
+
+		s = (levelsInfo[level].second << 1);
 	}
 
 	data[level][levelsInfo[level].first] = element;
 
 	++levelsInfo[level].first;
+	levelsInfo[level].second = s;
 
 	return Iterator(this, { level, levelsInfo[level].first - 1 });
 }
