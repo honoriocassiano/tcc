@@ -61,6 +61,10 @@ public:
 
 	void remove(const Iterator& iterator) throw (std::overflow_error);
 
+	Iterator find(const T& element);
+	Iterator find(const T& element, std::size_t level)
+			throw (std::overflow_error);
+
 	Iterator begin();
 	Iterator end();
 
@@ -334,6 +338,37 @@ std::size_t MultiLevelArray<T>::size(std::size_t level) const {
 
 		return 0;
 
+	}
+}
+
+template<class T>
+typename MultiLevelArray<T>::Iterator MultiLevelArray<T>::find(
+		const T& element) {
+
+	auto it = begin();
+
+	while (it != end()) {
+		++it;
+	}
+
+	return it;
+}
+
+template<class T>
+typename MultiLevelArray<T>::Iterator MultiLevelArray<T>::find(const T& element,
+		std::size_t level) throw (std::overflow_error) {
+	if (checkBounds( { level, 0 })) {
+		auto it = begin(level);
+
+		while (it != end(level)) {
+			++it;
+		}
+
+		return it;
+	} else {
+		throw std::overflow_error(
+				"Level " + std::to_string(level)
+						+ "not exists");
 	}
 }
 
