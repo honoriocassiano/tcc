@@ -25,6 +25,8 @@ public:
 
 	bool deleteChildIfExist(Vertex *p1, Vertex *p2);
 
+	bool deleteVertex(MultiLevelArray<Vertex*>::Iterator& it);
+
 private:
 	Bag<Triangle*>* getTriangles() {
 		return triangles;
@@ -36,6 +38,10 @@ private:
 
 	Array<Vertex*>* getVertices() {
 		return vertices;
+	}
+
+	MultiLevelArray<Vertex*>* getVertices2() {
+		return vertices2;
 	}
 
 	friend class Quadtree;

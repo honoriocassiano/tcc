@@ -40,7 +40,7 @@ Quadtree::Quadtree(Vertex* nw, Vertex* ne, Vertex* sw, Vertex* se,
 
 	auto m = (temp1 + temp2) * 0.5;
 
-	center = mesh->addVertex(m);
+	center = mesh->addVertex(m, 1);
 	center->setActive(true);
 
 	mesh->setParentsChild(nw, se, ne, sw, center);

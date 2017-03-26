@@ -5,6 +5,7 @@
 #include "../Array/array.h"
 #include "../Array/bag.h"
 #include "boundingbox.h"
+#include "../../MultiLevelArray.h"
 
 // TODO Verificar a necessidade dessa estrutura
 #include <vector>
@@ -33,8 +34,9 @@ public:
     
   // ========
   // VERTICES
-  int numVertices() const { return vertices->Count(); }
-  Vertex* addVertex(const Vec3f &pos);
+//  int numVertices() const { return vertices->Count(); }
+  std::size_t numVertices() const { return vertices2->size(); }
+  Vertex* addVertex(const Vec3f &pos, std::size_t level);
 
   void removeVertex(Vertex *vertex);
   // this creates a relationship between 3 vertices (2 parents, 1 child)
@@ -96,6 +98,10 @@ protected:
   // ==============
   // REPRESENTATION
   Array<Vertex*> *vertices;
+
+  MultiLevelArray<Vertex*> *vertices2;
+
+
   Bag<Edge*> *edges;
   Bag<Triangle*> *triangles;
   BoundingBox *bbox;

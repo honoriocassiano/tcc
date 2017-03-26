@@ -414,8 +414,20 @@ void MeshDrawer::draw(Mesh* mesh, const DrawOptions& options) {
 		glDisable(GL_LIGHTING);
 		glPointSize(1.25);
 		glBegin(GL_POINTS);
-		for (int i = 0; i < mesh->vertices->Count(); ++i) {
-			auto v = (*mesh->vertices)[i];
+//		for (int i = 0; i < mesh->vertices->Count(); ++i) {
+//			auto v = (*mesh->vertices)[i];
+//
+////			glVertex3f(v->x(), v->y(), v->z());
+//			if (v->isActive()) {
+//				glColor3f(1, 0, 0);
+//			} else {
+//				glColor3f(1, 1, 1);
+//			}
+//
+//			glVertex3f(DX(v->x(), v->y(), v->z()), DY(v->x(), v->y(), v->z()),
+//					DZ(v->x(), v->y(), v->z()));
+//		}
+		for (const auto& v : *mesh->vertices2) {
 
 //			glVertex3f(v->x(), v->y(), v->z());
 			if (v->isActive()) {
@@ -427,6 +439,7 @@ void MeshDrawer::draw(Mesh* mesh, const DrawOptions& options) {
 			glVertex3f(DX(v->x(), v->y(), v->z()), DY(v->x(), v->y(), v->z()),
 					DZ(v->x(), v->y(), v->z()));
 		}
+
 		glEnd();
 		glEnable(GL_LIGHTING);
 	}

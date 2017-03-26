@@ -295,11 +295,12 @@ void MultiLevelArray<T>::remove(
 		}
 		// Else do nothing
 
-	} else {
-		throw std::overflow_error(
-				"Trying to access position " + std::to_string(position.first)
-						+ ", " + std::to_string(position.second));
 	}
+//	else {
+//		throw std::overflow_error(
+//				"Trying to access position " + std::to_string(position.first)
+//						+ ", " + std::to_string(position.second));
+//	}
 }
 
 template<class T>
@@ -360,7 +361,7 @@ typename MultiLevelArray<T>::Iterator MultiLevelArray<T>::find(const T& element,
 	if (checkBounds( { level, 0 })) {
 		auto it = begin(level);
 
-		while (it != end(level)) {
+		while (it.getPosition().first == level) {
 			++it;
 		}
 

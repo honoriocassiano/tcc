@@ -16,15 +16,15 @@ QuadCube::QuadCube(const Vec3f& _position) :
 	using Face = directions::Face;
 
 	// (FRONT/BACK) (LEFT/RIGHT) (TOP,BOTTOM)
-	auto flt = mesh->addVertex(Vec3f(-0.5, 0.5, -0.5));
-	auto frt = mesh->addVertex(Vec3f(0.5, 0.5, -0.5));
-	auto flb = mesh->addVertex(Vec3f(-0.5, -0.5, -0.5));
-	auto frb = mesh->addVertex(Vec3f(0.5, -0.5, -0.5));
+	auto flt = mesh->addVertex(Vec3f(-0.5, 0.5, -0.5), 0);
+	auto frt = mesh->addVertex(Vec3f(0.5, 0.5, -0.5), 0);
+	auto flb = mesh->addVertex(Vec3f(-0.5, -0.5, -0.5), 0);
+	auto frb = mesh->addVertex(Vec3f(0.5, -0.5, -0.5), 0);
 
-	auto blt = mesh->addVertex(Vec3f(-0.5, 0.5, 0.5));
-	auto brt = mesh->addVertex(Vec3f(0.5, 0.5, 0.5));
-	auto blb = mesh->addVertex(Vec3f(-0.5, -0.5, 0.5));
-	auto brb = mesh->addVertex(Vec3f(0.5, -0.5, 0.5));
+	auto blt = mesh->addVertex(Vec3f(-0.5, 0.5, 0.5), 0);
+	auto brt = mesh->addVertex(Vec3f(0.5, 0.5, 0.5), 0);
+	auto blb = mesh->addVertex(Vec3f(-0.5, -0.5, 0.5), 0);
+	auto brb = mesh->addVertex(Vec3f(0.5, -0.5, 0.5), 0);
 
 	faces[Face::FRONT] = new Quadtree(flt, frt, flb, frb, mesh);
 	faces[Face::BACK] = new Quadtree(blt, brt, blb, brb, mesh);
@@ -52,17 +52,41 @@ void QuadCube::draw(const DrawOptions& options) {
 
 void QuadCube::deleteUnusedVertices() {
 
-	for (int i = mesh->getVertices()->Count() - 1; i >= 0; --i) {
-		auto v = (*mesh->getVertices())[i];
+//	for (int i = mesh->getVertices()->Count() - 1; i >= 0; --i) {
+//		auto v = (*mesh->getVertices())[i];
+//
+//		auto vp = v->getParents1();
+//
+//		if (vp) {
+//			if (!(vp->getParent1()->isActive() && vp->getParent2()->isActive())) {
+//				mesh->deleteChildIfExist(vp->getParent1(), vp->getParent2());
+//			}
+//		}
+//	}
+
+	auto marked = std::vector<decltype(mesh->getVertices2()->begin())>();
+
+//	for (const auto& v : *mesh->getVertices2()) {
+	for (auto it = mesh->getVertices2()->begin();
+			it != mesh->getVertices2()->end(); ++it) {
+//		auto v = (*mesh->getVertices())[i];
+		const auto& v = *it;
 
 		auto vp = v->getParents1();
 
 		if (vp) {
 			if (!(vp->getParent1()->isActive() && vp->getParent2()->isActive())) {
-				mesh->deleteChildIfExist(vp->getParent1(), vp->getParent2());
+//				mesh->deleteChildIfExist(vp->getParent1(), vp->getParent2());
+				marked.push_back(it);
 			}
 		}
+
 	}
+
+	for (auto vp : marked) {
+//		mesh->deleteChildIfExist(vp->getParent1(), vp->getParent2());
+	}
+
 }
 
 void QuadCube::update(const Vec3f& cameraPosition) {
@@ -106,7 +130,7 @@ void QuadCube::initNeighbours() {
 	// left->setNeighbours(top->getCenter(), back->getCenter(), front->getCenter(),
 	// 		bottom->getCenter());
 	left->setNeighbours(top->getCenter(), back->getCenter(),
-		bottom->getCenter(), front->getCenter());
+			bottom->getCenter(), front->getCenter());
 
 	// bottom->setNeighbours(back->getCenter(), right->getCenter(),
 	// 		left->getCenter(), front->getCenter());
@@ -125,5 +149,5 @@ void QuadCube::initNeighbours() {
 	// top->setNeighbours(left->getCenter(), front->getCenter(),
 	// 	back->getCenter(), right->getCenter());
 	top->setNeighbours(left->getCenter(), front->getCenter(),
-		right->getCenter(), back->getCenter());
+			right->getCenter(), back->getCenter());
 }

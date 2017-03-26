@@ -25,7 +25,7 @@ Vertex* QuadtreeMesh::getOrCreateChildVertex(Vertex* p1, Vertex* p2) {
 	auto child = getChildVertex(p1, p2);
 
 	if (!child) {
-		child = addVertex((p1->get() + p2->get()) * 0.5);
+		child = addVertex((p1->get() + p2->get()) * 0.5, std::max(p1->getLevel(), p2->getLevel()) + 1);
 
 		setParentsChild(p1, p2, child);
 
@@ -61,6 +61,26 @@ bool QuadtreeMesh::deleteChildIfExist(Vertex* p1, Vertex* p2) {
 		}
 
 		removeVertex(child);
+		return true;
+	}
+
+	return false;
+}
+
+bool QuadtreeMesh::deleteVertex(MultiLevelArray<Vertex*>::Iterator& it) {
+//	auto child = this->getChildVertex(p1, p2);
+	auto child = *it;
+
+	if (child) {
+		deleteParentsChildRelation(child->getParents1()->getParent1(),
+				child->getParents1()->getParent2());
+
+		if (child->getParents2()) {
+			deleteParentsChildRelation(child->getParents2()->getParent1(),
+					child->getParents2()->getParent2());
+		}
+
+		vertices2->remove(it);
 		return true;
 	}
 

@@ -23,33 +23,41 @@
 // =======================================================================
 
 Mesh::Mesh() {
-	vertices = new Array<Vertex*>(INITIAL_VERTEX);
+//	vertices = new Array<Vertex*>(INITIAL_VERTEX);
 	edges = new Bag<Edge*>(INITIAL_EDGE, Edge::extract_func);
 	triangles = new Bag<Triangle*>(INITIAL_TRIANGLE, Triangle::extract_func);
 	vertex_parents = new Bag<VertexParent*>(INITIAL_VERTEX,
 			VertexParent::extract_func);
 	bbox = NULL;
+
+	vertices2 = new MultiLevelArray<Vertex*>();
 }
 
 Mesh::~Mesh() {
-	delete vertices;
-	vertices = NULL;
+//	delete vertices;
+//	vertices = NULL;
 	delete edges;
 	edges = NULL;
 	delete triangles;
 	triangles = NULL;
 	delete bbox;
 	bbox = NULL;
+
+	delete vertices2;
+	vertices2 = nullptr;
 }
 
 // =======================================================================
 // MODIFIERS:   ADD & REMOVE
 // =======================================================================
 
-Vertex* Mesh::addVertex(const Vec3f &position) {
+Vertex* Mesh::addVertex(const Vec3f &position, std::size_t level) {
 	int index = numVertices();
 	Vertex *v = new Vertex(index, position);
-	vertices->Add(v);
+//	vertices->Add(v);
+
+	vertices2->add(v, level);
+
 	if (bbox == NULL)
 		bbox = new BoundingBox(position, position);
 	else
@@ -58,7 +66,12 @@ Vertex* Mesh::addVertex(const Vec3f &position) {
 }
 
 void Mesh::removeVertex(Vertex* vertex) {
-	vertices->Remove(vertex);
+//	vertices->Remove(vertex);
+	auto it = vertices2->find(vertex, vertex->getLevel());
+
+	if (it != vertices2->end(vertex->getLevel())) {
+		vertices2->remove(it);
+	}
 
 	delete vertex;
 }
@@ -219,7 +232,7 @@ void Mesh::Load(const char *input_file) {
 		} else if (!strcmp(token, "v")) {
 			vert_count++;
 			sscanf(line, "%s %f %f %f\n", token, &x, &y, &z);
-			addVertex(Vec3f(x, y, z));
+			addVertex(Vec3f(x, y, z), 0);
 		} else if (!strcmp(token, "f")) {
 			int num = sscanf(line, "%s %s %s %s %s %s\n", token, atoken, btoken,
 					ctoken, dtoken, etoken);
@@ -401,9 +414,7 @@ void Mesh::printTrianglesPointers(int limit) {
 		auto p2 = edge->getNext()->getNext()->getVertex();
 
 //		Log(
-		printf(
-				"%d - v0: %p, v1: %p, v2: %p\n",
-				i, p0, p1, p2);
+		printf("%d - v0: %p, v1: %p, v2: %p\n", i, p0, p1, p2);
 
 		++i;
 	}
@@ -433,12 +444,20 @@ void Mesh::computeVerticesNormals() {
 
 void Mesh::printVertices(int limit) {
 
-	int i = 0;
+//	while (i < vertices->Count() && i < limit) {
+//		printf(
+//		"[%d] (%f, %f, %f)\n", i, (*vertices)[i]->x(), (*vertices)[i]->y(),
+//				(*vertices)[i]->z());
+//
+//		i++;
+//	}
+	std::size_t i = 0;
+	for (const auto& v : *vertices2) {
+		if (i >= limit) {
+			break;
+		}
 
-	while (i < vertices->Count() && i < limit) {
-		printf(
-		"[%d] (%f, %f, %f)\n", i, (*vertices)[i]->x(), (*vertices)[i]->y(),
-				(*vertices)[i]->z());
+		printf("[%lu] (%f, %f, %f)\n", i, v->x(), v->y(), v->z());
 
 		i++;
 	}

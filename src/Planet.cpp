@@ -82,7 +82,8 @@ void Planet::makePoints() {
 //		Color green(0x00 / 255.0f, 0x80 / 255.0f, 0x00 / 255.0f);
 //		Color acqua(0xCD / 255.0f, 0x85 / 255.0f, 0x3F / 255.0f);
 
-		Vertex * v = mesh->addVertex(position);
+#warning "Fix"
+		Vertex * v = mesh->addVertex(position, 0);
 //		v->setColor(Color::interpolate(acqua, green, positiveTurbulence));
 	}
 }
@@ -139,9 +140,10 @@ void Planet::subdivide() {
 //		Color green(0x00 / 255.0f, 0x80 / 255.0f, 0x00 / 255.0f);
 //		Color acqua(0xCD / 255.0f, 0x85 / 255.0f, 0x3F / 255.0f);
 
-		v01 = mesh->addVertex(p01);
-		v12 = mesh->addVertex(p12);
-		v20 = mesh->addVertex(p20);
+#warning "Fix"
+		v01 = mesh->addVertex(p01, 0);
+		v12 = mesh->addVertex(p12, 0);
+		v20 = mesh->addVertex(p20, 0);
 
 //		v01->setColor(Color::interpolate(acqua, green, (turbulence01 * 0.5) + 0.5));
 //		v12->setColor(Color::interpolate(acqua, green, (turbulence12 * 0.5) + 0.5));
