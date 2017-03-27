@@ -85,6 +85,7 @@ void QuadCube::deleteUnusedVertices() {
 
 	for (auto vp : marked) {
 //		mesh->deleteChildIfExist(vp->getParent1(), vp->getParent2());
+		mesh->deleteVertex(vp);
 	}
 
 }

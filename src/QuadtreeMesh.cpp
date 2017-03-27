@@ -80,6 +80,8 @@ bool QuadtreeMesh::deleteVertex(MultiLevelArray<Vertex*>::Iterator& it) {
 					child->getParents2()->getParent2());
 		}
 
+		delete *it;
+
 		vertices2->remove(it);
 		return true;
 	}
