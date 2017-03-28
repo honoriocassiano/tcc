@@ -157,7 +157,7 @@ void Quadtree::updateActiveCenters(const Vec3f& cameraPosition, Vertex* center,
 //							neighbors));
 
 			updateActiveCenters(cameraPosition, middleVertex, temp,
-								getNeighborhood(middleVertex, temp));
+					getNeighborhood(middleVertex, temp));
 		}
 	}
 }
@@ -261,8 +261,9 @@ void Quadtree::remesh(Vertex* center, DA<ID, Vertex*>& intercardinals,
 //							neighbors),
 //					tag + " > " + std::to_string(direction));
 			remesh(middleInterCardinals[direction], relativeIntercardinal,
-								getNeighborhood(middleInterCardinals[direction], relativeIntercardinal),
-								tag + " > " + std::to_string(direction));
+					getNeighborhood(middleInterCardinals[direction],
+							relativeIntercardinal),
+					tag + " > " + std::to_string(direction));
 		}
 	}
 }
@@ -335,78 +336,117 @@ DA<CD, Vertex*> Quadtree::getNeighborhood(Vertex* center,
 	auto tempNeighbors = DA<CD, Vertex*>(CD::all(), nullptr);
 
 	for (int i = 0; i < 4; ++i) {
-
 		auto& c = *CD::getAtClockwiseIndex(i);
 
 		auto& itc = *ID::getAtClockwiseIndex(i);
 		auto& nextItc = *ID::getAtClockwiseIndex((i + 1) % 4);
 
-		auto it = mesh->vertex_parents->StartIteration();
+		auto level = center->getLevel();
 
-		std::vector<VertexParent*> relatives1, relatives2;
-		relatives1.reserve(8);
-		relatives2.reserve(8);
+		for (auto it = mesh->getVertices2()->begin(level);
+				it.getPosition().first == level; ++it) {
 
-		while (auto vp = it->GetNext()) {
-			bool match = (intercardinals[itc] == vp->getParent1())
-					|| (intercardinals[itc] == vp->getParent2());
+			auto& v = *it;
 
-			relatives1.push_back(vp);
-		}
-
-		mesh->vertex_parents->EndIteration(it);
-
-		it = mesh->vertex_parents->StartIteration();
-
-		while (auto vp = it->GetNext()) {
-			bool match = (intercardinals[nextItc] == vp->getParent1())
-					|| (intercardinals[nextItc] == vp->getParent2());
-
-			relatives2.push_back(vp);
-		}
-
-		mesh->vertex_parents->EndIteration(it);
-
-		Vertex* neighbor = nullptr;
-
-		// Find neighbor
-		for (auto& j1 : relatives1) {
-
-			bool b = false;
-			for (auto& j2 : relatives2) {
-
-				auto v = (j1->get() == j2->get()) ? j1->get() : nullptr;
-
-				if (v && (v != center)) {
-					neighbor = v;
-
-					b = true;
-					break;
-				}
+			if (v == center) {
+				continue;
 			}
 
-			if(b) {
-				break;
+			auto match = false;
+
+			auto matchFirst = (v->getParents1()->getParent1()
+					== intercardinals[itc])
+					|| (v->getParents1()->getParent2() == intercardinals[itc]);
+
+			auto matchSecond = v->getParents2()
+					&& ((v->getParents2()->getParent1() == intercardinals[itc])
+							|| (v->getParents2()->getParent2()
+									== intercardinals[itc]));
+
+			if (matchFirst) {
+				match = v->getParents2()
+						&& ((v->getParents2()->getParent1()
+								== intercardinals[nextItc])
+								|| (v->getParents2()->getParent2()
+										== intercardinals[nextItc]));
+			}
+
+			if (matchSecond) {
+				match = ((v->getParents1()->getParent1()
+								== intercardinals[nextItc])
+								|| (v->getParents1()->getParent2()
+										== intercardinals[nextItc]));
+			}
+
+			if (match) {
+				tempNeighbors[c] = v;
 			}
 		}
-
-		tempNeighbors[c] = neighbor;
 	}
-//	auto i = direction.getClockwiseIndex();
-//
-//	tempNeighbors[*CD::getAtClockwiseIndex(i)] =
-//			neighbors[*CD::getAtClockwiseIndex(i)];
-//
-//	tempNeighbors[*CD::getAtClockwiseIndex((i + 1) % 4)] =
-//			mesh->getOrCreateChildVertex(center,
-//					intercardinals[*ID::getAtClockwiseIndex((i + 1) % 4)]);
-//
-//	tempNeighbors[*CD::getAtClockwiseIndex((i + 2) % 4)] =
-//			mesh->getOrCreateChildVertex(center,
-//					intercardinals[*ID::getAtClockwiseIndex((i + 3) % 4)]);
-//
-//	tempNeighbors[*CD::getAtClockwiseIndex((i + 3) % 4)] =
-//			neighbors[*CD::getAtClockwiseIndex((i + 3) % 4)];
+	/*
+	 for (int i = 0; i < 4; ++i) {
+
+	 auto& c = *CD::getAtClockwiseIndex(i);
+
+	 auto& itc = *ID::getAtClockwiseIndex(i);
+	 auto& nextItc = *ID::getAtClockwiseIndex((i + 1) % 4);
+
+	 auto it = mesh->vertex_parents->StartIteration();
+
+	 std::vector<VertexParent*> relatives1, relatives2;
+	 relatives1.reserve(8);
+	 relatives2.reserve(8);
+
+	 while (auto vp = it->GetNext()) {
+	 bool match = (intercardinals[itc] == vp->getParent1())
+	 || (intercardinals[itc] == vp->getParent2());
+
+	 if (match) {
+	 relatives1.push_back(vp);
+	 }
+	 }
+
+	 mesh->vertex_parents->EndIteration(it);
+
+	 it = mesh->vertex_parents->StartIteration();
+
+	 while (auto vp = it->GetNext()) {
+	 bool match = (intercardinals[nextItc] == vp->getParent1())
+	 || (intercardinals[nextItc] == vp->getParent2());
+
+	 if (match) {
+	 relatives2.push_back(vp);
+	 }
+	 }
+
+	 mesh->vertex_parents->EndIteration(it);
+
+	 Vertex* neighbor = nullptr;
+
+	 // Find neighbor
+	 for (auto& j1 : relatives1) {
+
+	 bool b = false;
+	 for (auto& j2 : relatives2) {
+
+	 auto v = (j1->get() == j2->get()) ? j1->get() : nullptr;
+
+	 if (v && (v != center)) {
+	 neighbor = v;
+
+	 b = true;
+	 break;
+	 }
+	 }
+
+	 if (b) {
+	 break;
+	 }
+	 }
+
+	 tempNeighbors[c] = neighbor;
+	 }
+	 */
 
 	return tempNeighbors;
 }
