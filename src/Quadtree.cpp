@@ -327,9 +327,6 @@ DA<ID, Vertex*> Quadtree::getRelativeIntercardinals(const ID& direction,
 	};
 }
 
-//DA<CD, Vertex*> Quadtree::getNeighborhood(Vertex* center, const ID& direction,
-//		const DA<ID, Vertex*>& intercardinals,
-//		const DA<CD, Vertex*>& neighbors) {
 DA<CD, Vertex*> Quadtree::getNeighborhood(Vertex* center,
 		const DA<ID, Vertex*>& intercardinals) {
 
@@ -383,116 +380,8 @@ DA<CD, Vertex*> Quadtree::getNeighborhood(Vertex* center,
 			}
 		}
 	}
-	/*
-	 for (int i = 0; i < 4; ++i) {
-
-	 auto& c = *CD::getAtClockwiseIndex(i);
-
-	 auto& itc = *ID::getAtClockwiseIndex(i);
-	 auto& nextItc = *ID::getAtClockwiseIndex((i + 1) % 4);
-
-	 auto it = mesh->vertex_parents->StartIteration();
-
-	 std::vector<VertexParent*> relatives1, relatives2;
-	 relatives1.reserve(8);
-	 relatives2.reserve(8);
-
-	 while (auto vp = it->GetNext()) {
-	 bool match = (intercardinals[itc] == vp->getParent1())
-	 || (intercardinals[itc] == vp->getParent2());
-
-	 if (match) {
-	 relatives1.push_back(vp);
-	 }
-	 }
-
-	 mesh->vertex_parents->EndIteration(it);
-
-	 it = mesh->vertex_parents->StartIteration();
-
-	 while (auto vp = it->GetNext()) {
-	 bool match = (intercardinals[nextItc] == vp->getParent1())
-	 || (intercardinals[nextItc] == vp->getParent2());
-
-	 if (match) {
-	 relatives2.push_back(vp);
-	 }
-	 }
-
-	 mesh->vertex_parents->EndIteration(it);
-
-	 Vertex* neighbor = nullptr;
-
-	 // Find neighbor
-	 for (auto& j1 : relatives1) {
-
-	 bool b = false;
-	 for (auto& j2 : relatives2) {
-
-	 auto v = (j1->get() == j2->get()) ? j1->get() : nullptr;
-
-	 if (v && (v != center)) {
-	 neighbor = v;
-
-	 b = true;
-	 break;
-	 }
-	 }
-
-	 if (b) {
-	 break;
-	 }
-	 }
-
-	 tempNeighbors[c] = neighbor;
-	 }
-	 */
 
 	return tempNeighbors;
-}
-
-void Quadtree::recursiveDeleteVertices(Vertex* center,
-		const IntercardinalDirection& direction,
-		DirectionArray<IntercardinalDirection, Vertex*>& intercardinals,
-		std::size_t level) {
-
-	for (int i = 0; i < 4; ++i) {
-		auto& direction = *ID::getAtClockwiseIndex(i);
-		auto& e = intercardinals[direction];
-
-		if (!e) {
-			Log("CONTINUE, PORRA");
-			continue;
-		}
-
-		auto middleVertex = mesh->getChildVertex(center, e);
-
-		if (middleVertex) {
-
-			auto relativeIntercardinals =
-					getRelativeIntercardinalsWithoutCreate(direction, center,
-							intercardinals);
-
-			recursiveDeleteVertices(middleVertex, direction,
-					relativeIntercardinals, level + 1);
-
-			auto deleted = mesh->deleteChildIfExist(center, e);
-
-			{
-				auto& ic1 = *ID::getAtClockwiseIndex(i);
-				auto& ic2 = *ID::getAtClockwiseIndex((i + 1) % 4);
-
-				if (intercardinals[ic1] && intercardinals[ic2]) {
-					mesh->deleteChildIfExist(intercardinals[ic1],
-							intercardinals[ic2]);
-				}
-			}
-
-			if (level > 0) {
-				mesh->removeVertex(center);
-			}
-		}
-	}
 }
 
 void Quadtree::updateRoughnessTopDown() {

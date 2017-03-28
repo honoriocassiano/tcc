@@ -55,11 +55,6 @@ private:
 	void recursiveUpdateRoughness(Vertex* center,
 			DirectionArray<IntercardinalDirection, Vertex*>& intercardinals);
 
-	void recursiveDeleteVertices(Vertex* center,
-			const IntercardinalDirection& direction,
-			DirectionArray<IntercardinalDirection, Vertex*>& intercardinals,
-			std::size_t level = 0);
-
 	float recursiveUpdateRoughness2(Vertex* center,
 			DirectionArray<IntercardinalDirection, Vertex*>& intercardinals,
 			DirectionArray<CardinalDirection, Vertex*>* parentNeighbors,
