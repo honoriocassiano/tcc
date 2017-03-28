@@ -52,10 +52,10 @@ private:
 
 	void deleteUnusedVertices();
 
-	void recursiveUpdateRoughness(Vertex* center,
+	void recursiveUpdateRoughnessTopDown(Vertex* center,
 			DirectionArray<IntercardinalDirection, Vertex*>& intercardinals);
 
-	float recursiveUpdateRoughness2(Vertex* center,
+	float recursiveUpdateRoughnessBottomUp(Vertex* center,
 			DirectionArray<IntercardinalDirection, Vertex*>& intercardinals,
 			DirectionArray<CardinalDirection, Vertex*>* parentNeighbors,
 			DirectionArray<CardinalDirection, Vertex*>* neighbors);

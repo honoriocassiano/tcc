@@ -385,10 +385,10 @@ DA<CD, Vertex*> Quadtree::getNeighborhood(Vertex* center,
 }
 
 void Quadtree::updateRoughnessTopDown() {
-	recursiveUpdateRoughness(center, intercardinals);
+	recursiveUpdateRoughnessTopDown(center, intercardinals);
 }
 
-void Quadtree::recursiveUpdateRoughness(Vertex* center,
+void Quadtree::recursiveUpdateRoughnessTopDown(Vertex* center,
 		DA<ID, Vertex*>& intercardinals) {
 
 	for (int i = 0; i < 4; ++i) {
@@ -402,7 +402,7 @@ void Quadtree::recursiveUpdateRoughness(Vertex* center,
 			auto relIntercardinals = getRelativeIntercardinals(direction,
 					center, intercardinals);
 
-			recursiveUpdateRoughness(relCenter, relIntercardinals);
+			recursiveUpdateRoughnessTopDown(relCenter, relIntercardinals);
 		}
 	}
 
@@ -410,10 +410,10 @@ void Quadtree::recursiveUpdateRoughness(Vertex* center,
 }
 
 void Quadtree::updateRoughnessBottomUp() {
-	recursiveUpdateRoughness2(center, intercardinals, nullptr, &neighbors);
+	recursiveUpdateRoughnessBottomUp(center, intercardinals, nullptr, &neighbors);
 }
 
-float Quadtree::recursiveUpdateRoughness2(Vertex* center,
+float Quadtree::recursiveUpdateRoughnessBottomUp(Vertex* center,
 		DirectionArray<IntercardinalDirection, Vertex*>& intercardinals,
 		DirectionArray<CardinalDirection, Vertex*>* parentNeighbors,
 		DirectionArray<CardinalDirection, Vertex*>* neighbors) {
@@ -434,7 +434,7 @@ float Quadtree::recursiveUpdateRoughness2(Vertex* center,
 //					*neighbors);
 			auto relNeighbors = getNeighborhood(relCenter, relIntercardinals);
 
-			nextRoughness = recursiveUpdateRoughness2(relCenter,
+			nextRoughness = recursiveUpdateRoughnessBottomUp(relCenter,
 					relIntercardinals, neighbors, &relNeighbors);
 		} else {
 			hasNext = true;
