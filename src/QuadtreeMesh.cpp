@@ -69,22 +69,23 @@ bool QuadtreeMesh::deleteChildIfExist(Vertex* p1, Vertex* p2) {
 
 bool QuadtreeMesh::deleteVertex(MultiLevelArray<Vertex*>::Iterator& it) {
 //	auto child = this->getChildVertex(p1, p2);
-	auto child = *it;
-
-	if (child) {
-		deleteParentsChildRelation(child->getParents1()->getParent1(),
-				child->getParents1()->getParent2());
-
-		if (child->getParents2()) {
-			deleteParentsChildRelation(child->getParents2()->getParent1(),
-					child->getParents2()->getParent2());
-		}
-
-		delete *it;
-
-		vertices2->remove(it);
-		return true;
-	}
+//	auto child = *it;
+//
+//	if (child) {
+//		deleteParentsChildRelation(child->getParents1()->getParent1(),
+//				child->getParents1()->getParent2());
+//
+//		if (child->getParents2()) {
+//			deleteParentsChildRelation(child->getParents2()->getParent1(),
+//					child->getParents2()->getParent2());
+//		}
+//
+//		vertices2->remove(it);
+//
+//		delete child;
+//
+//		return true;
+//	}
 
 	return false;
 }

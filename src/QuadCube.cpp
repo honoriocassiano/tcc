@@ -52,42 +52,19 @@ void QuadCube::draw(const DrawOptions& options) {
 
 void QuadCube::deleteUnusedVertices() {
 
-//	for (int i = mesh->getVertices()->Count() - 1; i >= 0; --i) {
-//		auto v = (*mesh->getVertices())[i];
-//
-//		auto vp = v->getParents1();
-//
-//		if (vp) {
-//			if (!(vp->getParent1()->isActive() && vp->getParent2()->isActive())) {
-//				mesh->deleteChildIfExist(vp->getParent1(), vp->getParent2());
-//			}
-//		}
-//	}
-
-	auto marked = std::vector<decltype(mesh->getVertices2()->begin())>();
-
-//	for (const auto& v : *mesh->getVertices2()) {
 	for (auto it = mesh->getVertices2()->begin();
 			it != mesh->getVertices2()->end(); ++it) {
-//		auto v = (*mesh->getVertices())[i];
 		const auto& v = *it;
 
 		auto vp = v->getParents1();
 
 		if (vp) {
 			if (!(vp->getParent1()->isActive() && vp->getParent2()->isActive())) {
-//				mesh->deleteChildIfExist(vp->getParent1(), vp->getParent2());
-				marked.push_back(it);
+				mesh->deleteVertex(it);
 			}
 		}
 
 	}
-
-	for (auto vp : marked) {
-//		mesh->deleteChildIfExist(vp->getParent1(), vp->getParent2());
-		mesh->deleteVertex(vp);
-	}
-
 }
 
 void QuadCube::update(const Vec3f& cameraPosition) {

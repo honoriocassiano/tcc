@@ -58,20 +58,22 @@ Vertex* Mesh::addVertex(const Vec3f &position, std::size_t level) {
 
 	vertices2->add(v, level);
 
-	if (bbox == NULL)
-		bbox = new BoundingBox(position, position);
-	else
-		bbox->Extend(position);
+//	if (bbox == NULL)
+//		bbox = new BoundingBox(position, position);
+//	else
+//		bbox->Extend(position);
 	return v;
 }
 
 void Mesh::removeVertex(Vertex* vertex) {
 //	vertices->Remove(vertex);
+
 	auto it = vertices2->find(vertex, vertex->getLevel());
 
 	if (it != vertices2->end(vertex->getLevel())) {
 		vertices2->remove(it);
 	}
+
 
 	delete vertex;
 }

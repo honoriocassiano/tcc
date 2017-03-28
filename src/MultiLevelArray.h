@@ -296,18 +296,17 @@ void MultiLevelArray<T>::remove(
 		auto& size = levelsInfo[position.first];
 
 		// Remove if element exists
-		if (position.second < size.first) {
-			data[position.first][position.second] =
-					data[position.first][--size.first];
-		}
+//		if (position.second < size.first) {
+		data[position.first][position.second] =
+				data[position.first][--size.first];
+//		}
 		// Else do nothing
 
+	} else {
+		throw std::overflow_error(
+				"Trying to access position " + std::to_string(position.first)
+						+ ", " + std::to_string(position.second));
 	}
-//	else {
-//		throw std::overflow_error(
-//				"Trying to access position " + std::to_string(position.first)
-//						+ ", " + std::to_string(position.second));
-//	}
 }
 
 template<class T>
@@ -375,8 +374,7 @@ typename MultiLevelArray<T>::Iterator MultiLevelArray<T>::find(const T& element,
 		return it;
 	} else {
 		throw std::overflow_error(
-				"Level " + std::to_string(level)
-						+ "not exists");
+				"Level " + std::to_string(level) + "not exists");
 	}
 }
 
