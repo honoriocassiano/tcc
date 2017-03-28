@@ -373,9 +373,9 @@ DA<CD, Vertex*> Quadtree::getNeighborhood(Vertex* center,
 
 			if (matchSecond) {
 				match = ((v->getParents1()->getParent1()
-								== intercardinals[nextItc])
-								|| (v->getParents1()->getParent2()
-										== intercardinals[nextItc]));
+						== intercardinals[nextItc])
+						|| (v->getParents1()->getParent2()
+								== intercardinals[nextItc]));
 			}
 
 			if (match) {
@@ -558,7 +558,8 @@ float Quadtree::recursiveUpdateRoughness2(Vertex* center,
 		for (int i = 0; i < 4; ++i) {
 			auto& cd = *CD::getAtClockwiseIndex(i);
 
-			if ((*parentNeighbors)[cd]->getD2() < minD2) {
+			if ((*parentNeighbors)[cd]
+					&& ((*parentNeighbors)[cd]->getD2() < minD2)) {
 				minD2 = (*parentNeighbors)[cd]->getD2();
 			}
 		}
