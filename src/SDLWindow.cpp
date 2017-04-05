@@ -12,6 +12,10 @@
 
 #include "Debug.h"
 
+#include "WorldMesh.h"
+
+WorldMesh worldMesh(5);
+
 //******************************************************
 #include "MeshDrawer.h"
 
@@ -188,11 +192,13 @@ void SDLWindow::display() {
 //	cube->draw(options);
 //	MeshDrawer::draw(tree2->getMesh(), options);
 
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+//	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 //	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
+	MeshDrawer::draw(&worldMesh, options);
+
 //	world->draw(Vec3f(0, 0, 0));
-	world->draw(lastPosition);
+//	world->draw(lastPosition);
 
 //	landscape->render();
 	//******************************************************

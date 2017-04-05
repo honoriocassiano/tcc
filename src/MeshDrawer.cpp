@@ -180,16 +180,20 @@ MeshDrawer::~MeshDrawer() {
 //	HandleGLError();
 //}
 
-#define DX(x, y, z) (2 * x * sqrtf(1.0 - (2*y*y) - (2*z*z) + (8*y*y*z*z/1.5)))
-#define DY(x, y, z) (2 * y * sqrtf(1.0 - (2*z*z) - (2*x*x) + (8*z*z*x*x/1.5)))
-#define DZ(x, y, z) (2 * z * sqrtf(1.0 - (2*x*x) - (2*y*y) + (8*x*x*y*y/1.5)))
+#define DX(x, y, z) (x)
+#define DY(x, y, z) (y)
+#define DZ(x, y, z) (z)
+
+//#define DX(x, y, z) (2 * x * sqrtf(1.0 - (2*y*y) - (2*z*z) + (8*y*y*z*z/1.5)))
+//#define DY(x, y, z) (2 * y * sqrtf(1.0 - (2*z*z) - (2*x*x) + (8*z*z*x*x/1.5)))
+//#define DZ(x, y, z) (2 * z * sqrtf(1.0 - (2*x*x) - (2*y*y) + (8*x*x*y*y/1.5)))
 //#define DX(x, y, z) (x * sqrtf(1.0 - (y*y/2) - (z*z/2) + (y*y*z*z/3)))
 //#define DY(x, y, z) (y * sqrtf(1.0 - (z*z/2) - (x*x/2) + (z*z*x*x/3)))
 //#define DZ(x, y, z) (z * sqrtf(1.0 - (x*x/2) - (y*y/2) + (x*x*y*y/3)))
 
 void MeshDrawer::draw(Mesh* mesh, const DrawOptions& options) {
-	mesh->computeFaceNormals();
-	mesh->computeVerticesNormals();
+//	mesh->computeFaceNormals();
+//	mesh->computeVerticesNormals();
 
 	// this offset prevents "z-fighting" bewteen the edges and faces
 	// the edges will always win.
