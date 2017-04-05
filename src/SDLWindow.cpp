@@ -91,8 +91,6 @@ void SDLWindow::run() {
 
 	//******************************************************
 	while (mIsRunning) {
-//	while (mIsRunning && (globalI < 10)) {
-		//******************************************************
 		SDL_Event e;
 
 		processRealtimeEvents();
@@ -111,33 +109,12 @@ void SDLWindow::run() {
 
 		display();
 
-		//******************************************************
-		//const Patch* p = landscape->getPatch();
-		/*
-		 Patch* p = landscape->getPatch();
-
-		 Log("%2d - vertices: %d, triangles: %d\n", globalI,
-		 p->getMesh()->numVertices(), p->getMesh()->numTriangles());
-		 */
-
-		++globalI;
-		//******************************************************
 	}
 
 	close();
 }
 
 void SDLWindow::update(const Time& dt) {
-	//******************************************************
-	/*
-	 landscape->computeVariance();
-	 //landscape->tessellate(position);
-	 landscape->tessellate(mCamera->getPosition());
-	 //	for (CelestialBody* body : mBodies) {
-	 //		body->update(dt);
-	 //	}
-	 */
-	//******************************************************
 //	(*getTree2())->update2(mCamera->getPosition());
 //	cube->update(mCamera->getPosition());
 
