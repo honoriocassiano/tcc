@@ -36,7 +36,7 @@ extern bool wasInited;
 
 SDLWindow::SDLWindow(int width, int height) :
 		cube(new QuadCube(Vec3f(0, 0, 0))), mCamera(nullptr), mClock(
-				new Clock()), freezed(false), mIsRunning(false), mWindow(
+				new Clock()), world(new World()), freezed(false), mIsRunning(false), mWindow(
 				nullptr), mWidth(width), mHeight(height) {
 
 	wasInited = true;
@@ -57,6 +57,8 @@ SDLWindow::SDLWindow(int width, int height) :
 	assert(initOpenGL());
 
 	mCamera->glInit(mWidth, mHeight);
+
+	lastPosition = mCamera->getPosition();
 }
 
 SDLWindow::~SDLWindow() {
@@ -64,6 +66,8 @@ SDLWindow::~SDLWindow() {
 
 	delete mCamera;
 	delete mClock;
+
+	delete world;
 }
 
 void SDLWindow::addBody(CelestialBody * body) {
@@ -135,7 +139,9 @@ void SDLWindow::update(const Time& dt) {
 	 */
 	//******************************************************
 //	(*getTree2())->update2(mCamera->getPosition());
-	cube->update(mCamera->getPosition());
+//	cube->update(mCamera->getPosition());
+
+	lastPosition = mCamera->getPosition();
 
 //	MeshDrawer::draw(tree2->getMesh(), options);
 }
@@ -144,9 +150,11 @@ void SDLWindow::processRealtimeEvents() {
 	const Uint8 *state = SDL_GetKeyboardState(nullptr);
 
 	if (state[SDL_SCANCODE_UP]) {
+//		mCamera->dollyCamera(0.01f);
 		mCamera->dollyCamera(0.5f);
 //		mCamera->dollyCamera(2.0f);
 	} else if (state[SDL_SCANCODE_DOWN]) {
+//		mCamera->dollyCamera(-0.01f);
 		mCamera->dollyCamera(-0.5f);
 //		mCamera->dollyCamera(-2.0f);
 	}
@@ -200,8 +208,14 @@ void SDLWindow::display() {
 
 //	cube->draw(true, false);
 	//cube->draw(false, false);
-	cube->draw(options);
+//	cube->draw(options);
 //	MeshDrawer::draw(tree2->getMesh(), options);
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+//	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+//	world->draw(Vec3f(0, 0, 0));
+	world->draw(lastPosition);
 
 //	landscape->render();
 	//******************************************************

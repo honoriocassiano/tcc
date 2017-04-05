@@ -24,6 +24,8 @@
 #include "MeshDrawer.h"
 #include "Quadtree.h"
 
+#include "World.h"
+
 class SDLWindow {
 public:
 	SDLWindow(int width, int height);
@@ -49,6 +51,9 @@ private:
 	void processEvents(const SDL_Event& e);
 
 	QuadCube* cube;
+
+	World* world;
+	Vec3f lastPosition;
 
 	std::vector<CelestialBody*> mBodies;
 	std::vector<int> mIndices;

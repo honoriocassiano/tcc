@@ -27,6 +27,27 @@ int main(int argc, char **argv) {
 	SDLWindow window(800, 600);
 	window.run();
 
+//	auto abc = MultiLevelArray<int>(4);
+//
+//	for (int i = 0; i < 10; ++i) {
+//		for (int j = 0; j < 5; ++j) {
+//			abc.add(i + j * 10, j);
+//		}
+//	}
+//
+//	srand(time(nullptr));
+//
+//	for (int i = 0; i < 10; ++i) {
+//		auto rLevel = rand() % 5;
+//
+//		abc.remove(std::make_pair(rLevel, 0));
+//	}
+//
+//	for (const auto& el : abc) {
+//		printf("%d ", el);
+//	}
+//	printf("\n");
+
 	/*
 	 SDLWindow window(640, 480);
 
