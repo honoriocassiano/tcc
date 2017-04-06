@@ -87,6 +87,10 @@ public:
   void printTriangles(int limit = 1000);
   void printVertices(int limit = 1000);
 
+  virtual void reset() {}
+
+  void updateNormals();
+
   friend class CelestialBody;
   friend class MeshDrawer;
 

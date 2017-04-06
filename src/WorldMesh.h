@@ -15,6 +15,9 @@ public:
 	WorldMesh(float radius);
 	virtual ~WorldMesh();
 
+	void reset() override;
+//	void updateNormals();
+
 protected:
 	float radius;
 };

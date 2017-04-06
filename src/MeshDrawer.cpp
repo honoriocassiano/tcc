@@ -195,6 +195,9 @@ void MeshDrawer::draw(Mesh* mesh, const DrawOptions& options) {
 //	mesh->computeFaceNormals();
 //	mesh->computeVerticesNormals();
 
+	mesh->reset();
+	mesh->updateNormals();
+
 	// this offset prevents "z-fighting" bewteen the edges and faces
 	// the edges will always win.
 //	glEnable(GL_POLYGON_OFFSET_FILL);

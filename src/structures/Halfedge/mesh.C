@@ -74,7 +74,6 @@ void Mesh::removeVertex(Vertex* vertex) {
 		vertices2->remove(it);
 	}
 
-
 	delete vertex;
 }
 
@@ -485,6 +484,34 @@ void Mesh::printTriangles(int limit) {
 				p2.y(), p2.z());
 
 		++i;
+	}
+
+	triangles->EndIteration(it);
+}
+
+void Mesh::updateNormals() {
+	auto it = triangles->StartIteration();
+
+	while (auto t = it->GetNext()) {
+		auto a = (*t)[0];
+		auto b = (*t)[1];
+		auto c = (*t)[2];
+
+		auto normal = ComputeNormal(a->get(), b->get(), c->get());
+
+		auto normalA = a->getNormal() + normal;
+		auto normalB = b->getNormal() + normal;
+		auto normalC = b->getNormal() + normal;
+
+		normalA.Normalize();
+		normalB.Normalize();
+		normalC.Normalize();
+
+		a->setNormal(normalA);
+		b->setNormal(normalB);
+		c->setNormal(normalC);
+
+		t->setNormal(normal);
 	}
 
 	triangles->EndIteration(it);
