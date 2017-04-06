@@ -17,6 +17,8 @@
 
 #define SIZE(A) (sizeof(A) / sizeof(A[0]))
 
+#define EL(V) (Perlin::generateTurbulence(8, 1, 2, V->get() + Vec3f(1, 1, 1)) * 0.1f)
+
 WorldMesh::WorldMesh(float _radius) :
 		radius(_radius), baseVertices { nullptr }, baseIndices { { 0, 11, 5 }, {
 				0, 5, 1 }, { 0, 1, 7 }, { 0, 7, 10 }, { 0, 10, 11 },
@@ -39,7 +41,10 @@ WorldMesh::WorldMesh(float _radius) :
 	for (auto i = 0; i < SIZE(basePoints); ++i) {
 		baseVertices[i] = addVertex(basePoints[i], 0);
 
-		baseVertices[i]->setElevation(Perlin::generate(baseVertices[i]->get()));
+//		baseVertices[i]->setElevation(Perlin::generate(baseVertices[i]->get() + Vec3f(1, 1, 1)));
+//		baseVertices[i]->setElevation(Perlin::generateTurbulence(8, 2, 2, baseVertices[i]->get() + Vec3f(1, 1, 1)));
+		baseVertices[i]->setElevation(EL(baseVertices[i]));
+
 	}
 
 	for (const auto& idx : baseIndices) {
@@ -79,7 +84,10 @@ void WorldMesh::recursiveUpdate(Vertex* v1, Vertex* v2, Vertex* v3,
 			tempCenters[i].Normalize();
 			edge_center[i]->set(tempCenters[i]);
 
-			edge_center[i]->setElevation(Perlin::generate(edge_center[i]->get()));
+//			edge_center[i]->setElevation(Perlin::generate(edge_center[i]->get() + Vec3f(1, 1, 1)));
+//			edge_center[i]->setElevation(Perlin::generateTurbulence(8, 2, 2, edge_center[i]->get() + Vec3f(1, 1, 1)));
+
+			edge_center[i]->setElevation(EL(edge_center[i]));
 		}
 	}
 
