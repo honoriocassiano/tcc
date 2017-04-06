@@ -7,13 +7,21 @@
 
 #include "WorldMesh.h"
 
+#include <cmath>
+#include <algorithm>
+
 #include "structures/Halfedge/vertex.h"
 #include "structures/Halfedge/triangle.h"
 
 #define SIZE(A) (sizeof(A) / sizeof(A[0]))
 
 WorldMesh::WorldMesh(float _radius) :
-		radius(_radius) {
+		radius(_radius), baseVertices { nullptr }, baseIndices { { 0, 11, 5 }, {
+				0, 5, 1 }, { 0, 1, 7 }, { 0, 7, 10 }, { 0, 10, 11 },
+				{ 1, 5, 9 }, { 5, 11, 4 }, { 11, 10, 2 }, { 10, 7, 6 }, { 7, 1,
+						8 }, { 3, 9, 4 }, { 3, 4, 2 }, { 3, 2, 6 }, { 3, 6, 8 },
+				{ 3, 8, 9 }, { 4, 9, 5 }, { 2, 4, 11 }, { 6, 2, 10 },
+				{ 8, 6, 7 }, { 9, 8, 1 } } {
 
 	float t = (1.0 + sqrt(5.0)) / 2.0;
 
@@ -22,27 +30,17 @@ WorldMesh::WorldMesh(float _radius) :
 					{ 0, -1, t }, { 0, 1, t }, { 0, -1, -t }, { 0, 1, -t }, { t,
 							0, -1 }, { t, 0, 1 }, { -t, 0, -1 }, { -t, 0, 1 } };
 
-	std::size_t baseIndices[] = { 0, 11, 5, 0, 5, 1, 0, 1, 7, 0, 7, 10, 0, 10,
-			11, 1, 5, 9, 5, 11, 4, 11, 10, 2, 10, 7, 6, 7, 1, 8, 3, 9, 4, 3, 4,
-			2, 3, 2, 6, 3, 6, 8, 3, 8, 9, 4, 9, 5, 2, 4, 11, 6, 2, 10, 8, 6, 7,
-			9, 8, 1 };
-
-//	std::size_t baseIndices[] = { { 0, 11, 5 }, { 0, 5, 1 }, { 0, 1, 7 }, { 0,
-//			7, 10 }, { 0, 10, 11 }, { 1, 5, 9 }, { 5, 11, 4 }, { 11, 10, 2 }, {
-//			10, 7, 6 }, { 10, 7, 6 }, { 7, 1, 8 }, { 3, 9, 4 }, { 3, 4, 2 }, {
-//			3, 2, 6 }, { 3, 6, 8 }, { 3, 8, 9 }, { 4, 9, 5 }, { 2, 4, 11 }, { 6,
-//			2, 10 }, { 8, 6, 7 }, { 9, 8, 1 } };
-
-	Vertex* baseVertices[12] { nullptr };
+	for (auto& p : basePoints) {
+		p.Normalize();
+	}
 
 	for (auto i = 0; i < SIZE(basePoints); ++i) {
 		baseVertices[i] = addVertex(basePoints[i], 0);
 	}
 
-	for (auto i = 0; i < SIZE(baseIndices); i += 3) {
-		addTriangle(baseVertices[baseIndices[i]],
-				baseVertices[baseIndices[i + 1]],
-				baseVertices[baseIndices[i + 2]]);
+	for (const auto& idx : baseIndices) {
+		addTriangle(baseVertices[idx[0]], baseVertices[idx[1]],
+				baseVertices[idx[2]]);
 	}
 }
 
@@ -51,13 +49,120 @@ WorldMesh::~WorldMesh() {
 }
 
 void WorldMesh::reset() {
-//	triangles->DeleteAllElements();
-//	edges->DeleteAllElements();
+	triangles->DeleteAllElements();
+	edges->DeleteAllElements();
 
 	for (auto& v : *vertices2) {
 		v->setNormal(Vec3f(0.0f, 0.0f, 0.0f));
 		v->setActive(false);
 	}
+}
+
+void WorldMesh::recursiveUpdate(Vertex* v1, Vertex* v2, Vertex* v3,
+		const Vec3f& center, double size) {
+
+	double ratio_size = size * 20; // default : 1
+	double minsize = 0.01;    // default : 0.01
+//	Vec3f edge_center[3] = { (v1->get() + v2->get()) * 0.5f, (v2->get()
+//			+ v3->get()) * 0.5f, (v3->get() + v1->get()) * 0.5f };
+
+	Vertex* edge_center[3] = { getOrCreateChildVertex(v1, v2),
+			getOrCreateChildVertex(v2, v3), getOrCreateChildVertex(v3, v1) };
+
+	bool edge_test[3];
+	double angle[3];
+
+	for (auto i = 0; i < 3; ++i) {
+
+		Vec3f d = center + edge_center[i]->get();
+
+		edge_test[i] = d.Length() > ratio_size;
+		d.Normalize();
+
+		double dot = edge_center[i]->get().Dot3(d);
+
+		angle[i] = std::acos(std::max(-1.0, std::min(dot, 1.0)));
+	}
+
+//	if (*std::max_element(angle, angle + 3) < M_PI / 2 + 0.2) {
+//		return;
+//	}
+
+	// draw
+	if ((edge_test[0] && edge_test[1] && edge_test[2]) || size < minsize) {
+
+		addTriangle(v1, v2, v3);
+
+		return;
+	}
+
+	Vertex* p[6] =
+			{ v1, v2, v3, edge_center[0], edge_center[1], edge_center[2] };
+	int idx[4][3] = { { 0, 3, 5 }, { 5, 3, 4 }, { 3, 1, 4 }, { 5, 4, 2 } };
+	bool valid[4] = { true, true, true, true };
+
+	if (edge_test[0]) {
+		p[3] = v1;
+		valid[0] = false;
+	} // skip triangle 0 ?
+	if (edge_test[1]) {
+		p[4] = v2;
+		valid[2] = false;
+	} // skip triangle 2 ?
+	if (edge_test[2]) {
+		p[5] = v3;
+		valid[3] = false;
+	} // skip triangle 3 ?
+
+	for (auto i = 0; i < 4; ++i) {
+
+		if (valid[i]) {
+			int i1 = idx[i][0], i2 = idx[i][1], i3 = idx[i][2];
+
+			auto n1 = p[i1]->get();
+			auto n2 = p[i2]->get();
+			auto n3 = p[i3]->get();
+
+			n1.Normalize();
+			n2.Normalize();
+			n3.Normalize();
+
+			p[i1]->setNormal(n1);
+			p[i2]->setNormal(n2);
+			p[i3]->setNormal(n3);
+
+			recursiveUpdate(p[i1], p[i2], p[i3], center, size / 2);
+		}
+	}
+}
+
+void WorldMesh::update(const Vec3f& position) {
+
+	reset();
+
+	for (const auto& idx : baseIndices) {
+		recursiveUpdate(baseVertices[idx[0]], baseVertices[idx[1]],
+				baseVertices[idx[2]], position);
+	}
+}
+
+Vertex* WorldMesh::getOrCreateChildVertex(Vertex* p1, Vertex* p2) {
+	auto child = getChildVertex(p1, p2);
+
+	if (!child) {
+		child = addVertex((p1->get() + p2->get()) * 0.5,
+				std::max(p1->getLevel(), p2->getLevel()) + 1);
+
+		setParentsChild(p1, p2, child);
+
+		child->setLevel(std::max(p1->getLevel(), p2->getLevel()) + 1);
+	}
+
+	if (child->get().Length() < 0.01) {
+		int a = *((int*) 0x0);
+	}
+
+	return child;
 }
 
 //Vec3f computeNormal(const Vec3f &p1, const Vec3f &p2, const Vec3f &p3) {

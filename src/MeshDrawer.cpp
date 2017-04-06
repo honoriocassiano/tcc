@@ -52,7 +52,7 @@ void MeshDrawer::draw(Mesh* mesh, const DrawOptions& options) {
 //	mesh->computeFaceNormals();
 //	mesh->computeVerticesNormals();
 
-	mesh->reset();
+//	mesh->reset();
 	mesh->updateNormals();
 
 	// this offset prevents "z-fighting" bewteen the edges and faces

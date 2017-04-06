@@ -124,6 +124,8 @@ void SDLWindow::update(const Time& dt) {
 
 	lastPosition = mCamera->getPosition();
 
+	worldMesh.update(lastPosition);
+
 //	MeshDrawer::draw(tree2->getMesh(), options);
 }
 
@@ -131,12 +133,12 @@ void SDLWindow::processRealtimeEvents() {
 	const Uint8 *state = SDL_GetKeyboardState(nullptr);
 
 	if (state[SDL_SCANCODE_UP]) {
-//		mCamera->dollyCamera(0.01f);
-		mCamera->dollyCamera(0.5f);
+		mCamera->dollyCamera(0.1f);
+//		mCamera->dollyCamera(0.5f);
 //		mCamera->dollyCamera(2.0f);
 	} else if (state[SDL_SCANCODE_DOWN]) {
-//		mCamera->dollyCamera(-0.01f);
-		mCamera->dollyCamera(-0.5f);
+		mCamera->dollyCamera(-0.1f);
+//		mCamera->dollyCamera(-0.5f);
 //		mCamera->dollyCamera(-2.0f);
 	}
 
