@@ -36,7 +36,7 @@ public:
 
 private:
 	static void drawAxis();
-	static void drawNormal(Mesh* mesh);
+	static void drawNormals(Mesh* mesh);
 	static void drawHalfEdge(Mesh * mesh);
 	static Vec3f getCentroid(const Triangle* triangle);
 

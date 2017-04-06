@@ -402,13 +402,13 @@ void MeshDrawer::draw(Mesh* mesh, const DrawOptions& options) {
 		if (options.normals) {
 //			iter = mesh->triangles->StartIteration();
 
-			glColor3f(0, 0, 1.0);
 			glBegin(GL_LINES);
 			//		glColor3f(1.0, 0, 0);
 
 //			while (Triangle *t = iter->GetNext()) {
 //				MeshDrawer::drawNormal(t);
 //			}
+			drawNormals(mesh);
 
 			glEnd();
 
@@ -455,9 +455,11 @@ void MeshDrawer::draw(Mesh* mesh, const DrawOptions& options) {
 	HandleGLError();
 }
 
-void MeshDrawer::drawNormal(Mesh* mesh) {
+void MeshDrawer::drawNormals(Mesh* mesh) {
 
 	auto iter = mesh->triangles->StartIteration();
+
+	glColor3f(0, 0, 1.0);
 
 	while (Triangle *triangle = iter->GetNext()) {
 
@@ -482,6 +484,18 @@ void MeshDrawer::drawNormal(Mesh* mesh) {
 	}
 
 	mesh->triangles->EndIteration(iter);
+
+	glColor3f(0, 1.0, 0);
+
+	for (auto& v : *mesh->vertices2) {
+
+		auto final = v->get() + v->getNormal();
+
+		glVertex3f(v->get().x(), v->get().y(), v->get().z());
+
+		glVertex3f(final.x(), final.y(), final.z());
+
+	}
 }
 
 Vec3f MeshDrawer::getCentroid(const Triangle* triangle) {

@@ -501,7 +501,7 @@ void Mesh::updateNormals() {
 
 		auto normalA = a->getNormal() + normal;
 		auto normalB = b->getNormal() + normal;
-		auto normalC = b->getNormal() + normal;
+		auto normalC = c->getNormal() + normal;
 
 		normalA.Normalize();
 		normalB.Normalize();
