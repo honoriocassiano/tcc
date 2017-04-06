@@ -400,19 +400,19 @@ void MeshDrawer::draw(Mesh* mesh, const DrawOptions& options) {
 //		glDisable(GL_POLYGON_OFFSET_FILL);
 
 		if (options.normals) {
-			iter = mesh->triangles->StartIteration();
+//			iter = mesh->triangles->StartIteration();
 
 			glColor3f(0, 0, 1.0);
 			glBegin(GL_LINES);
 			//		glColor3f(1.0, 0, 0);
 
-			while (Triangle *t = iter->GetNext()) {
-				MeshDrawer::drawNormal(t);
-			}
+//			while (Triangle *t = iter->GetNext()) {
+//				MeshDrawer::drawNormal(t);
+//			}
 
 			glEnd();
 
-			mesh->triangles->EndIteration(iter);
+//			mesh->triangles->EndIteration(iter);
 		}
 
 		glEnable(GL_LIGHTING);
@@ -455,25 +455,33 @@ void MeshDrawer::draw(Mesh* mesh, const DrawOptions& options) {
 	HandleGLError();
 }
 
-void MeshDrawer::drawNormal(Triangle* triangle) {
-	auto p1 = (*triangle)[0]->get();
-	auto p2 = (*triangle)[1]->get();
-	auto p3 = (*triangle)[2]->get();
+void MeshDrawer::drawNormal(Mesh* mesh) {
 
-	Vec3f normal;
+	auto iter = mesh->triangles->StartIteration();
 
-	Vec3f::Cross3(normal, (p2 - p1), (p3 - p1));
+	while (Triangle *triangle = iter->GetNext()) {
 
-	normal.Normalize();
-	normal = normal * 0.5;
+		auto p1 = (*triangle)[0]->get();
+		auto p2 = (*triangle)[1]->get();
+		auto p3 = (*triangle)[2]->get();
 
-	auto centroid = getCentroid(triangle);
-	auto final = centroid + normal;
+		Vec3f normal;
+
+		Vec3f::Cross3(normal, (p2 - p1), (p3 - p1));
+
+		normal.Normalize();
+		normal = normal * 0.5;
+
+		auto centroid = getCentroid(triangle);
+		auto final = centroid + normal;
 
 //	glColor3f(1.0, 0, 0);
-	glVertex3f(centroid.x(), centroid.y(), centroid.z());
+		glVertex3f(centroid.x(), centroid.y(), centroid.z());
 //	glColor3f(1.0, 0, 0);
-	glVertex3f(final.x(), final.y(), final.z());
+		glVertex3f(final.x(), final.y(), final.z());
+	}
+
+	mesh->triangles->EndIteration(iter);
 }
 
 Vec3f MeshDrawer::getCentroid(const Triangle* triangle) {
