@@ -69,6 +69,16 @@ void WorldMesh::recursiveUpdate(Vertex* v1, Vertex* v2, Vertex* v3,
 	Vertex* edge_center[3] = { getOrCreateChildVertex(v1, v2),
 			getOrCreateChildVertex(v2, v3), getOrCreateChildVertex(v3, v1) };
 
+	{
+		Vec3f tempCenters[3] = { edge_center[0]->get(), edge_center[1]->get(),
+				edge_center[2]->get() };
+
+		for (auto i = 0; i < 3; ++i) {
+			tempCenters[i].Normalize();
+			edge_center[i]->set(tempCenters[i]);
+		}
+	}
+
 	bool edge_test[3];
 	double angle[3];
 
