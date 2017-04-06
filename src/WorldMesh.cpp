@@ -15,7 +15,7 @@
 WorldMesh::WorldMesh(float _radius) :
 		radius(_radius) {
 
-	double t = (1.0 + sqrt(5.0)) / 2.0;
+	float t = (1.0 + sqrt(5.0)) / 2.0;
 
 	Vec3f basePoints[] =
 			{ { -1, t, 0 }, { 1, t, 0 }, { -1, -t, 0 }, { 1, -t, 0 },
