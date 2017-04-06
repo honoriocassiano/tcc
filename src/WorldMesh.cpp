@@ -13,6 +13,8 @@
 #include "structures/Halfedge/vertex.h"
 #include "structures/Halfedge/triangle.h"
 
+#include "Perlin.h"
+
 #define SIZE(A) (sizeof(A) / sizeof(A[0]))
 
 WorldMesh::WorldMesh(float _radius) :
@@ -36,6 +38,8 @@ WorldMesh::WorldMesh(float _radius) :
 
 	for (auto i = 0; i < SIZE(basePoints); ++i) {
 		baseVertices[i] = addVertex(basePoints[i], 0);
+
+		baseVertices[i]->setElevation(Perlin::generate(baseVertices[i]->get()));
 	}
 
 	for (const auto& idx : baseIndices) {
@@ -63,8 +67,6 @@ void WorldMesh::recursiveUpdate(Vertex* v1, Vertex* v2, Vertex* v3,
 
 	double ratio_size = size * 20; // default : 1
 	double minsize = 0.01;    // default : 0.01
-//	Vec3f edge_center[3] = { (v1->get() + v2->get()) * 0.5f, (v2->get()
-//			+ v3->get()) * 0.5f, (v3->get() + v1->get()) * 0.5f };
 
 	Vertex* edge_center[3] = { getOrCreateChildVertex(v1, v2),
 			getOrCreateChildVertex(v2, v3), getOrCreateChildVertex(v3, v1) };
@@ -76,6 +78,8 @@ void WorldMesh::recursiveUpdate(Vertex* v1, Vertex* v2, Vertex* v3,
 		for (auto i = 0; i < 3; ++i) {
 			tempCenters[i].Normalize();
 			edge_center[i]->set(tempCenters[i]);
+
+			edge_center[i]->setElevation(Perlin::generate(edge_center[i]->get()));
 		}
 	}
 

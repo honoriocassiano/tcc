@@ -124,12 +124,10 @@ void MeshDrawer::draw(Mesh* mesh, const DrawOptions& options) {
 					va->getColor().b());
 			glNormal3f(n_a.x(), n_a.y(), n_a.z());
 
-			if (options.noise) {
-				glVertex3f(a.x(), a.y(), Perlin::generate(a));
+			if(options.noise) {
+				glVertex3f(va->getReal().x(), va->getReal().y(), va->getReal().z());
 			} else {
-//				glVertex3f(a.x(), a.y(), a.z());
-				glVertex3f(DX(a.x(), a.y(), a.z()), DY(a.x(), a.y(), a.z()),
-						DZ(a.x(), a.y(), a.z()));
+				glVertex3f(va->get().x(), va->get().y(), va->get().z());
 			}
 
 			//		glColor3f(n_b.r(), n_b.g(), n_b.b());
@@ -137,25 +135,22 @@ void MeshDrawer::draw(Mesh* mesh, const DrawOptions& options) {
 					vb->getColor().b());
 			glNormal3f(n_b.x(), n_b.y(), n_b.z());
 
-			if (options.noise) {
-				glVertex3f(b.x(), b.y(), Perlin::generate(b));
+			if(options.noise) {
+				glVertex3f(vb->getReal().x(), vb->getReal().y(), vb->getReal().z());
 			} else {
-//				glVertex3f(b.x(), b.y(), b.z());
-				glVertex3f(DX(b.x(), b.y(), b.z()), DY(b.x(), b.y(), b.z()),
-						DZ(b.x(), b.y(), b.z()));
+				glVertex3f(vb->get().x(), vb->get().y(), vb->get().z());
 			}
+
 
 			//		glColor3f(n_c.r(), n_c.g(), n_c.b());
 			glColor3f(vc->getColor().r(), vc->getColor().g(),
 					vc->getColor().b());
 			glNormal3f(n_c.x(), n_c.y(), n_c.z());
 
-			if (options.noise) {
-				glVertex3f(c.x(), c.y(), Perlin::generate(c));
+			if(options.noise) {
+				glVertex3f(vc->getReal().x(), vc->getReal().y(), vc->getReal().z());
 			} else {
-//				glVertex3f(c.x(), c.y(), c.z());
-				glVertex3f(DX(c.x(), c.y(), c.z()), DY(c.x(), c.y(), c.z()),
-						DZ(c.x(), c.y(), c.z()));
+				glVertex3f(vc->get().x(), vc->get().y(), vc->get().z());
 			}
 
 			//		if (options.normals) {

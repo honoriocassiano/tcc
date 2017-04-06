@@ -20,7 +20,7 @@ public:
 	// CONSTRUCTOR & DESTRUCTOR
 	Vertex(int i, const Vec3f &pos) :
 			position(pos), color(1.0f, 1.0f, 1.0f), d2(0.0f), active(false), level(
-					0), relatives { nullptr, nullptr } {
+					0), relatives { nullptr, nullptr }, elevation(0) {
 //			position(pos), color(1.0f, 1.0f, 1.0f), active(false), level(0), parents1(
 //					nullptr), parents2(nullptr) {
 		index = i;
@@ -44,6 +44,17 @@ public:
 	}
 	const Vec3f& get() const {
 		return position;
+	}
+
+	// TODO
+#warning "Implement this function with noise"
+#warning "Put this method in a child class"
+	const Vec3f getReal() const {
+		return position + (position * elevation);
+	}
+
+	float getElevation() const {
+		return elevation;
 	}
 
 	float getD2() const {
@@ -101,6 +112,10 @@ public:
 		relatives.first = p;
 	}
 
+	void setElevation(float noise) {
+		this->elevation = noise;
+	}
+
 	void setParents2(VertexParent* p) {
 //		parents2 = p;
 		relatives.second = p;
@@ -151,6 +166,7 @@ private:
 	Color color;
 	bool active;
 	std::size_t level;
+	float elevation;
 
 //	VertexParent* parents1;
 //	VertexParent* parents2;
