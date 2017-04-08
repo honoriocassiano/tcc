@@ -45,6 +45,8 @@ WorldMesh::WorldMesh(float _radius) :
 //		baseVertices[i]->setElevation(Perlin::generateTurbulence(8, 2, 2, baseVertices[i]->get() + Vec3f(1, 1, 1)));
 		baseVertices[i]->setElevation(EL(baseVertices[i]));
 
+		baseVertices[i]->setActive(true);
+
 	}
 
 	for (const auto& idx : baseIndices) {
@@ -63,7 +65,10 @@ void WorldMesh::reset() {
 
 	for (auto& v : *vertices2) {
 		v->setNormal(Vec3f(0.0f, 0.0f, 0.0f));
-		v->setActive(false);
+
+		if (v->getLevel() > 0) {
+			v->setActive(false);
+		}
 	}
 }
 
@@ -88,6 +93,8 @@ void WorldMesh::recursiveUpdate(Vertex* v1, Vertex* v2, Vertex* v3,
 //			edge_center[i]->setElevation(Perlin::generateTurbulence(8, 2, 2, edge_center[i]->get() + Vec3f(1, 1, 1)));
 
 			edge_center[i]->setElevation(EL(edge_center[i]));
+
+			edge_center[i]->setActive(true);
 		}
 	}
 
@@ -166,6 +173,19 @@ void WorldMesh::update(const Vec3f& position) {
 		recursiveUpdate(baseVertices[idx[0]], baseVertices[idx[1]],
 				baseVertices[idx[2]], position);
 	}
+
+	deleteUnusedVertices();
+}
+
+void WorldMesh::deleteUnusedVertices() {
+
+	for (auto it = vertices2->rbegin(); it != vertices2->rend(); ++it) {
+		if (((*it)->getLevel() > 0) && (!(*it)->isActive())) {
+			delete *it;
+
+			vertices2->remove(it.reverse());
+		}
+	}
 }
 
 Vertex* WorldMesh::getOrCreateChildVertex(Vertex* p1, Vertex* p2) {
@@ -178,10 +198,6 @@ Vertex* WorldMesh::getOrCreateChildVertex(Vertex* p1, Vertex* p2) {
 		setParentsChild(p1, p2, child);
 
 		child->setLevel(std::max(p1->getLevel(), p2->getLevel()) + 1);
-	}
-
-	if (child->get().Length() < 0.01) {
-		int a = *((int*) 0x0);
 	}
 
 	return child;

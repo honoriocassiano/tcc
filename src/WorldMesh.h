@@ -22,6 +22,8 @@ public:
 
 	void update(const Vec3f& position);
 
+	void deleteUnusedVertices();
+
 	Vertex* getOrCreateChildVertex(Vertex *p1, Vertex *p2);
 //	void updateNormals();
 
