@@ -220,7 +220,32 @@ template<class T>
 inline typename MultiLevelArray<T>::Iterator MultiLevelArray<T>::begin() {
 	std::size_t i = 0;
 
-	while (levelsInfo[i].first == 0) {
+	while ((i < levelsInfo.size()) && (levelsInfo[i].first == 0)) {
+		++i;
+	}
+
+	return Iterator(this, { i, 0 });
+}
+
+template<class T>
+inline typename MultiLevelArray<T>::Iterator MultiLevelArray<T>::end() {
+
+	std::size_t i = levelsInfo.size();
+
+	while ((i >= begin().getPosition().first) && (levelsInfo[i - 1].first > 0)) {
+		--i;
+	}
+
+	return Iterator(this, { i, 0 });
+}
+
+template<class T>
+inline typename MultiLevelArray<T>::Iterator MultiLevelArray<T>::begin(
+		std::size_t level) {
+
+	std::size_t i = level;
+
+	while ((i < levelsInfo.size()) && levelsInfo[i].first == 0) {
 		++i;
 	}
 
@@ -228,14 +253,16 @@ inline typename MultiLevelArray<T>::Iterator MultiLevelArray<T>::begin() {
 }
 
 template<class T>
-inline typename MultiLevelArray<T>::Iterator MultiLevelArray<T>::end() {
-	return Iterator(this, { levelsInfo.size(), 0 });
-}
-
-template<class T>
-inline typename MultiLevelArray<T>::Iterator MultiLevelArray<T>::begin(
+inline typename MultiLevelArray<T>::Iterator MultiLevelArray<T>::end(
 		std::size_t level) {
-	return Iterator(this, level);
+
+	std::size_t i = level + 1;
+
+	while ((i < levelsInfo.size()) && (levelsInfo[i].first == 0)) {
+		++i;
+	}
+
+	return Iterator(this, { i, 0 });
 }
 
 template<class T>
@@ -307,13 +334,6 @@ void MultiLevelArray<T>::remove(
 				"Trying to access position " + std::to_string(position.first)
 						+ ", " + std::to_string(position.second));
 	}
-}
-
-template<class T>
-inline typename MultiLevelArray<T>::Iterator MultiLevelArray<T>::end(
-		std::size_t level) {
-
-	return Iterator(this, { level + 1, 0 });
 }
 
 template<class T>
