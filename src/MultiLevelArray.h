@@ -57,6 +57,29 @@ public:
 		std::pair<std::size_t, std::size_t> position;
 	};
 
+	class ReverseIterator {
+	public:
+		ReverseIterator(MultiLevelArray<T> * array, std::size_t level,
+				std::size_t position = 0);
+		ReverseIterator(MultiLevelArray<T> * array,
+				std::pair<std::size_t, std::size_t> position = { 0, 0 });
+
+		bool operator==(const ReverseIterator& it2);
+		bool operator!=(const ReverseIterator& it2);
+		ReverseIterator& operator++();
+
+		inline const std::pair<std::size_t, std::size_t>& getPosition() const {
+			return position;
+		}
+
+		T& operator*();
+
+	private:
+		MultiLevelArray<T> *array;
+
+		std::pair<std::size_t, std::size_t> position;
+	};
+
 	Iterator add(const T& element, std::size_t level);
 
 	void remove(const Iterator& iterator) throw (std::overflow_error);
@@ -71,6 +94,12 @@ public:
 	Iterator begin(std::size_t level);
 	Iterator end(std::size_t level);
 
+	ReverseIterator rbegin();
+	ReverseIterator rend();
+
+	ReverseIterator rbegin(std::size_t level);
+	ReverseIterator rend(std::size_t level);
+
 private:
 
 	bool checkBounds(const std::pair<std::size_t, std::size_t>& position);
@@ -81,7 +110,7 @@ private:
 };
 
 template<class T>
-inline MultiLevelArray<T>::MultiLevelArray(std::size_t sizeByLevel,
+MultiLevelArray<T>::MultiLevelArray(std::size_t sizeByLevel,
 		std::size_t numLevels) :
 		levelsInfo(numLevels, { 0, sizeByLevel }), data(new T*[numLevels]), defaultSize(
 				sizeByLevel) {
@@ -92,7 +121,7 @@ inline MultiLevelArray<T>::MultiLevelArray(std::size_t sizeByLevel,
 }
 
 template<class T>
-inline MultiLevelArray<T>::~MultiLevelArray() {
+MultiLevelArray<T>::~MultiLevelArray() {
 
 	for (auto i = 0; i < levelsInfo.size(); ++i) {
 		delete data[i];
@@ -102,7 +131,7 @@ inline MultiLevelArray<T>::~MultiLevelArray() {
 }
 
 template<class T>
-inline T& MultiLevelArray<T>::operator [](
+T& MultiLevelArray<T>::operator [](
 		const std::pair<std::size_t, std::size_t>& position)
 				throw (std::overflow_error) {
 
@@ -117,8 +146,8 @@ inline T& MultiLevelArray<T>::operator [](
 }
 
 template<class T>
-inline typename MultiLevelArray<T>::Iterator MultiLevelArray<T>::add(
-		const T& element, std::size_t level) {
+typename MultiLevelArray<T>::Iterator MultiLevelArray<T>::add(const T& element,
+		std::size_t level) {
 
 	std::size_t s = levelsInfo[level].second;
 
@@ -162,7 +191,7 @@ inline typename MultiLevelArray<T>::Iterator MultiLevelArray<T>::add(
 }
 
 template<class T>
-inline const T& MultiLevelArray<T>::operator [](
+const T& MultiLevelArray<T>::operator [](
 		const std::pair<std::size_t, std::size_t>& position) const
 				throw (std::overflow_error) {
 
@@ -173,6 +202,50 @@ inline const T& MultiLevelArray<T>::operator [](
 		throw std::overflow_error(
 				"Trying to access position " + std::to_string(position.first)
 						+ ", " + std::to_string(position.second));
+	}
+}
+
+template<class T>
+inline MultiLevelArray<T>::ReverseIterator::ReverseIterator(
+		MultiLevelArray<T>* array, std::size_t level, std::size_t position) :
+		array(array), position { level, position } {
+}
+
+template<class T>
+inline MultiLevelArray<T>::ReverseIterator::ReverseIterator(
+		MultiLevelArray<T>* array, std::pair<std::size_t, std::size_t> position) :
+		array(array), position(position) {
+
+}
+
+template<class T>
+inline bool MultiLevelArray<T>::ReverseIterator::operator ==(
+		const ReverseIterator& it2) {
+
+	return (this->array == it2.array) && (this->position == it2.position);
+}
+
+template<class T>
+inline bool MultiLevelArray<T>::ReverseIterator::operator !=(
+		const ReverseIterator& it2) {
+
+	return !(*this == it2);
+}
+
+template<class T>
+typename MultiLevelArray<T>::ReverseIterator& MultiLevelArray<T>::ReverseIterator::operator++() {
+
+	if (this->position.first != -1) {
+
+		while ((this->position.second) == 0 && (this->position.first != -1)) {
+			--this->position.first;
+			this->position.second =
+					this->array->levelsInfo[this->position.first].first;
+		}
+
+		if (this->position.first != -1) {
+			--this->position.second;
+		}
 	}
 }
 
@@ -217,7 +290,7 @@ typename MultiLevelArray<T>::Iterator& MultiLevelArray<T>::Iterator::operator++(
 }
 
 template<class T>
-inline typename MultiLevelArray<T>::Iterator MultiLevelArray<T>::begin() {
+typename MultiLevelArray<T>::Iterator MultiLevelArray<T>::begin() {
 	std::size_t i = 0;
 
 	while ((i < levelsInfo.size()) && (levelsInfo[i].first == 0)) {
@@ -228,7 +301,7 @@ inline typename MultiLevelArray<T>::Iterator MultiLevelArray<T>::begin() {
 }
 
 template<class T>
-inline typename MultiLevelArray<T>::Iterator MultiLevelArray<T>::end() {
+typename MultiLevelArray<T>::Iterator MultiLevelArray<T>::end() {
 
 	std::size_t i = levelsInfo.size();
 
@@ -240,7 +313,7 @@ inline typename MultiLevelArray<T>::Iterator MultiLevelArray<T>::end() {
 }
 
 template<class T>
-inline typename MultiLevelArray<T>::Iterator MultiLevelArray<T>::begin(
+typename MultiLevelArray<T>::Iterator MultiLevelArray<T>::begin(
 		std::size_t level) {
 
 	std::size_t i = level;
@@ -253,7 +326,7 @@ inline typename MultiLevelArray<T>::Iterator MultiLevelArray<T>::begin(
 }
 
 template<class T>
-inline typename MultiLevelArray<T>::Iterator MultiLevelArray<T>::end(
+typename MultiLevelArray<T>::Iterator MultiLevelArray<T>::end(
 		std::size_t level) {
 
 	std::size_t i = level + 1;
@@ -399,6 +472,56 @@ typename MultiLevelArray<T>::Iterator MultiLevelArray<T>::find(const T& element,
 }
 
 template<class T>
+typename MultiLevelArray<T>::ReverseIterator MultiLevelArray<T>::rbegin() {
+
+	std::size_t i = levelsInfo.size() - 1;
+
+	while ((i != -1) && (levelsInfo[i].first == 0)) {
+		--i;
+	}
+
+	return ReverseIterator(this, { i, (i != -1) ? levelsInfo[i].first - 1 : 0 });
+}
+
+template<class T>
+typename MultiLevelArray<T>::ReverseIterator MultiLevelArray<T>::rend() {
+
+	std::size_t i = -1;
+
+	while ((i < rbegin().getPosition().first) && (levelsInfo[i].first > 0)) {
+		++i;
+	}
+
+	return ReverseIterator(this, { i, (i != -1) ? levelsInfo[i].first : 0 });
+}
+
+template<class T>
+typename MultiLevelArray<T>::ReverseIterator MultiLevelArray<T>::rbegin(
+		std::size_t level) {
+
+	std::size_t i = level;
+
+	while ((i != -1) && levelsInfo[i].first == 0) {
+		--i;
+	}
+
+	return ReverseIterator(this, { i, (i != -1) ? levelsInfo[i].first - 1 : 0 });
+}
+
+template<class T>
+typename MultiLevelArray<T>::ReverseIterator MultiLevelArray<T>::rend(
+		std::size_t level) {
+
+	std::size_t i = level - 1;
+
+	while ((i != -1) && (levelsInfo[i].first == 0)) {
+		--i;
+	}
+
+	return ReverseIterator(this, { i, 0 });
+}
+
+template<class T>
 inline bool MultiLevelArray<T>::checkBounds(
 		const std::pair<std::size_t, std::size_t>& position) {
 
@@ -408,6 +531,11 @@ inline bool MultiLevelArray<T>::checkBounds(
 
 template<class T>
 inline T& MultiLevelArray<T>::Iterator::operator *() {
+	return (*array)[position];
+}
+
+template<class T>
+inline T& MultiLevelArray<T>::ReverseIterator::operator *() {
 	return (*array)[position];
 }
 
