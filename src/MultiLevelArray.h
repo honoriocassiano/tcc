@@ -14,7 +14,12 @@
 
 template<class T>
 class MultiLevelArray {
+
 public:
+
+	class ReverseIterator;
+	class Iterator;
+
 	MultiLevelArray(std::size_t sizeByLevel = 100, std::size_t numLevels = 4);
 	virtual ~MultiLevelArray();
 
@@ -51,6 +56,8 @@ public:
 
 		T& operator*();
 
+		ReverseIterator reverse();
+
 	private:
 		MultiLevelArray<T> *array;
 
@@ -63,6 +70,8 @@ public:
 				std::size_t position = 0);
 		ReverseIterator(MultiLevelArray<T> * array,
 				std::pair<std::size_t, std::size_t> position = { 0, 0 });
+
+		Iterator reverse();
 
 		bool operator==(const ReverseIterator& it2);
 		bool operator!=(const ReverseIterator& it2);
@@ -518,7 +527,7 @@ typename MultiLevelArray<T>::ReverseIterator MultiLevelArray<T>::rend(
 		--i;
 	}
 
-	return ReverseIterator(this, { i, 0 });
+	return ReverseIterator(this, { i, (i != -1) ? levelsInfo[i].first : 0 });
 }
 
 template<class T>
@@ -535,8 +544,18 @@ inline T& MultiLevelArray<T>::Iterator::operator *() {
 }
 
 template<class T>
+typename MultiLevelArray<T>::Iterator MultiLevelArray<T>::ReverseIterator::reverse() {
+	return Iterator(this->array, getPosition());
+}
+
+template<class T>
 inline T& MultiLevelArray<T>::ReverseIterator::operator *() {
 	return (*array)[position];
+}
+
+template<class T>
+typename MultiLevelArray<T>::ReverseIterator MultiLevelArray<T>::Iterator::reverse() {
+	return ReverseIterator(this->array, getPosition());
 }
 
 #endif /* SRC_MULTILEVELARRAY_H_ */
