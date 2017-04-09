@@ -180,9 +180,14 @@ void WorldMesh::update(const Vec3f& position) {
 void WorldMesh::deleteUnusedVertices() {
 
 	for (auto it = vertices2->rbegin(); it != vertices2->rend(); ++it) {
-		if (((*it)->getLevel() > 0) && (!(*it)->isActive())) {
-			delete *it;
 
+		auto& v = *it;
+		auto vp = v->getParents1();
+
+		if ((v->getLevel() > 0) && (!v->isActive())) {
+			delete v;
+
+			vertex_parents->Remove(vp);
 			vertices2->remove(it.reverse());
 		}
 	}

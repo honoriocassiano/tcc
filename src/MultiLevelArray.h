@@ -133,10 +133,10 @@ template<class T>
 MultiLevelArray<T>::~MultiLevelArray() {
 
 	for (auto i = 0; i < levelsInfo.size(); ++i) {
-		delete data[i];
+		delete[] data[i];
 	}
 
-	delete data;
+	delete[] data;
 }
 
 template<class T>
@@ -172,7 +172,7 @@ typename MultiLevelArray<T>::Iterator MultiLevelArray<T>::add(const T& element,
 			levelsInfo.push_back( { 0, defaultSize });
 		}
 
-		delete data;
+		delete[] data;
 
 		data = newData;
 
@@ -184,7 +184,7 @@ typename MultiLevelArray<T>::Iterator MultiLevelArray<T>::add(const T& element,
 			newData[i] = data[level][i];
 		}
 
-		delete data[level];
+		delete[] data[level];
 
 		data[level] = newData;
 
@@ -373,7 +373,7 @@ void MultiLevelArray<T>::fit(std::size_t level, bool exactFit) {
 		}
 	}
 
-	delete data[level];
+	delete[] data[level];
 
 	data[level] = newData;
 }
@@ -400,10 +400,11 @@ void MultiLevelArray<T>::remove(
 		auto& size = levelsInfo[position.first];
 
 		// Remove if element exists
-//		if (position.second < size.first) {
-		data[position.first][position.second] =
-				data[position.first][--size.first];
-//		}
+		if (position.second < size.first) {
+			data[position.first][position.second] =
+					data[position.first][size.first - 1];
+		}
+		--size.first;
 		// Else do nothing
 
 	} else {
