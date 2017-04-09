@@ -15,25 +15,43 @@
 
 #include "MultiLevelArray.h"
 
+#include "Greeting.h"
+
 // =========================================
 // =========================================
 
 int main(int argc, char **argv) {
 
-	std::cout << "********************************************\n";
-	std::cout << "*************** BOA NOITE!!!!! *************\n";
-	std::cout << "********************************************\n" << std::endl;
+	sayHello();
 
 	SDLWindow window(800, 600);
 	window.run();
 
+
 //	auto abc = MultiLevelArray<int>(4);
 //
-//	for (int i = 0; i < 10; ++i) {
-//		for (int j = 0; j < 5; ++j) {
-//			abc.add(i + j * 10, j);
-//		}
+////	for (int i = 0; i < 10; ++i) {
+////		for (int j = 0; j < 5; ++j) {
+////			abc.add(i + j * 10, j);
+////		}
+////	}
+//
+//	abc.add(1, 1);
+//
+//	abc.add(3, 3);
+//
+//	for (auto it = abc.rbegin(2); it != abc.rend(); ++it) {
+//
+////		printf("{ %ld, %ld } -> { %ld, %ld }\n", it.getPosition().first,
+////				it.getPosition().second, abc.rend().getPosition().first,
+////				abc.rend().getPosition().second);
+//
+//		const auto& n = *it;
+//
+//		printf("%d\n", n);
 //	}
+//	printf("\n");
+
 //
 //	srand(time(nullptr));
 //
@@ -47,7 +65,6 @@ int main(int argc, char **argv) {
 //		printf("%d ", el);
 //	}
 //	printf("\n");
-
 	/*
 	 SDLWindow window(640, 480);
 
