@@ -75,15 +75,18 @@ void WorldMesh::reset() {
 void WorldMesh::recursiveUpdate(Vertex* v1, Vertex* v2, Vertex* v3,
 		const Vec3f& center, double size) {
 
-	double ratio_size = size * 20; // default : 1
+	double ratio_size = size; // default : 1
 	double minsize = 0.01;    // default : 0.01
 
 	Vertex* edge_center[3] = { getOrCreateChildVertex(v1, v2),
 			getOrCreateChildVertex(v2, v3), getOrCreateChildVertex(v3, v1) };
 
 	{
-		Vec3f tempCenters[3] = { edge_center[0]->get(), edge_center[1]->get(),
-				edge_center[2]->get() };
+//		Vec3f tempCenters[3] = { edge_center[0]->get(), edge_center[1]->get(),
+//				edge_center[2]->get() };
+
+		Vec3f tempCenters[3] = { edge_center[0]->getReal(),
+				edge_center[1]->getReal(), edge_center[2]->getReal() };
 
 		for (auto i = 0; i < 3; ++i) {
 			tempCenters[i].Normalize();
@@ -172,7 +175,7 @@ void WorldMesh::update(const Vec3f& position) {
 
 	for (const auto& idx : baseIndices) {
 		recursiveUpdate(baseVertices[idx[0]], baseVertices[idx[1]],
-				baseVertices[idx[2]], position);
+				baseVertices[idx[2]], position, 20);
 	}
 
 	deleteUnusedVertices();

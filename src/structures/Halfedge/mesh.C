@@ -496,7 +496,8 @@ void Mesh::updateNormals() {
 		auto b = (*t)[1];
 		auto c = (*t)[2];
 
-		auto normal = ComputeNormal(a->get(), b->get(), c->get());
+//		auto normal = ComputeNormal(a->get(), b->get(), c->get());
+		auto normal = ComputeNormal(a->getReal(), b->getReal(), c->getReal());
 
 		auto normalA = a->getNormal() + normal;
 		auto normalB = b->getNormal() + normal;
