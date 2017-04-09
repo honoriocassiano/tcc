@@ -40,8 +40,8 @@ extern bool wasInited;
 
 SDLWindow::SDLWindow(int width, int height) :
 		cube(new QuadCube(Vec3f(0, 0, 0))), mCamera(nullptr), mClock(
-				new Clock()), world(new World()), freezed(false), mIsRunning(false), mWindow(
-				nullptr), mWidth(width), mHeight(height) {
+				new Clock()), world(new World()), freezed(false), mIsRunning(
+				false), mWindow(nullptr), mWidth(width), mHeight(height) {
 
 	wasInited = true;
 
@@ -119,14 +119,11 @@ void SDLWindow::run() {
 }
 
 void SDLWindow::update(const Time& dt) {
-//	(*getTree2())->update2(mCamera->getPosition());
-//	cube->update(mCamera->getPosition());
+	if (lastPosition != mCamera->getPosition()) {
+		lastPosition = mCamera->getPosition();
 
-	lastPosition = mCamera->getPosition();
-
-	worldMesh.update(lastPosition);
-
-//	MeshDrawer::draw(tree2->getMesh(), options);
+		worldMesh.update(lastPosition);
+	}
 }
 
 void SDLWindow::processRealtimeEvents() {
