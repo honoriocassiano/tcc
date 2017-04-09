@@ -103,7 +103,7 @@ void WorldMesh::recursiveUpdate(Vertex* v1, Vertex* v2, Vertex* v3,
 
 	for (auto i = 0; i < 3; ++i) {
 
-		Vec3f d = center + edge_center[i]->get();
+		Vec3f d = edge_center[i]->get() - center;
 
 		edge_test[i] = d.Length() > ratio_size;
 		d.Normalize();
@@ -113,9 +113,10 @@ void WorldMesh::recursiveUpdate(Vertex* v1, Vertex* v2, Vertex* v3,
 		angle[i] = std::acos(std::max(-1.0, std::min(dot, 1.0)));
 	}
 
-//	if (*std::max_element(angle, angle + 3) < M_PI / 2 + 0.2) {
-//		return;
-//	}
+	// 60 degrees
+	if (*std::max_element(angle, angle + 3) < (M_PI / 3)) {
+		return;
+	}
 
 	// draw
 	if ((edge_test[0] && edge_test[1] && edge_test[2]) || size < minsize) {
