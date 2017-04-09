@@ -254,6 +254,8 @@ typename MultiLevelArray<T>::ReverseIterator& MultiLevelArray<T>::ReverseIterato
 
 		if (this->position.first != -1) {
 			--this->position.second;
+		} else {
+			this->position.second = 0;
 		}
 	}
 }
