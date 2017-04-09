@@ -313,14 +313,7 @@ typename MultiLevelArray<T>::Iterator MultiLevelArray<T>::begin() {
 
 template<class T>
 typename MultiLevelArray<T>::Iterator MultiLevelArray<T>::end() {
-
-	std::size_t i = levelsInfo.size();
-
-	while ((i >= begin().getPosition().first) && (levelsInfo[i - 1].first > 0)) {
-		--i;
-	}
-
-	return Iterator(this, { i, 0 });
+	return Iterator(this, { levelsInfo.size(), 0 });
 }
 
 template<class T>
@@ -496,14 +489,7 @@ typename MultiLevelArray<T>::ReverseIterator MultiLevelArray<T>::rbegin() {
 
 template<class T>
 typename MultiLevelArray<T>::ReverseIterator MultiLevelArray<T>::rend() {
-
-	std::size_t i = -1;
-
-	while ((i < rbegin().getPosition().first) && (levelsInfo[i].first > 0)) {
-		++i;
-	}
-
-	return ReverseIterator(this, { i, (i != -1) ? levelsInfo[i].first : 0 });
+	return ReverseIterator(this, { -1, 0 });
 }
 
 template<class T>
