@@ -13,7 +13,7 @@
 
 class WorldMesh: public Mesh {
 public:
-	WorldMesh(float radius);
+	WorldMesh(float radius, const Vec3f& center = Vec3f());
 	virtual ~WorldMesh();
 
 	void reset() override;
@@ -41,6 +41,8 @@ protected:
 	float radius;
 
 	Vec3f axis;
+
+	Vec3f center;
 
 	Vertex* baseVertices[12];
 

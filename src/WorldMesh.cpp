@@ -19,8 +19,8 @@
 
 #define EL(V) (Perlin::generateTurbulence(8, 1.35, 2, V->get() + Vec3f(1, 1, 1)) * 0.1f)
 
-WorldMesh::WorldMesh(float _radius) :
-		radius(_radius), baseVertices { nullptr }, transform(
+WorldMesh::WorldMesh(float _radius, const Vec3f& _center) :
+		center(_center), radius(_radius), baseVertices { nullptr }, transform(
 				Matrix::identity()), axis { 0, 1, 1 }, baseIndices {
 				{ 0, 11, 5 }, { 0, 5, 1 }, { 0, 1, 7 }, { 0, 7, 10 }, { 0, 10,
 						11 }, { 1, 5, 9 }, { 5, 11, 4 }, { 11, 10, 2 }, { 10, 7,
@@ -55,6 +55,7 @@ WorldMesh::WorldMesh(float _radius) :
 				baseVertices[idx[2]]);
 	}
 
+	transform *= Matrix::MakeTranslation(_center);
 }
 
 WorldMesh::~WorldMesh() {
