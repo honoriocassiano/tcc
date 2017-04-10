@@ -223,8 +223,13 @@ void MeshDrawer::draw(Mesh* mesh, const DrawOptions& options) {
 				glColor3f(1, 1, 1);
 			}
 
-			glVertex3f(DX(v->x(), v->y(), v->z()), DY(v->x(), v->y(), v->z()),
-					DZ(v->x(), v->y(), v->z()));
+			if (options.noise) {
+				glVertex3f(v->getReal().x(), v->getReal().y(),
+						v->getReal().z());
+			} else {
+				glVertex3f(v->x(), v->y(), v->z());
+			}
+
 		}
 
 		glEnd();

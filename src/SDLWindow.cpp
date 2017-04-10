@@ -14,7 +14,7 @@
 
 #include "WorldMesh.h"
 
-WorldMesh worldMesh(5);
+WorldMesh worldMesh(1);
 
 //******************************************************
 #include "MeshDrawer.h"

@@ -55,7 +55,7 @@ WorldMesh::WorldMesh(float _radius, const Vec3f& _center) :
 				baseVertices[idx[2]]);
 	}
 
-	transform *= Matrix::MakeTranslation(_center);
+	transform *= Matrix::MakeTranslation(center) * Matrix::MakeScale(radius);
 }
 
 WorldMesh::~WorldMesh() {
