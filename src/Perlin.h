@@ -28,14 +28,14 @@ public:
 	 *
 	 * @return Value between -1 and 1
 	 */
-	static float generateTurbulence(int octaves, int A, int B,
+	static float generateTurbulence(int octaves, float A, float B,
 			const Vec3f& position);
 
 	/**
 	 * Generate turbulence by parameters position.
 	 * @see generateTurbulence(int, int, int, const Vec3f&)
 	 */
-	static float generateTurbulence(int octaves, int A, int B, float x,
+	static float generateTurbulence(int octaves, float A, float B, float x,
 			float y = 0.0, float z = 0.0);
 
 private:

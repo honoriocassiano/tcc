@@ -35,13 +35,13 @@ float Perlin::lerp(float t, float a, float b) {
 	return a + t * (b - a);
 }
 
-float Perlin::generateTurbulence(int octaves, int A, int B, float x, float y,
+float Perlin::generateTurbulence(int octaves, float A, float B, float x, float y,
 		float z) {
 
 	float value = 0.0f;
 
-	int a = 1;
-	int b = 1;
+	float a = 1;
+	float b = 1;
 
 	for (int i = 0; i < octaves; ++i) {
 		value += generate(b * x, b * y, b * z) / a;
@@ -171,7 +171,7 @@ float Perlin::generate(const Vec3f& position) {
 	return Perlin::generate(position.x(), position.y(), position.z());
 }
 
-float Perlin::generateTurbulence(int octaves, int A, int B,
+float Perlin::generateTurbulence(int octaves, float A, float B,
 		const Vec3f& position) {
 
 	return Perlin::generateTurbulence(octaves, A, B, position.x(), position.y(),
