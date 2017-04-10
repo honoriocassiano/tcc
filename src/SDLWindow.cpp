@@ -48,9 +48,7 @@ SDLWindow::SDLWindow(int width, int height) :
 //	options.normals = true;
 //	options.wireframe = true;
 
-//	Vec3f position(0, 1500, 100);
-//	Vec3f direction = Vec3f(0, 0, 0) - position;
-	Vec3f direction = Vec3f(2.5, 2.5, 0) - position;
+	Vec3f direction = Vec3f(0, 0, 0) - position;
 
 	direction.Normalize();
 
@@ -119,23 +117,26 @@ void SDLWindow::run() {
 }
 
 void SDLWindow::update(const Time& dt) {
-	if (lastPosition != mCamera->getPosition()) {
-		lastPosition = mCamera->getPosition();
+//	if (lastPosition != mCamera->getPosition()) {
 
-		worldMesh.update(lastPosition);
-	}
+	worldMesh.rotate(M_PI / 360);
+
+	lastPosition = mCamera->getPosition();
+
+	worldMesh.update(lastPosition);
+//	}
 }
 
 void SDLWindow::processRealtimeEvents() {
 	const Uint8 *state = SDL_GetKeyboardState(nullptr);
 
 	if (state[SDL_SCANCODE_UP]) {
-		mCamera->dollyCamera(0.1f);
-//		mCamera->dollyCamera(0.5f);
+//		mCamera->dollyCamera(0.1f);
+		mCamera->dollyCamera(0.5f);
 //		mCamera->dollyCamera(2.0f);
 	} else if (state[SDL_SCANCODE_DOWN]) {
-		mCamera->dollyCamera(-0.1f);
-//		mCamera->dollyCamera(-0.5f);
+//		mCamera->dollyCamera(-0.1f);
+		mCamera->dollyCamera(-0.5f);
 //		mCamera->dollyCamera(-2.0f);
 	}
 

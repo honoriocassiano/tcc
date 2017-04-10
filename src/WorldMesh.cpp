@@ -17,15 +17,16 @@
 
 #define SIZE(A) (sizeof(A) / sizeof(A[0]))
 
-#define EL(V) (Perlin::generateTurbulence(8, 1, 2, V->get() + Vec3f(1, 1, 1)) * 0.1f)
+#define EL(V) (Perlin::generateTurbulence(8, 1.35, 2, V->get() + Vec3f(1, 1, 1)) * 0.1f)
 
 WorldMesh::WorldMesh(float _radius) :
-		radius(_radius), baseVertices { nullptr }, baseIndices { { 0, 11, 5 }, {
-				0, 5, 1 }, { 0, 1, 7 }, { 0, 7, 10 }, { 0, 10, 11 },
-				{ 1, 5, 9 }, { 5, 11, 4 }, { 11, 10, 2 }, { 10, 7, 6 }, { 7, 1,
-						8 }, { 3, 9, 4 }, { 3, 4, 2 }, { 3, 2, 6 }, { 3, 6, 8 },
-				{ 3, 8, 9 }, { 4, 9, 5 }, { 2, 4, 11 }, { 6, 2, 10 },
-				{ 8, 6, 7 }, { 9, 8, 1 } } {
+		radius(_radius), baseVertices { nullptr }, transform(
+				Matrix::identity()), axis { 0, 1, 1 }, baseIndices {
+				{ 0, 11, 5 }, { 0, 5, 1 }, { 0, 1, 7 }, { 0, 7, 10 }, { 0, 10,
+						11 }, { 1, 5, 9 }, { 5, 11, 4 }, { 11, 10, 2 }, { 10, 7,
+						6 }, { 7, 1, 8 }, { 3, 9, 4 }, { 3, 4, 2 }, { 3, 2, 6 },
+				{ 3, 6, 8 }, { 3, 8, 9 }, { 4, 9, 5 }, { 2, 4, 11 },
+				{ 6, 2, 10 }, { 8, 6, 7 }, { 9, 8, 1 } } {
 
 	float t = (1.0 + sqrt(5.0)) / 2.0;
 
@@ -53,6 +54,7 @@ WorldMesh::WorldMesh(float _radius) :
 		addTriangle(baseVertices[idx[0]], baseVertices[idx[1]],
 				baseVertices[idx[2]]);
 	}
+
 }
 
 WorldMesh::~WorldMesh() {
@@ -82,18 +84,12 @@ void WorldMesh::recursiveUpdate(Vertex* v1, Vertex* v2, Vertex* v3,
 			getOrCreateChildVertex(v2, v3), getOrCreateChildVertex(v3, v1) };
 
 	{
-//		Vec3f tempCenters[3] = { edge_center[0]->get(), edge_center[1]->get(),
-//				edge_center[2]->get() };
-
 		Vec3f tempCenters[3] = { edge_center[0]->getReal(),
 				edge_center[1]->getReal(), edge_center[2]->getReal() };
 
 		for (auto i = 0; i < 3; ++i) {
 			tempCenters[i].Normalize();
 			edge_center[i]->set(tempCenters[i]);
-
-//			edge_center[i]->setElevation(Perlin::generate(edge_center[i]->get() + Vec3f(1, 1, 1)));
-//			edge_center[i]->setElevation(Perlin::generateTurbulence(8, 2, 2, edge_center[i]->get() + Vec3f(1, 1, 1)));
 
 			edge_center[i]->setElevation(EL(edge_center[i]));
 
@@ -106,12 +102,12 @@ void WorldMesh::recursiveUpdate(Vertex* v1, Vertex* v2, Vertex* v3,
 
 	for (auto i = 0; i < 3; ++i) {
 
-		Vec3f d = edge_center[i]->get() - center;
+		Vec3f d = getVertexPositionWithTransform(edge_center[i]) - center;
 
 		edge_test[i] = d.Length() > ratio_size;
 		d.Normalize();
 
-		double dot = edge_center[i]->get().Dot3(d);
+		double dot = getVertexPositionWithTransform(edge_center[i]).Dot3(d);
 
 		angle[i] = std::acos(std::max(-1.0, std::min(dot, 1.0)));
 	}
@@ -197,6 +193,10 @@ void WorldMesh::deleteUnusedVertices() {
 	}
 }
 
+void WorldMesh::rotate(float dTheta) {
+	this->transform *= Matrix::MakeAxisRotation(Vec3f(0, 1, 0), dTheta);
+}
+
 Vertex* WorldMesh::getOrCreateChildVertex(Vertex* p1, Vertex* p2) {
 	auto child = getChildVertex(p1, p2);
 
@@ -210,6 +210,15 @@ Vertex* WorldMesh::getOrCreateChildVertex(Vertex* p1, Vertex* p2) {
 	}
 
 	return child;
+}
+
+Vec3f WorldMesh::getVertexPositionWithTransform(Vertex* v) {
+
+	auto position = v->get() + (v->get() * v->getElevation());
+
+	transform.Transform(position);
+
+	return position;
 }
 
 //Vec3f computeNormal(const Vec3f &p1, const Vec3f &p2, const Vec3f &p3) {

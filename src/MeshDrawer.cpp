@@ -60,6 +60,12 @@ void MeshDrawer::draw(Mesh* mesh, const DrawOptions& options) {
 //	glEnable(GL_POLYGON_OFFSET_FILL);
 //	glPolygonOffset(1.1, 4.0);
 
+	glPushMatrix();
+
+	auto transform = mesh->getTransform().glGet();
+
+	glMultMatrixf(transform);
+
 	if (options.wireframe) {
 		glPolygonMode( GL_FRONT_AND_BACK, GL_LINE);
 
@@ -79,6 +85,7 @@ void MeshDrawer::draw(Mesh* mesh, const DrawOptions& options) {
 
 	if (!options.points) {
 		Iterator<Triangle*> *iter = mesh->triangles->StartIteration();
+
 		glBegin(GL_TRIANGLES);
 		while (Triangle *t = iter->GetNext()) {
 			Vertex* va = (*t)[0];
@@ -124,8 +131,9 @@ void MeshDrawer::draw(Mesh* mesh, const DrawOptions& options) {
 					va->getColor().b());
 			glNormal3f(n_a.x(), n_a.y(), n_a.z());
 
-			if(options.noise) {
-				glVertex3f(va->getReal().x(), va->getReal().y(), va->getReal().z());
+			if (options.noise) {
+				glVertex3f(va->getReal().x(), va->getReal().y(),
+						va->getReal().z());
 			} else {
 				glVertex3f(va->get().x(), va->get().y(), va->get().z());
 			}
@@ -135,20 +143,21 @@ void MeshDrawer::draw(Mesh* mesh, const DrawOptions& options) {
 					vb->getColor().b());
 			glNormal3f(n_b.x(), n_b.y(), n_b.z());
 
-			if(options.noise) {
-				glVertex3f(vb->getReal().x(), vb->getReal().y(), vb->getReal().z());
+			if (options.noise) {
+				glVertex3f(vb->getReal().x(), vb->getReal().y(),
+						vb->getReal().z());
 			} else {
 				glVertex3f(vb->get().x(), vb->get().y(), vb->get().z());
 			}
-
 
 			//		glColor3f(n_c.r(), n_c.g(), n_c.b());
 			glColor3f(vc->getColor().r(), vc->getColor().g(),
 					vc->getColor().b());
 			glNormal3f(n_c.x(), n_c.y(), n_c.z());
 
-			if(options.noise) {
-				glVertex3f(vc->getReal().x(), vc->getReal().y(), vc->getReal().z());
+			if (options.noise) {
+				glVertex3f(vc->getReal().x(), vc->getReal().y(),
+						vc->getReal().z());
 			} else {
 				glVertex3f(vc->get().x(), vc->get().y(), vc->get().z());
 			}
@@ -221,6 +230,10 @@ void MeshDrawer::draw(Mesh* mesh, const DrawOptions& options) {
 		glEnd();
 		glEnable(GL_LIGHTING);
 	}
+
+	glPopMatrix();
+
+	delete[] transform;
 
 //	glDisable(GL_POLYGON_OFFSET_FILL);
 	HandleGLError();

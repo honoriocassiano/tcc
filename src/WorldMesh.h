@@ -9,6 +9,7 @@
 #define SRC_WORLDMESH_H_
 
 #include "structures/Halfedge/mesh.h"
+#include "structures/matrix.h"
 
 class WorldMesh: public Mesh {
 public:
@@ -22,17 +23,30 @@ public:
 
 	void update(const Vec3f& position);
 
+	void rotate(float dTheta);
+
 	void deleteUnusedVertices();
 
 	Vertex* getOrCreateChildVertex(Vertex *p1, Vertex *p2);
 //	void updateNormals();
 
+	Matrix getTransform() override {
+		return transform;
+	}
+
 protected:
+
+	virtual Vec3f getVertexPositionWithTransform(Vertex* v);
+
 	float radius;
+
+	Vec3f axis;
 
 	Vertex* baseVertices[12];
 
 	std::size_t baseIndices[20][3];
+
+	Matrix transform;
 };
 
 #endif /* SRC_WORLDMESH_H_ */
