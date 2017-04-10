@@ -10,6 +10,9 @@
 
 #include "Scale.h"
 
+#include <random>
+#include <chrono>
+
 /**
  * Define some constants used by program.
  */
@@ -23,6 +26,20 @@ namespace constant {
 inline double G() {
 	return 6.67e-11 * Scale::getLength();
 }
+
+class Shuffle {
+public:
+	static unsigned int getSeed();
+
+	static std::mt19937 getRandom();
+
+private:
+
+	static void init();
+
+	static unsigned int seed;
+	static std::mt19937 mtRand;
+};
 
 }
 

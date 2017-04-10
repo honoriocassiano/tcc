@@ -1,4 +1,7 @@
 #include "Perlin.h"
+
+#include "Constants.h"
+
 #include <algorithm>
 
 #include <stdio.h>
@@ -53,7 +56,7 @@ float Perlin::generateTurbulence(int octaves, float A, float B, float x, float y
 }
 
 void Perlin::shuffle() {
-	std::random_shuffle(&permutation[0], &permutation[256]);
+	std::shuffle(&permutation[0], &permutation[256], constant::Shuffle::getRandom());
 
 	for (int i = 0; i < 256; ++i) {
 		perm[256 + i] = perm[i] = Perlin::permutation[i];
