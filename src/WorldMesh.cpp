@@ -116,8 +116,8 @@ void WorldMesh::recursiveUpdate(Vertex* v1, Vertex* v2, Vertex* v3,
 		angle[i] = std::acos(std::max(-1.0, std::min(dot, 1.0)));
 	}
 
-	// 60 degrees
-	if (*std::max_element(angle, angle + 3) < (M_PI / 3)) {
+	// 45° degrees
+	if (*std::max_element(angle, angle + 3) < (M_PI / 4)) {
 		return;
 	}
 
