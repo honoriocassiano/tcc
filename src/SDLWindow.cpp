@@ -20,7 +20,6 @@ WorldMesh worldMesh(1);
 #include "MeshDrawer.h"
 
 const Vec3f position(6.2, 1.2, -28.8);
-int globalI = 0;
 
 //******************************************************
 int HandleGLErrorWindow2() {
@@ -36,14 +35,10 @@ int HandleGLErrorWindow2() {
 	return 0;
 }
 
-extern bool wasInited;
-
 SDLWindow::SDLWindow(int width, int height) :
 		cube(new QuadCube(Vec3f(0, 0, 0))), mCamera(nullptr), mClock(
-				new Clock()), world(new World()), freezed(false), mIsRunning(
+				new Clock()), freezed(false), mIsRunning(
 				false), mWindow(nullptr), mWidth(width), mHeight(height) {
-
-	wasInited = true;
 
 //	options.normals = true;
 //	options.wireframe = true;
@@ -68,8 +63,6 @@ SDLWindow::~SDLWindow() {
 
 	delete mCamera;
 	delete mClock;
-
-	delete world;
 }
 
 void SDLWindow::addBody(CelestialBody * body) {
@@ -155,8 +148,6 @@ void SDLWindow::processRealtimeEvents() {
 		if (mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)) {
 			mCamera->rotateCamera(-0.005 * x, -0.005 * y);
 			//mCamera->rotateCamera(-0.005 * x, -0.005 * y);
-
-//			Log("%s", mCamera->getPosition().str().c_str());
 		}
 		// Inserir ações com outros botões aqui
 	}
@@ -173,7 +164,7 @@ void SDLWindow::display() {
 	// init light
 	//InitLight(); // light will be a headlamp!
 	configureLight();
-	// Place amera
+	// Place xamera
 	mCamera->glPlaceCamera();
 
 	glEnable(GL_LIGHTING);
@@ -181,27 +172,14 @@ void SDLWindow::display() {
 
 	HandleGLErrorWindow2();
 
-	//******************************************************
 	//	for (CelestialBody* body : mBodies) {
 	//		body->draw();
 	//	}
-//	MeshDrawer::draw(tree->getMesh(), true, false);
-
-//	cube->draw(true, false);
-	//cube->draw(false, false);
-//	cube->draw(options);
-//	MeshDrawer::draw(tree2->getMesh(), options);
 
 //	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 //	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	MeshDrawer::draw(&worldMesh, options);
-
-//	world->draw(Vec3f(0, 0, 0));
-//	world->draw(lastPosition);
-
-//	landscape->render();
-	//******************************************************
 
 	// Trocar buffers
 	SDL_GL_SwapWindow(mWindow);
@@ -236,11 +214,7 @@ bool SDLWindow::initOpenGL() {
 	glEnable(GL_LIGHTING);
 	glShadeModel(GL_SMOOTH);
 
-//		glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH | GLUT_RGB);
 	glEnable(GL_DEPTH_TEST);
-//		glutInitWindowSize(args->width, args->height);
-//	glutInitWindowPosition(100, 100);
-//	glutCreateWindow("TCC");
 
 	glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
 	glEnable(GL_NORMALIZE);
@@ -325,19 +299,19 @@ void SDLWindow::processEvents(const SDL_Event& e) {
 		}
 
 		case SDLK_t: {
-			cube->getMesh()->printTriangles();
+//			cube->getMesh()->printTriangles();
 //			Log("Triangles: %d", (*getTree2())->getMesh()->numTriangles());
 			break;
 		}
 
 		case SDLK_v: {
-			cube->getMesh()->printVertices();
+//			cube->getMesh()->printVertices();
 //			Log("Vertices: %d", (*getTree2())->getMesh()->numVertices());
 			break;
 		}
 
 		case SDLK_k: {
-			cube->getMesh()->printTrianglesPointers();
+//			cube->getMesh()->printTrianglesPointers();
 //			Log("Vertices: %d", (*getTree2())->getMesh()->numVertices());
 			break;
 		}

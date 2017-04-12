@@ -10,8 +10,6 @@
 #include <assert.h>
 #include "Debug.h"
 
-bool wasInited = false;
-
 QuadtreeMesh::QuadtreeMesh() {
 
 }
