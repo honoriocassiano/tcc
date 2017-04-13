@@ -249,13 +249,9 @@ void Mesh::updateNormals() {
 
 		auto normal = computeNormal(a->getReal(), b->getReal(), c->getReal());
 
-		auto normalA = a->getNormal() + normal;
-		auto normalB = b->getNormal() + normal;
-		auto normalC = c->getNormal() + normal;
-
-		normalA.normalize();
-		normalB.normalize();
-		normalC.normalize();
+		auto normalA = (a->getNormal() + normal).normalized();
+		auto normalB = (b->getNormal() + normal).normalized();
+		auto normalC = (c->getNormal() + normal).normalized();
 
 		a->setNormal(normalA);
 		b->setNormal(normalB);

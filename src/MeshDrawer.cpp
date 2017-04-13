@@ -197,8 +197,7 @@ void MeshDrawer::drawNormals(Mesh* mesh) {
 
 		Vec3f::cross3(normal, (p2 - p1), (p3 - p1));
 
-		normal.normalize();
-		normal = normal * 0.5;
+		normal = normal.normalized() * 0.5;
 
 		auto centroid = getCentroid(triangle);
 		auto final = centroid + normal;

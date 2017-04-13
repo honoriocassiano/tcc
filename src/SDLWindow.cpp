@@ -10,23 +10,18 @@
 #include <algorithm>
 #include <assert.h>
 
-#include "Debug.h"
-
 #include "WorldMesh.h"
 
 WorldMesh worldMesh(1);
 
-//******************************************************
 #include "MeshDrawer.h"
 
 const Vec3f position(6.2, 1.2, -28.8);
 
-//******************************************************
 int HandleGLErrorWindow2() {
 	GLenum error;
 	int i = 0;
 	while ((error = glGetError()) != GL_NO_ERROR) {
-//		Error("Not rectangle!\n");
 		fprintf(stderr, "%u\n", error);
 		i++;
 	}
@@ -43,9 +38,7 @@ SDLWindow::SDLWindow(int width, int height) :
 //	options.normals = true;
 //	options.wireframe = true;
 
-	Vec3f direction = Vec3f(0, 0, 0) - position;
-
-	direction.normalize();
+	Vec3f direction = (Vec3f(0, 0, 0) - position).normalized();
 
 	mCamera = new PerspectiveCamera(position, direction, Vec3f(0, 1, 0),
 			20 * M_PI / 180.0);
@@ -187,7 +180,7 @@ void SDLWindow::display() {
 
 bool SDLWindow::initSDL() {
 	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-		Error("Error initializing SDL: %s\n", SDL_GetError());
+		printf("Error initializing SDL: %s\n", SDL_GetError());
 		return false;
 	}
 
@@ -195,7 +188,7 @@ bool SDLWindow::initSDL() {
 	SDL_WINDOWPOS_UNDEFINED, mWidth, mHeight, SDL_WINDOW_OPENGL);
 
 	if (!mWindow) {
-		Error("Error creating window: %s\n", SDL_GetError());
+		printf("Error creating window: %s\n", SDL_GetError());
 		return false;
 	}
 
@@ -270,11 +263,6 @@ void SDLWindow::processEvents(const SDL_Event& e) {
 
 		case SDLK_c: {
 			mCamera->lookAt(Vec3f(0, 0, 0));
-			break;
-		}
-
-		case SDLK_d: {
-			TOGGLE_DEBUG();
 			break;
 		}
 

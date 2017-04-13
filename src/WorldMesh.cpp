@@ -42,8 +42,6 @@ WorldMesh::WorldMesh(float _radius, const Vec3f& _center) :
 	for (auto i = 0; i < SIZE(basePoints); ++i) {
 		baseVertices[i] = addVertex(basePoints[i], 0);
 
-//		baseVertices[i]->setElevation(Perlin::generate(baseVertices[i]->get() + Vec3f(1, 1, 1)));
-//		baseVertices[i]->setElevation(Perlin::generateTurbulence(8, 2, 2, baseVertices[i]->get() + Vec3f(1, 1, 1)));
 		baseVertices[i]->setElevation(EL(baseVertices[i]));
 
 		baseVertices[i]->setActive(true);
@@ -85,11 +83,10 @@ void WorldMesh::recursiveUpdate(Vertex* v1, Vertex* v2, Vertex* v3,
 			getOrCreateChildVertex(v2, v3), getOrCreateChildVertex(v3, v1) };
 
 	{
-		Vec3f tempCenters[3] = { edge_center[0]->getReal(),
-				edge_center[1]->getReal(), edge_center[2]->getReal() };
+		Vec3f tempCenters[3] = { edge_center[0]->getReal().normalized(),
+				edge_center[1]->getReal().normalized(), edge_center[2]->getReal().normalized() };
 
 		for (auto i = 0; i < 3; ++i) {
-			tempCenters[i].normalize();
 			edge_center[i]->set(tempCenters[i]);
 
 			edge_center[i]->setElevation(EL(edge_center[i]));

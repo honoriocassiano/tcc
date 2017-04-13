@@ -174,8 +174,7 @@ void Planet::update(const Time& dt) {
 		float velocity = calculateVelocity(getMass(), getSemiMajorAxis(),
 				orbiter->getCenter(), getCenter());
 
-		Vec3f normal = (center - orbiter->getCenter());
-		normal.normalize();
+		Vec3f normal = (center - orbiter->getCenter()).normalized();
 
 		Matrix matrix = Matrix::MakeYRotation(90 * to_rad);
 
@@ -226,9 +225,7 @@ void Planet::calculateOrbitGravity() {
 
 		float r3 = pow(vec.length() * Scale::getLength(), 2.0);
 
-		vec.normalize();
-
-		mOrbitGravity = vec * constant::G()
+		mOrbitGravity = vec.normalized() * constant::G()
 				* ((getMass() * getOrbiter()->getMass()) / r3);
 
 		/*
