@@ -1,9 +1,9 @@
+#include "structures/vectors.h"
 #include "Planet.h"
 #include <stdio.h>
 #include <vector>
 
 #include "vertex.h"
-#include "vectors.h"
 #include "matrix.h"
 
 #include "triangle.h"
@@ -37,7 +37,7 @@ float calculateVelocity(float mass, float semiMajorAxis, const Vec3f& orbiter,
 
 	Vec3f r_v = planet - orbiter;
 
-	float r = r_v.Length();
+	float r = r_v.length();
 
 	return sqrtf(mass * constant::G() * (2 / (r * Scale::getLength()) - 1 / (semiMajorAxis * Scale::getLength()) ));
 }
@@ -119,9 +119,9 @@ void Planet::subdivide() {
 		Vec3f p12 = v1->get() + v2->get();
 		Vec3f p20 = v2->get() + v0->get();
 
-		p01.Normalize();
-		p12.Normalize();
-		p20.Normalize();
+		p01.normalize();
+		p12.normalize();
+		p20.normalize();
 
 		float turbulence01 = Perlin::generateTurbulence(octaves, A, B,
 				(p01.x() + 1) * mRadius, (p01.y() + 1) * mRadius,
@@ -170,7 +170,7 @@ void Planet::update(const Time& dt) {
 				orbiter->getCenter(), getCenter());
 
 		Vec3f normal = (center - orbiter->getCenter());
-		normal.Normalize();
+		normal.normalize();
 
 		Matrix matrix = Matrix::MakeYRotation(90 * to_rad);
 
@@ -218,9 +218,9 @@ void Planet::calculateOrbitGravity() {
 //		Vec3f vec = getCenter() - getOrbiter()->getCenter();
 		Vec3f vec = getOrbiter()->getCenter() - getCenter();
 
-		float r3 = pow(vec.Length() * Scale::getLength(), 2.0);
+		float r3 = pow(vec.length() * Scale::getLength(), 2.0);
 
-		vec.Normalize();
+		vec.normalize();
 
 		mOrbitGravity = vec * constant::G()
 				* ((getMass() * getOrbiter()->getMass()) / r3);

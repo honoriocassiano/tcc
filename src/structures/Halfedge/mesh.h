@@ -4,7 +4,6 @@
 #include "../vectors.h"
 #include "../Array/array.h"
 #include "../Array/bag.h"
-#include "boundingbox.h"
 #include "../../MultiLevelArray.h"
 #include "../matrix.h"
 
@@ -80,12 +79,6 @@ public:
 	void removeTriangle(Triangle *t);
 
 	// ===============
-	// OTHER ACCESSORS
-	BoundingBox* getBoundingBox() const {
-		return bbox;
-	}
-
-	// ===============
 	// OTHER FUNCTIONS
 	void LoopSubdivision();
 	void Simplification(int target_tri_count);
@@ -122,7 +115,6 @@ protected:
 
 	Bag<Edge*> *edges;
 	Bag<Triangle*> *triangles;
-	BoundingBox *bbox;
 	Bag<VertexParent*> *vertex_parents;
 
 	friend class QuadtreeMesh;

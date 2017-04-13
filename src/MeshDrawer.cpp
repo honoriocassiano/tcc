@@ -258,9 +258,9 @@ void MeshDrawer::drawNormals(Mesh* mesh) {
 
 		Vec3f normal;
 
-		Vec3f::Cross3(normal, (p2 - p1), (p3 - p1));
+		Vec3f::cross3(normal, (p2 - p1), (p3 - p1));
 
-		normal.Normalize();
+		normal.normalize();
 		normal = normal * 0.5;
 
 		auto centroid = getCentroid(triangle);
@@ -299,13 +299,13 @@ Vec3f MeshDrawer::getNormal(const Triangle* triangle) {
 
 	Vec3f normal;
 
-	Vec3f::Cross3(normal, (B - A), (C - A));
+	Vec3f::cross3(normal, (B - A), (C - A));
 
 	return normal;
 }
 
 float MeshDrawer::cos(const Vec3f& v1, const Vec3f& v2) {
-	return (v1.Dot3(v2)) / (v1.Length() * v2.Length());
+	return (v1.dot3(v2)) / (v1.length() * v2.length());
 }
 
 void MeshDrawer::drawAxis() {
@@ -486,9 +486,9 @@ bool MeshDrawer::isClockwise(const Triangle* triangle) {
 
 	Vec3f normal;
 
-	Vec3f::Cross3(normal, (B - A), (C - A));
+	Vec3f::cross3(normal, (B - A), (C - A));
 
 	Vec3f centroid = getCentroid(triangle);
 
-	return (normal.Dot3(centroid) > 0.0f);
+	return (normal.dot3(centroid) > 0.0f);
 }

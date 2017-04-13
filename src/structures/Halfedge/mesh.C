@@ -28,7 +28,6 @@ Mesh::Mesh() {
 	triangles = new Bag<Triangle*>(INITIAL_TRIANGLE, Triangle::extract_func);
 	vertex_parents = new Bag<VertexParent*>(INITIAL_VERTEX,
 			VertexParent::extract_func);
-	bbox = NULL;
 
 	vertices2 = new MultiLevelArray<Vertex*>();
 }
@@ -40,8 +39,6 @@ Mesh::~Mesh() {
 	edges = NULL;
 	delete triangles;
 	triangles = NULL;
-	delete bbox;
-	bbox = NULL;
 
 	delete vertices2;
 	vertices2 = nullptr;
@@ -301,8 +298,8 @@ Vec3f ComputeNormal(const Vec3f &p1, const Vec3f &p2, const Vec3f &p3) {
 	Vec3f v23 = p3;
 	v23 -= p2;
 	Vec3f normal;
-	Vec3f::Cross3(normal, v12, v23);
-	normal.Normalize();
+	Vec3f::cross3(normal, v12, v23);
+	normal.normalize();
 	return normal;
 }
 
@@ -503,9 +500,9 @@ void Mesh::updateNormals() {
 		auto normalB = b->getNormal() + normal;
 		auto normalC = c->getNormal() + normal;
 
-		normalA.Normalize();
-		normalB.Normalize();
-		normalC.Normalize();
+		normalA.normalize();
+		normalB.normalize();
+		normalC.normalize();
 
 		a->setNormal(normalA);
 		b->setNormal(normalB);

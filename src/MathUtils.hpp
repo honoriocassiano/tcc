@@ -17,9 +17,9 @@ float distanceFromPointToLine(const Vec3f& p1, const Vec3f& p2,
 
 	Vec3f numerator, denominator = (p2 - p1);
 
-	Vec3f::Cross3(numerator, temp1, temp2);
+	Vec3f::cross3(numerator, temp1, temp2);
 
-	return numerator.Length() / denominator.Length();
+	return numerator.length() / denominator.length();
 }
 
 }

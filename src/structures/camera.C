@@ -16,8 +16,8 @@ Camera::Camera(Vec3f c, Vec3f d, Vec3f u) {
   direction = d;
   up = u;
   // normalize the vectors
-  up.Normalize();
-  direction.Normalize();
+  up.normalize();
+  direction.normalize();
 }
 
 PerspectiveCamera::PerspectiveCamera(Vec3f c, Vec3f d, Vec3f u, float a) : Camera(c,d,u) {
@@ -106,7 +106,7 @@ void PerspectiveCamera::truckCamera(float dx, float dy) {
 void PerspectiveCamera::rotateCamera(float rx, float ry) {
   // Don't let the model flip upside-down (There is a singularity
   // at the poles when 'up' and 'direction' are aligned)
-  float tiltAngle = acos(up.Dot3(direction));
+  float tiltAngle = acos(up.dot3(direction));
   if (tiltAngle-ry > 3.13)
     ry = tiltAngle - 3.13;
   else if (tiltAngle-ry < 0.01)
@@ -117,7 +117,7 @@ void PerspectiveCamera::rotateCamera(float rx, float ry) {
 
   rotMat.Transform(center);
   rotMat.TransformDirection(direction);
-  direction.Normalize();
+  direction.normalize();
   Vec3f screenCenter = center + direction;
   float screenHeight = tan(angle/2.0);
 

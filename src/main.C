@@ -2,6 +2,7 @@
 #include <assert.h>
 
 #include <GL/glut.h>
+#include "structures/vectors.h"
 #include "PriorityQueue.h"
 #include "Planet.h"
 
@@ -16,6 +17,7 @@
 #include "MultiLevelArray.h"
 
 #include "Greeting.h"
+
 
 // =========================================
 // =========================================

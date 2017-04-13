@@ -38,10 +38,6 @@ Vertex* QuadtreeMesh::getOrCreateChildVertex(Vertex* p1, Vertex* p2) {
 		child->setLevel(std::max(p1->getLevel(), p2->getLevel()) + 1);
 	}
 
-	if (child->get().Length() < 0.01) {
-		int a = *((int*) 0x0);
-	}
-
 	return child;
 }
 

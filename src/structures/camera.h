@@ -19,7 +19,7 @@ public:
   virtual void dollyCamera(float dist) = 0;
   virtual void truckCamera(float dx, float dy) = 0;
   virtual void rotateCamera(float rx, float ry) = 0;
-  virtual void Print() = 0;
+//  virtual void Print() = 0;
 
 protected:
   Camera() { assert(0); } // don't use
@@ -27,12 +27,12 @@ protected:
   // HELPER FUNCTIONS
   const Vec3f getHorizontal() const {
     Vec3f answer;
-    Vec3f::Cross3(answer, direction, up);
-    answer.Normalize();
+    Vec3f::cross3(answer, direction, up);
+    answer.normalize();
     return answer; }
   const Vec3f getScreenUp() const {
     Vec3f answer;
-    Vec3f::Cross3(answer, getHorizontal(), direction);
+    Vec3f::cross3(answer, getHorizontal(), direction);
     return answer; }
 
   // REPRESENTATION
@@ -55,17 +55,17 @@ public:
   void dollyCamera(float dist);
   void truckCamera(float dx, float dy);
   void rotateCamera(float rx, float ry);
-  void Print() {
-    printf ("PerspectiveCamera {\n");
-    printf ("    center    ");
-    center.Write(stdout);
-    printf ("    direction ");
-    direction.Write(stdout);
-    printf ("    up        ");
-    up.Write(stdout);
-    printf ("    angle      %f\n", angle);
-    printf ("}\n");
-  }    
+//  void Print() {
+//    printf ("PerspectiveCamera {\n");
+//    printf ("    center    ");
+//    center.Write(stdout);
+//    printf ("    direction ");
+//    direction.Write(stdout);
+//    printf ("    up        ");
+//    up.Write(stdout);
+//    printf ("    angle      %f\n", angle);
+//    printf ("}\n");
+//  }
 
 private:
   PerspectiveCamera() { assert(0); } // don't use

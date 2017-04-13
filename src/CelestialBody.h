@@ -8,7 +8,7 @@
 #ifndef SRC_CELESTIALBODY_H_
 #define SRC_CELESTIALBODY_H_
 
-#include "vectors.h"
+#include "structures/vectors.h"
 #include "mesh.h"
 
 #include "Time.h"
@@ -79,7 +79,7 @@ public:
 	void setOrbiter(CelestialBody* orbiter) {
 		this->orbiter = orbiter;
 		if (orbiter) {
-			float distance = (center - orbiter->getCenter()).Length();
+			float distance = (center - orbiter->getCenter()).length();
 
 			semiMajorAxis = (distance / 2) * 1.2;
 		} else {

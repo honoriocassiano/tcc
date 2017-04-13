@@ -62,7 +62,7 @@ public:
 
 				// TODO Check this comment
 				// Check if the vectors are "ortoghonals"
-				if (v01.Dot3(v12) == 0.0) {
+				if (v01.dot3(v12) == 0.0) {
 					hypotenuse = currentEdge;
 
 					break;

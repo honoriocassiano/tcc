@@ -36,7 +36,7 @@ WorldMesh::WorldMesh(float _radius, const Vec3f& _center) :
 							0, -1 }, { t, 0, 1 }, { -t, 0, -1 }, { -t, 0, 1 } };
 
 	for (auto& p : basePoints) {
-		p.Normalize();
+		p.normalize();
 	}
 
 	for (auto i = 0; i < SIZE(basePoints); ++i) {
@@ -89,7 +89,7 @@ void WorldMesh::recursiveUpdate(Vertex* v1, Vertex* v2, Vertex* v3,
 				edge_center[1]->getReal(), edge_center[2]->getReal() };
 
 		for (auto i = 0; i < 3; ++i) {
-			tempCenters[i].Normalize();
+			tempCenters[i].normalize();
 			edge_center[i]->set(tempCenters[i]);
 
 			edge_center[i]->setElevation(EL(edge_center[i]));
@@ -105,10 +105,10 @@ void WorldMesh::recursiveUpdate(Vertex* v1, Vertex* v2, Vertex* v3,
 
 		Vec3f d = getVertexPositionWithTransform(edge_center[i]) - center;
 
-		edge_test[i] = d.Length() > ratio_size;
-		d.Normalize();
+		edge_test[i] = d.length() > ratio_size;
+		d.normalize();
 
-		double dot = getVertexPositionWithTransform(edge_center[i]).Dot3(d);
+		double dot = getVertexPositionWithTransform(edge_center[i]).dot3(d);
 
 		angle[i] = std::acos(std::max(-1.0, std::min(dot, 1.0)));
 	}
@@ -153,9 +153,9 @@ void WorldMesh::recursiveUpdate(Vertex* v1, Vertex* v2, Vertex* v3,
 			auto n2 = p[i2]->get();
 			auto n3 = p[i3]->get();
 
-			n1.Normalize();
-			n2.Normalize();
-			n3.Normalize();
+			n1.normalize();
+			n2.normalize();
+			n3.normalize();
 
 			p[i1]->setNormal(n1);
 			p[i2]->setNormal(n2);

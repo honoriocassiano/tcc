@@ -45,7 +45,7 @@ SDLWindow::SDLWindow(int width, int height) :
 
 	Vec3f direction = Vec3f(0, 0, 0) - position;
 
-	direction.Normalize();
+	direction.normalize();
 
 	mCamera = new PerspectiveCamera2(position, direction, Vec3f(0, 1, 0),
 			20 * M_PI / 180.0);

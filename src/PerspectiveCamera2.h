@@ -25,17 +25,17 @@ public:
 	void dollyCamera(float dist);
 	void truckCamera(float dx, float dy);
 	void rotateCamera(float rx, float ry);
-	void Print() {
-		printf("PerspectiveCamera {\n");
-		printf("    center    ");
-		center.Write(stdout);
-		printf("    direction ");
-		direction.Write(stdout);
-		printf("    up        ");
-		up.Write(stdout);
-		printf("    angle      %f\n", angle);
-		printf("}\n");
-	}
+//	void Print() {
+//		printf("PerspectiveCamera {\n");
+//		printf("    center    ");
+//		center.Write(stdout);
+//		printf("    direction ");
+//		direction.Write(stdout);
+//		printf("    up        ");
+//		up.Write(stdout);
+//		printf("    angle      %f\n", angle);
+//		printf("}\n");
+//	}
 
 	void lookAt(const Vec3f& point);
 

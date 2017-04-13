@@ -8,10 +8,10 @@
 #ifndef SRC_PLAYER_H_
 #define SRC_PLAYER_H_
 
+#include "structures/vectors.h"
 #include "Collidable.h"
 #include "PerspectiveCamera2.h"
 
-#include "structures/vectors.h"
 
 class Player: public Collidable {
 public:

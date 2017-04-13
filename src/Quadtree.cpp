@@ -113,9 +113,9 @@ void Quadtree::updateActiveCenters(const Vec3f& cameraPosition, Vertex* center,
 		auto middleVertex = mesh->getOrCreateChildVertex(center, e);
 
 		auto d =
-				(intercardinals[ID::NE]->get() - intercardinals[ID::NW]->get()).Length();
+				(intercardinals[ID::NE]->get() - intercardinals[ID::NW]->get()).length();
 
-		auto l = (middleVertex->get() - cameraPosition).Length();
+		auto l = (middleVertex->get() - cameraPosition).length();
 
 //		auto roughness = calcRoughness(center, intercardinals);
 
@@ -488,7 +488,7 @@ float Quadtree::calculateRoughness(Vertex* center,
 
 	float roughness = 0;
 	float d =
-			(intercardinals[ID::NW]->get() - intercardinals[ID::NE]->get()).Length();
+			(intercardinals[ID::NW]->get() - intercardinals[ID::NE]->get()).length();
 
 	for (int i = 0; i < 4; ++i) {
 

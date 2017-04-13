@@ -121,12 +121,12 @@ public:
 	void Transform(Vec3f &v) const {
 		Vec4f v2 = Vec4f(v.x(), v.y(), v.z(), 1);
 		Transform(v2);
-		v.Set(v2.x(), v2.y(), v2.z());
+		v.set(v2.x(), v2.y(), v2.z());
 	}
 	void Transform(Vec2f &v) const {
 		Vec4f v2 = Vec4f(v.x(), v.y(), 1, 1);
 		Transform(v2);
-		v.Set(v2.x(), v2.y());
+		v.set(v2.x(), v2.y());
 	}
 
 	// Use to transform the direction of the ray
@@ -134,7 +134,7 @@ public:
 	void TransformDirection(Vec3f &v) const {
 		Vec4f v2 = Vec4f(v.x(), v.y(), v.z(), 0);
 		Transform(v2);
-		v.Set(v2.x(), v2.y(), v2.z());
+		v.set(v2.x(), v2.y(), v2.z());
 	}
 
 	// INPUT / OUTPUT

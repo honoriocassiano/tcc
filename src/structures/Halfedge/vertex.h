@@ -95,7 +95,7 @@ public:
 		position = v;
 	}
 	void set(double x, double y, double z) {
-		position.Set(x, y, z);
+		position.set(x, y, z);
 	}
 
 	void setIndex(int index) {
@@ -130,7 +130,7 @@ public:
 	}
 
 	void setNormal(double x, double y, double z) {
-		normal.Set(x, y, z);
+		normal.set(x, y, z);
 	}
 
 	void setColor(const Color& c) {
