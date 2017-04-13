@@ -3,21 +3,13 @@
 
 #include <GL/glut.h>
 #include "structures/vectors.h"
-#include "PriorityQueue.h"
 #include "Planet.h"
 
 #include "SDLWindow.h"
 
-#include "Quadtree.h"
-#include "QuadtreeMesh.h"
-
-#include "DirectionArray.h"
-#include "IntercardinalDirection.h"
-
 #include "MultiLevelArray.h"
 
 #include "Greeting.h"
-
 
 // =========================================
 // =========================================
@@ -29,44 +21,6 @@ int main(int argc, char **argv) {
 	SDLWindow window(800, 600);
 	window.run();
 
-
-//	auto abc = MultiLevelArray<int>(4);
-//
-////	for (int i = 0; i < 10; ++i) {
-////		for (int j = 0; j < 5; ++j) {
-////			abc.add(i + j * 10, j);
-////		}
-////	}
-//
-//	abc.add(1, 1);
-//
-//	abc.add(3, 3);
-//
-//	for (auto it = abc.rbegin(2); it != abc.rend(); ++it) {
-//
-////		printf("{ %ld, %ld } -> { %ld, %ld }\n", it.getPosition().first,
-////				it.getPosition().second, abc.rend().getPosition().first,
-////				abc.rend().getPosition().second);
-//
-//		const auto& n = *it;
-//
-//		printf("%d\n", n);
-//	}
-//	printf("\n");
-
-//
-//	srand(time(nullptr));
-//
-//	for (int i = 0; i < 10; ++i) {
-//		auto rLevel = rand() % 5;
-//
-//		abc.remove(std::make_pair(rLevel, 0));
-//	}
-//
-//	for (const auto& el : abc) {
-//		printf("%d ", el);
-//	}
-//	printf("\n");
 	/*
 	 SDLWindow window(640, 480);
 

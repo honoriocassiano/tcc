@@ -20,9 +20,7 @@
 #include <GL/glu.h>
 
 #include "PerspectiveCamera2.h"
-#include "QuadCube.h"
 #include "MeshDrawer.h"
-#include "Quadtree.h"
 
 class SDLWindow {
 public:
@@ -47,8 +45,6 @@ private:
 	void display();
 	void processRealtimeEvents();
 	void processEvents(const SDL_Event& e);
-
-	QuadCube* cube;
 
 	Vec3f lastPosition;
 

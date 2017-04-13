@@ -36,7 +36,7 @@ int HandleGLErrorWindow2() {
 }
 
 SDLWindow::SDLWindow(int width, int height) :
-		cube(new QuadCube(Vec3f(0, 0, 0))), mCamera(nullptr), mClock(
+		mCamera(nullptr), mClock(
 				new Clock()), freezed(false), mIsRunning(
 				false), mWindow(nullptr), mWidth(width), mHeight(height) {
 
@@ -328,26 +328,6 @@ void SDLWindow::processEvents(const SDL_Event& e) {
 
 		case SDLK_w: {
 			options.wireframe = !options.wireframe;
-			break;
-		}
-
-		case SDLK_e: {
-			Quadtree::c++;
-			break;
-		}
-
-		case SDLK_r: {
-			Quadtree::c--;
-			break;
-		}
-
-		case SDLK_y: {
-			Quadtree::C--;
-			break;
-		}
-
-		case SDLK_u: {
-			Quadtree::C++;
 			break;
 		}
 
