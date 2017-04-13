@@ -118,8 +118,7 @@ protected:
 	 * Recalculate mesh normals vectors.
 	 */
 	void recalculateNormals() {
-		mesh->computeFaceNormals();
-		mesh->computeVerticesNormals();
+		mesh->updateNormals();
 	}
 
 	Vec3f center;						/**< Body position. */

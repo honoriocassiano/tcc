@@ -385,19 +385,6 @@ std::vector<Triangle*> Mesh::getTrianglesByVertex(Edge * e) {
 	return faces;
 }
 
-void Mesh::computeFaceNormals() {
-	Iterator<Triangle*> *iter = triangles->StartIteration();
-
-	while (Triangle *t = iter->GetNext()) {
-		Vec3f a = (*t)[0]->get();
-		Vec3f b = (*t)[1]->get();
-		Vec3f c = (*t)[2]->get();
-		//InsertNormal(a, b, c);
-		t->setNormal(ComputeNormal(a, b, c));
-	}
-	triangles->EndIteration(iter);
-}
-
 void Mesh::printTrianglesPointers(int limit) {
 
 	auto it = triangles->StartIteration();
@@ -418,26 +405,6 @@ void Mesh::printTrianglesPointers(int limit) {
 	}
 
 	triangles->EndIteration(it);
-}
-
-void Mesh::computeVerticesNormals() {
-	Iterator<Edge*> *iter = edges->StartIteration();
-
-	Edge *e = nullptr;
-
-	while ((e = iter->GetNext())) {
-		std::vector<Triangle*> triangles = getTrianglesByVertex(e);
-
-		Vec3f normal(0, 0, 0);
-
-		for (Triangle* t : triangles) {
-			normal += t->getNormal();
-		}
-
-		e->getVertex()->setNormal(normal);
-	}
-
-	edges->EndIteration(iter);
 }
 
 void Mesh::printVertices(int limit) {

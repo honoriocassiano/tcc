@@ -10,7 +10,6 @@
 
 #include "Quadtree.h"
 #include "structures/Halfedge/mesh.h"
-#include "geometry/Vector3.h"
 #include "QuadtreeMesh.h"
 #include "MeshDrawer.h"
 
