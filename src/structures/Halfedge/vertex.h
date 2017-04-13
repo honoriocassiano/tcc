@@ -20,7 +20,7 @@ public:
 	// CONSTRUCTOR & DESTRUCTOR
 	Vertex(int i, const Vec3f &pos) :
 			position(pos), color(1.0f, 1.0f, 1.0f), d2(0.0f), active(false), level(
-					0), relatives { nullptr, nullptr }, elevation(0) {
+					0), elevation(0) {
 //			position(pos), color(1.0f, 1.0f, 1.0f), active(false), level(0), parents1(
 //					nullptr), parents2(nullptr) {
 		index = i;
@@ -75,18 +75,8 @@ public:
 		return level;
 	}
 
-	VertexParent* getParents1() {
-//		return parents1;
-		return relatives.first;
-	}
-
-	VertexParent* getParents2() {
-//		return parents2;
-		return relatives.second;
-	}
-
-	std::pair<VertexParent*, VertexParent*> getRelatives() {
-		return relatives;
+	VertexParent* getParents() {
+		return parent;
 	}
 
 	// =========
@@ -107,22 +97,12 @@ public:
 		normal = v;
 	}
 
-	void setParents1(VertexParent* p) {
-//		parents1 = p;
-		relatives.first = p;
+	void setParent(VertexParent* p) {
+		parent = p;
 	}
 
 	void setElevation(float noise) {
 		this->elevation = noise;
-	}
-
-	void setParents2(VertexParent* p) {
-//		parents2 = p;
-		relatives.second = p;
-	}
-
-	void setParents(const std::pair<VertexParent*, VertexParent*>& p) {
-		relatives = p;
 	}
 
 	void setD2(float d2) {
@@ -171,7 +151,7 @@ private:
 //	VertexParent* parents1;
 //	VertexParent* parents2;
 
-	std::pair<VertexParent*, VertexParent*> relatives;
+	VertexParent* parent;
 
 	// this is the index from the original .obj file.
 	// technically not part of the half-edge data structure

@@ -183,7 +183,7 @@ void WorldMesh::deleteUnusedVertices() {
 	for (auto it = vertices2->rbegin(); it != vertices2->rend(); ++it) {
 
 		auto& v = *it;
-		auto vp = v->getParents1();
+		auto vp = v->getParents();
 
 		if ((v->getLevel() > 0) && (!v->isActive())) {
 			delete v;
