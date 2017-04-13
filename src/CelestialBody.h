@@ -121,13 +121,13 @@ protected:
 		mesh->updateNormals();
 	}
 
-	Vec3f center;						/**< Body position. */
-	Mesh * mesh;						/**< Half-edge mesh. */
+	Vec3f center; /**< Body position. */
+	Mesh * mesh; /**< Half-edge mesh. */
 
 	CelestialBody * orbiter;
 
-	float mass;							/**< Body mass. */
-	float semiMajorAxis;				/**< Semi major axis of orbit. */
+	float mass; /**< Body mass. */
+	float semiMajorAxis; /**< Semi major axis of orbit. */
 };
 
 #endif /* SRC_CELESTIALBODY_H_ */

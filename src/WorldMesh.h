@@ -28,7 +28,6 @@ public:
 	void deleteUnusedVertices();
 
 	Vertex* getOrCreateChildVertex(Vertex *p1, Vertex *p2);
-//	void updateNormals();
 
 	Matrix getTransform() override {
 		return transform;

@@ -219,43 +219,5 @@ Vec3f WorldMesh::getVertexPositionWithTransform(Vertex* v) {
 	return position;
 }
 
-//Vec3f computeNormal(const Vec3f &p1, const Vec3f &p2, const Vec3f &p3) {
-//	Vec3f v12 = p2;
-//	v12 -= p1;
-//	Vec3f v23 = p3;
-//	v23 -= p2;
-//	Vec3f normal;
-//	Vec3f::Cross3(normal, v12, v23);
-//	normal.Normalize();
-//	return normal;
-//}
-
-//void WorldMesh::updateNormals() {
-//
-//	auto it = triangles->StartIteration();
-//
-//	while (auto t = it->GetNext()) {
-//		auto a = (*t)[0];
-//		auto b = (*t)[1];
-//		auto c = (*t)[2];
-//
-//		auto normal = computeNormal(a->get(), b->get(), c->get());
-//
-//		auto normalA = a->getNormal() + normal;
-//		auto normalB = b->getNormal() + normal;
-//		auto normalC = b->getNormal() + normal;
-//
-//		normalA.Normalize();
-//		normalB.Normalize();
-//		normalC.Normalize();
-//
-//		a->setNormal(normalA);
-//		b->setNormal(normalB);
-//		c->setNormal(normalC);
-//
-//		t->setNormal(normal);
-//	}
-//}
-
 #undef SIZE
 
