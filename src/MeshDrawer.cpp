@@ -11,8 +11,8 @@
 #include <GL/glu.h>
 #include <stdio.h>
 
-#include "triangle.h"
-#include "vertex.h"
+#include "structures/Halfedge/triangle.h"
+#include "structures/Halfedge/vertex.h"
 #include "structures/matrix.h"
 
 #include "Perlin.h"

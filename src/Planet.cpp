@@ -3,10 +3,10 @@
 #include <stdio.h>
 #include <vector>
 
-#include "vertex.h"
-#include "matrix.h"
+#include "structures/Halfedge/vertex.h"
+#include "structures/matrix.h"
 
-#include "triangle.h"
+#include "structures/Halfedge/triangle.h"
 
 #include "MeshDrawer.h"
 

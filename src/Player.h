@@ -8,9 +8,9 @@
 #ifndef SRC_PLAYER_H_
 #define SRC_PLAYER_H_
 
+#include "PerspectiveCamera.h"
 #include "structures/vectors.h"
 #include "Collidable.h"
-#include "PerspectiveCamera2.h"
 
 
 class Player: public Collidable {
@@ -21,7 +21,7 @@ public:
 	bool isColliding(const Vec3f& point) const override;
 
 private:
-	PerspectiveCamera2* camera;
+	PerspectiveCamera* camera;
 	float collisionRadius;
 
 };

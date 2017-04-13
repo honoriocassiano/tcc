@@ -47,7 +47,7 @@ SDLWindow::SDLWindow(int width, int height) :
 
 	direction.normalize();
 
-	mCamera = new PerspectiveCamera2(position, direction, Vec3f(0, 1, 0),
+	mCamera = new PerspectiveCamera(position, direction, Vec3f(0, 1, 0),
 			20 * M_PI / 180.0);
 
 	assert(initSDL());

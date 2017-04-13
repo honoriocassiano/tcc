@@ -20,11 +20,6 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 find_package(OpenGL REQUIRED)
 find_package(SDL2 REQUIRED)
 
-include_directories(${CMAKE_SOURCE_DIR}/src)
-include_directories(${CMAKE_SOURCE_DIR}/src/structures)
-include_directories(${CMAKE_SOURCE_DIR}/src/structures/Array)
-include_directories(${CMAKE_SOURCE_DIR}/src/structures/Halfedge)
-
 include_directories(${OPENGL_INCLUDE_DIR})
 include_directories(${SDL2_INCLUDE_DIR})
 

@@ -9,7 +9,7 @@
 #define SRC_CELESTIALBODY_H_
 
 #include "structures/vectors.h"
-#include "mesh.h"
+#include "structures/Halfedge/mesh.h"
 
 #include "Time.h"
 

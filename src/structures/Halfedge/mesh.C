@@ -4,8 +4,6 @@
 
 #include <string.h>
 
-#include "Debug.h"
-
 #include "mesh.h"
 #include "edge.h"
 #include "vertex.h"

@@ -8,8 +8,6 @@
 
 #include "vertex.h"
 
-#include "Debug.h"
-
 // ===========================================================
 
 class Triangle {

@@ -9,7 +9,7 @@
 
 Player::Player(const Vec3f& center, float _collisionRadius) :
 		camera(
-				new PerspectiveCamera2(center, Vec3f() - center, Vec3f(0, 1, 0),
+				new PerspectiveCamera(center, Vec3f() - center, Vec3f(0, 1, 0),
 						20 * M_PI / 180.0)), collisionRadius(_collisionRadius) {
 
 }

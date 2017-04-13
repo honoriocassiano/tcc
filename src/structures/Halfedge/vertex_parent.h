@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <assert.h>
 
-#include "utils.h"
+#include "../utils.h"
 #include "vertex.h"
 
 // ===================================================================

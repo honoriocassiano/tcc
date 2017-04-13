@@ -10,7 +10,7 @@
 
 #include <vector>
 
-#include "camera.h"
+#include "structures/camera.h"
 #include "Time.h"
 #include "Clock.h"
 #include "CelestialBody.h"
@@ -18,8 +18,8 @@
 #include <SDL2/SDL.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
+#include "PerspectiveCamera.h"
 
-#include "PerspectiveCamera2.h"
 #include "MeshDrawer.h"
 
 class SDLWindow {
@@ -54,7 +54,7 @@ private:
 	DrawOptions options;
 	SDL_Window * mWindow;
 
-	PerspectiveCamera2* mCamera;
+	PerspectiveCamera* mCamera;
 	Clock * mClock;
 	bool freezed;
 	bool mIsRunning;

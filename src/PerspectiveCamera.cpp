@@ -5,17 +5,16 @@
  *      Author: cassiano
  */
 
-#include "PerspectiveCamera2.h"
-
 #include <math.h>
-#include "matrix.h"
+#include "structures/matrix.h"
 
 #include <GL/gl.h>
 #include <GL/glu.h>
+#include "PerspectiveCamera.h"
 
 #include <stdio.h>
 
-PerspectiveCamera2::PerspectiveCamera2(Vec3f c, Vec3f d, Vec3f u, float a) :
+PerspectiveCamera::PerspectiveCamera(Vec3f c, Vec3f d, Vec3f u, float a) :
 		Camera(c, d, u) {
 	angle = a;
 
@@ -34,7 +33,7 @@ PerspectiveCamera2::PerspectiveCamera2(Vec3f c, Vec3f d, Vec3f u, float a) :
 // Create a camera with the appropriate dimensions that
 // crops the screen in the narrowest dimension.
 
-void PerspectiveCamera2::glInit(int w, int h) {
+void PerspectiveCamera::glInit(int w, int h) {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
@@ -63,7 +62,7 @@ void PerspectiveCamera2::glInit(int w, int h) {
 // dollyCamera: Move camera along the direction vector
 // ====================================================================
 
-void PerspectiveCamera2::dollyCamera(float dist) {
+void PerspectiveCamera::dollyCamera(float dist) {
 	center += direction * dist;
 	Vec3f screenCenter = center + direction;
 	float screenHeight = tan(angle / 2.0);
@@ -75,7 +74,7 @@ void PerspectiveCamera2::dollyCamera(float dist) {
 // truckCamera: Translate camera perpendicular to the direction vector
 // ====================================================================
 
-void PerspectiveCamera2::truckCamera(float dx, float dy) {
+void PerspectiveCamera::truckCamera(float dx, float dy) {
 	center += getHorizontal() * dx + getScreenUp() * dy;
 	Vec3f screenCenter = center + direction;
 	float screenHeight = tan(angle / 2.0);
@@ -87,7 +86,7 @@ void PerspectiveCamera2::truckCamera(float dx, float dy) {
 // rotateCamera: Rotate around the up and horizontal vectors
 // ====================================================================
 
-void PerspectiveCamera2::rotateCamera(float rx, float ry) {
+void PerspectiveCamera::rotateCamera(float rx, float ry) {
 	// Don't let the model flip upside-down (There is a singularity
 	// at the poles when 'up' and 'direction' are aligned)
 	float tiltAngle = acos(up.dot3(direction));
@@ -113,6 +112,6 @@ void PerspectiveCamera2::rotateCamera(float rx, float ry) {
 	yAxis = getScreenUp() * 2 * screenHeight;
 }
 
-void PerspectiveCamera2::lookAt(const Vec3f& point) {
+void PerspectiveCamera::lookAt(const Vec3f& point) {
 	fprintf(stderr, "Function not implemented: \"%s\"\n", __PRETTY_FUNCTION__);
 }

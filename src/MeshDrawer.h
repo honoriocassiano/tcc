@@ -8,7 +8,7 @@
 #ifndef SRC_MESHDRAWER_H_
 #define SRC_MESHDRAWER_H_
 
-#include "mesh.h"
+#include "structures/Halfedge/mesh.h"
 
 typedef struct _do {
 	bool wireframe;

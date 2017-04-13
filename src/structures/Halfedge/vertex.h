@@ -5,7 +5,7 @@
 #include <assert.h>
 
 #include "../vectors.h"
-#include "../Color.h"
+#include "../../Color.h"
 
 class Vertex;
 class VertexParent;

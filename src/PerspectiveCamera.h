@@ -5,17 +5,17 @@
  *      Author: cassiano
  */
 
-#ifndef SRC_PERSPECTIVECAMERA2_H_
-#define SRC_PERSPECTIVECAMERA2_H_
+#ifndef SRC_PERSPECTIVECAMERA_H_
+#define SRC_PERSPECTIVECAMERA_H_
 
-#include "camera.h"
+#include "structures/camera.h"
 
-class PerspectiveCamera2: public Camera {
+class PerspectiveCamera: public Camera {
 
 public:
 	// CONSTRUCTOR & DESTRUCTOR
-	PerspectiveCamera2(Vec3f c, Vec3f d, Vec3f u, float a);
-	virtual ~PerspectiveCamera2(void) {
+	PerspectiveCamera(Vec3f c, Vec3f d, Vec3f u, float a);
+	virtual ~PerspectiveCamera(void) {
 	}
 
 	const Vec3f& getPosition() const { return center; }
@@ -40,7 +40,7 @@ public:
 	void lookAt(const Vec3f& point);
 
 private:
-	PerspectiveCamera2() {
+	PerspectiveCamera() {
 		assert(0);
 	} // don't use
 
@@ -51,4 +51,4 @@ private:
 	Vec3f yAxis;
 };
 
-#endif /* SRC_PERSPECTIVECAMERA2_H_ */
+#endif /* SRC_PERSPECTIVECAMERA_H_ */
