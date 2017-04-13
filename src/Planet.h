@@ -16,7 +16,7 @@ public:
 	virtual ~Planet();
 
 	float getRadius() const {
-		return mRadius;
+		return radius;
 	}
 
 	void update(const Time& dt) override;
@@ -25,28 +25,15 @@ public:
 private:
 	static GLfloat to_rad;
 
-	GLfloat mRadius;
+	GLfloat radius;
 
-	Vec3f mOrbitGravity;
-
-	void subdivide();
-
-	void makePoints();
-	void makeTriangles();
-	//void updatePoints();
+	Vec3f orbitGravity;
 
 	void calculateOrbitGravity();
 
-	const static GLfloat vdata[12][3];
-	const static GLuint tindices[20][3];
+	float turbulenceDistortion;
 
-	float mTurbulenceDistortion;
-
-	bool mPendingUpdate;
-
-	static int octaves;
-	static int A;
-	static int B;
+	bool pendingUpdate;
 };
 
 #endif
