@@ -39,7 +39,10 @@ float calculateVelocity(float mass, float semiMajorAxis, const Vec3f& orbiter,
 
 	float r = r_v.length();
 
-	return sqrtf(mass * constant::G() * (2 / (r * Scale::getLength()) - 1 / (semiMajorAxis * Scale::getLength()) ));
+	return sqrtf(
+			mass * constant::G()
+					* (2 / (r * Scale::getLength())
+							- 1 / (semiMajorAxis * Scale::getLength())));
 }
 
 Planet::Planet(GLfloat radius) :
@@ -89,73 +92,75 @@ void Planet::makePoints() {
 }
 
 void Planet::subdivide() {
-	mPendingUpdate = true;
+	/*
+	 mPendingUpdate = true;
 
-	int count = mesh->numTriangles();
+	 int count = mesh->numTriangles();
 
-	Bag<Triangle*>* triangles = getTriangles();
+	 Bag<Triangle*>* triangles = getTriangles();
 
-	auto iterator = triangles->StartIteration();
+	 auto iterator = triangles->StartIteration();
 
-	std::vector<Triangle*> ts;
+	 std::vector<Triangle*> ts;
 
-	while (Triangle* triangle = iterator->GetNext()) {
-		ts.push_back(triangle);
-	}
-	triangles->EndIteration(iterator);
+	 while (Triangle* triangle = iterator->GetNext()) {
+	 ts.push_back(triangle);
+	 }
+	 triangles->EndIteration(iterator);
 
-	Vertex * v01 = nullptr;
-	Vertex * v12 = nullptr;
-	Vertex * v20 = nullptr;
+	 Vertex * v01 = nullptr;
+	 Vertex * v12 = nullptr;
+	 Vertex * v20 = nullptr;
 
-	for (int i = 0; i < count; ++i) {
-		Triangle * t = ts[i];
+	 for (int i = 0; i < count; ++i) {
+	 Triangle * t = ts[i];
 
-		Vertex * v0 = (*t)[0];
-		Vertex * v1 = (*t)[1];
-		Vertex * v2 = (*t)[2];
+	 Vertex * v0 = (*t)[0];
+	 Vertex * v1 = (*t)[1];
+	 Vertex * v2 = (*t)[2];
 
-		Vec3f p01 = v0->get() + v1->get();
-		Vec3f p12 = v1->get() + v2->get();
-		Vec3f p20 = v2->get() + v0->get();
+	 Vec3f p01 = v0->get() + v1->get();
+	 Vec3f p12 = v1->get() + v2->get();
+	 Vec3f p20 = v2->get() + v0->get();
 
-		p01.normalize();
-		p12.normalize();
-		p20.normalize();
+	 p01.normalize();
+	 p12.normalize();
+	 p20.normalize();
 
-		float turbulence01 = Perlin::generateTurbulence(octaves, A, B,
-				(p01.x() + 1) * mRadius, (p01.y() + 1) * mRadius,
-				(p01.z() + 1) * mRadius);
-		float turbulence12 = Perlin::generateTurbulence(octaves, A, B,
-				(p12.x() + 1) * mRadius, (p12.y() + 1) * mRadius,
-				(p12.z() + 1) * mRadius);
-		float turbulence20 = Perlin::generateTurbulence(octaves, A, B,
-				(p20.x() + 1) * mRadius, (p20.y() + 1) * mRadius,
-				(p20.z() + 1) * mRadius);
+	 float turbulence01 = Perlin::generateTurbulence(octaves, A, B,
+	 (p01.x() + 1) * mRadius, (p01.y() + 1) * mRadius,
+	 (p01.z() + 1) * mRadius);
+	 float turbulence12 = Perlin::generateTurbulence(octaves, A, B,
+	 (p12.x() + 1) * mRadius, (p12.y() + 1) * mRadius,
+	 (p12.z() + 1) * mRadius);
+	 float turbulence20 = Perlin::generateTurbulence(octaves, A, B,
+	 (p20.x() + 1) * mRadius, (p20.y() + 1) * mRadius,
+	 (p20.z() + 1) * mRadius);
 
-		p01 += p01 * turbulence01 * mTurbulenceDistortion;
-		p12 += p12 * turbulence12 * mTurbulenceDistortion;
-		p20 += p20 * turbulence20 * mTurbulenceDistortion;
+	 p01 += p01 * turbulence01 * mTurbulenceDistortion;
+	 p12 += p12 * turbulence12 * mTurbulenceDistortion;
+	 p20 += p20 * turbulence20 * mTurbulenceDistortion;
 
-//		Color green(0x00 / 255.0f, 0x80 / 255.0f, 0x00 / 255.0f);
-//		Color acqua(0xCD / 255.0f, 0x85 / 255.0f, 0x3F / 255.0f);
+	 //		Color green(0x00 / 255.0f, 0x80 / 255.0f, 0x00 / 255.0f);
+	 //		Color acqua(0xCD / 255.0f, 0x85 / 255.0f, 0x3F / 255.0f);
 
-#warning "Fix"
-		v01 = mesh->addVertex(p01, 0);
-		v12 = mesh->addVertex(p12, 0);
-		v20 = mesh->addVertex(p20, 0);
+	 #warning "Fix"
+	 v01 = mesh->addVertex(p01, 0);
+	 v12 = mesh->addVertex(p12, 0);
+	 v20 = mesh->addVertex(p20, 0);
 
-//		v01->setColor(Color::interpolate(acqua, green, (turbulence01 * 0.5) + 0.5));
-//		v12->setColor(Color::interpolate(acqua, green, (turbulence12 * 0.5) + 0.5));
-//		v20->setColor(Color::interpolate(acqua, green, (turbulence20 * 0.5) + 0.5));
+	 //		v01->setColor(Color::interpolate(acqua, green, (turbulence01 * 0.5) + 0.5));
+	 //		v12->setColor(Color::interpolate(acqua, green, (turbulence12 * 0.5) + 0.5));
+	 //		v20->setColor(Color::interpolate(acqua, green, (turbulence20 * 0.5) + 0.5));
 
-		mesh->removeTriangle(t);
+	 mesh->removeTriangle(t);
 
-		mesh->addTriangle(v0, v01, v20);
-		mesh->addTriangle(v1, v12, v01);
-		mesh->addTriangle(v2, v20, v12);
-		mesh->addTriangle(v01, v12, v20);
-	}
+	 mesh->addTriangle(v0, v01, v20);
+	 mesh->addTriangle(v1, v12, v01);
+	 mesh->addTriangle(v2, v20, v12);
+	 mesh->addTriangle(v01, v12, v20);
+	 }
+	 */
 }
 
 void Planet::update(const Time& dt) {
@@ -184,6 +189,7 @@ void Planet::update(const Time& dt) {
 		setCenter(getCenter() + direction);
 
 	}
+
 }
 
 void Planet::draw() {
@@ -226,10 +232,10 @@ void Planet::calculateOrbitGravity() {
 				* ((getMass() * getOrbiter()->getMass()) / r3);
 
 		/*
-		printf("gravity size: %e, vector: (%e, %e, %e)\n",
-				mOrbitGravity.Length(), mOrbitGravity.x(), mOrbitGravity.y(),
-				mOrbitGravity.z());
-		*/
+		 printf("gravity size: %e, vector: (%e, %e, %e)\n",
+		 mOrbitGravity.Length(), mOrbitGravity.x(), mOrbitGravity.y(),
+		 mOrbitGravity.z());
+		 */
 
 //		printf("%e, %f, %lf\n", constant::G, Scale::get(),
 //				(constant::G * Scale::get()));

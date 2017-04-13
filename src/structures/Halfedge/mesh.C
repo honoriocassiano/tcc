@@ -89,9 +89,9 @@ Triangle* Mesh::addTriangle(Vertex *a, Vertex *b, Vertex *c) {
 	ec->setNext(eb);
 
 	// add them to the master list
-	edges->Add(ea);
-	edges->Add(eb);
-	edges->Add(ec);
+	edges->add(ea);
+	edges->add(eb);
+	edges->add(ec);
 
 	// connect up with opposite edges (if they exist)
 	Edge *ea_op = getEdge((*ea)[1], (*ea)[0]);
@@ -108,7 +108,7 @@ Triangle* Mesh::addTriangle(Vertex *a, Vertex *b, Vertex *c) {
 	}
 
 	// add the triangle to the master list
-	triangles->Add(t);
+	triangles->add(t);
 
 	return t;
 }
@@ -121,10 +121,10 @@ void Mesh::removeTriangle(Triangle *t) {
 	assert(ec->getNext() == ea);
 
 	// remove elements from master lists
-	edges->Remove(ea);
-	edges->Remove(eb);
-	edges->Remove(ec);
-	triangles->Remove(t);
+	edges->remove(ea);
+	edges->remove(eb);
+	edges->remove(ec);
+	triangles->remove(t);
 
 	// clean up memory
 	delete ea;
@@ -135,11 +135,11 @@ void Mesh::removeTriangle(Triangle *t) {
 
 Edge* Mesh::getEdge(Vertex *a, Vertex *b) const {
 	assert(edges != NULL);
-	return edges->Get(P_TO_I(a), P_TO_I(b));
+	return edges->get(P_TO_I(a), P_TO_I(b));
 }
 
 Vertex* Mesh::getChildVertex(Vertex *p1, Vertex *p2) const {
-	VertexParent *vp = vertex_parents->GetReorder(P_TO_I(p1), P_TO_I(p2));
+	VertexParent *vp = vertex_parents->getReorder(P_TO_I(p1), P_TO_I(p2));
 	if (vp == NULL)
 		return NULL;
 	return vp->get();
@@ -149,16 +149,16 @@ void Mesh::setParentsChild(Vertex *p1, Vertex *p2, Vertex *child) {
 
 	auto vp = new VertexParent(p1, p2, child);
 
-	vertex_parents->Add(vp);
+	vertex_parents->add(vp);
 	child->setParent(vp);
 }
 
 Vertex* Mesh::deleteParentsChildRelation(Vertex *p1, Vertex *p2) {
-	VertexParent *vp = vertex_parents->GetReorder(P_TO_I(p1), P_TO_I(p2));
+	VertexParent *vp = vertex_parents->getReorder(P_TO_I(p1), P_TO_I(p2));
 	if (vp == NULL)
 		return NULL;
 
-	vertex_parents->Remove(vp);
+	vertex_parents->remove(vp);
 
 	return vp->get();
 }
@@ -176,10 +176,9 @@ Vec3f computeNormal(const Vec3f &p1, const Vec3f &p2, const Vec3f &p3) {
 
 void Mesh::printTrianglesPointers(int limit) {
 
-	auto it = triangles->StartIteration();
 	int i = 0;
 
-	while (Triangle *t = it->GetNext()) {
+	for (const auto& t : *triangles) {
 
 		auto edge = t->getEdge();
 
@@ -192,8 +191,6 @@ void Mesh::printTrianglesPointers(int limit) {
 
 		++i;
 	}
-
-	triangles->EndIteration(it);
 }
 
 void Mesh::printVertices(int limit) {
@@ -219,10 +216,11 @@ void Mesh::printVertices(int limit) {
 
 void Mesh::printTriangles(int limit) {
 
-	auto it = triangles->StartIteration();
+//	auto it = triangles->startIteration();
 	int i = 0;
-
-	while (Triangle *t = it->GetNext()) {
+//
+//	while (Triangle *t = it->getNext()) {
+	for (const auto& t : *triangles) {
 
 		auto edge = t->getEdge();
 
@@ -238,13 +236,18 @@ void Mesh::printTriangles(int limit) {
 		++i;
 	}
 
-	triangles->EndIteration(it);
+//	triangles->endIteration(it);
 }
 
 void Mesh::updateNormals() {
-	auto it = triangles->StartIteration();
+//	auto it = triangles->startIteration();
+//
+//	while (auto t = it->getNext()) {
+//	for(auto& t : *triangles) {
+	for (auto it = triangles->begin(); it != triangles->end(); ++it) {
 
-	while (auto t = it->GetNext()) {
+		auto& t = *it;
+
 		auto a = (*t)[0];
 		auto b = (*t)[1];
 		auto c = (*t)[2];
@@ -267,6 +270,6 @@ void Mesh::updateNormals() {
 		t->setNormal(normal);
 	}
 
-	triangles->EndIteration(it);
+//	triangles->endIteration(it);
 }
 // =================================================================

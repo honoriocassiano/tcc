@@ -84,10 +84,8 @@ void MeshDrawer::draw(Mesh* mesh, const DrawOptions& options) {
 	}
 
 	if (!options.points) {
-		Iterator<Triangle*> *iter = mesh->triangles->StartIteration();
-
 		glBegin(GL_TRIANGLES);
-		while (Triangle *t = iter->GetNext()) {
+		for (const auto& t : *mesh->triangles) {
 			Vertex* va = (*t)[0];
 			Vertex* vb = (*t)[1];
 			Vertex* vc = (*t)[2];
@@ -174,7 +172,6 @@ void MeshDrawer::draw(Mesh* mesh, const DrawOptions& options) {
 
 			//***************************************
 		}
-		mesh->triangles->EndIteration(iter);
 		glEnd();
 
 //		glDisable(GL_POLYGON_OFFSET_FILL);
@@ -246,11 +243,9 @@ void MeshDrawer::draw(Mesh* mesh, const DrawOptions& options) {
 
 void MeshDrawer::drawNormals(Mesh* mesh) {
 
-	auto iter = mesh->triangles->StartIteration();
-
 	glColor3f(0, 0, 1.0);
 
-	while (Triangle *triangle = iter->GetNext()) {
+	for(const auto& triangle : *mesh->triangles) {
 
 		auto p1 = (*triangle)[0]->get();
 		auto p2 = (*triangle)[1]->get();
@@ -271,8 +266,6 @@ void MeshDrawer::drawNormals(Mesh* mesh) {
 //	glColor3f(1.0, 0, 0);
 		glVertex3f(final.x(), final.y(), final.z());
 	}
-
-	mesh->triangles->EndIteration(iter);
 
 	glColor3f(0, 1.0, 0);
 
@@ -348,8 +341,6 @@ void MeshDrawer::drawAxis() {
 
 void MeshDrawer::drawHalfEdge(Mesh* mesh) {
 
-	auto it = mesh->triangles->StartIteration();
-
 //	glDisable(GL_LIGHTING);
 //	glColor3f(1, 1, 0);
 	glBegin(GL_LINES);
@@ -357,7 +348,7 @@ void MeshDrawer::drawHalfEdge(Mesh* mesh) {
 
 	int counter = 0;
 
-	while (Triangle *t = it->GetNext()) {
+	for(const auto& t : *mesh->triangles) {
 //		if (counter++ > 0) {
 //			break;
 //		}
@@ -472,8 +463,6 @@ void MeshDrawer::drawHalfEdge(Mesh* mesh) {
 		// ********************************************
 		// ********************************************
 	}
-
-	mesh->triangles->EndIteration(it);
 
 	glEnd();
 //	glEnable(GL_LIGHTING);

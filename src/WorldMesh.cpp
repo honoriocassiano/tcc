@@ -63,8 +63,8 @@ WorldMesh::~WorldMesh() {
 }
 
 void WorldMesh::reset() {
-	triangles->DeleteAllElements();
-	edges->DeleteAllElements();
+	triangles->deleteAllElements();
+	edges->deleteAllElements();
 
 	for (auto& v : *vertices2) {
 		v->setNormal(Vec3f(0.0f, 0.0f, 0.0f));
@@ -188,7 +188,7 @@ void WorldMesh::deleteUnusedVertices() {
 		if ((v->getLevel() > 0) && (!v->isActive())) {
 			delete v;
 
-			vertex_parents->Remove(vp);
+			vertex_parents->remove(vp);
 			vertices2->remove(it.reverse());
 		}
 	}

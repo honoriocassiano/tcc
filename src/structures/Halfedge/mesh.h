@@ -1,8 +1,8 @@
 #ifndef MESH_H
 #define MESH_H
 
-#include "../vectors.h"
 #include "../Array/bag.h"
+#include "../vectors.h"
 #include "../../MultiLevelArray.h"
 #include "../matrix.h"
 
@@ -53,7 +53,7 @@ public:
 	// =====
 	// EDGES
 	std::size_t numEdges() const {
-		return edges->Count();
+		return edges->count();
 	}
 	// this efficiently looks for an edge with the given vertices, using a hash table
 	Edge* getEdge(Vertex *a, Vertex *b) const;
@@ -61,7 +61,7 @@ public:
 	// =========
 	// TRIANGLES
 	std::size_t numTriangles() const {
-		return triangles->Count();
+		return triangles->count();
 	}
 	Triangle* addTriangle(Vertex *a, Vertex *b, Vertex *c);
 	void removeTriangle(Triangle *t);
