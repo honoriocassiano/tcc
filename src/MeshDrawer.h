@@ -30,8 +30,6 @@ public:
 	MeshDrawer();
 	virtual ~MeshDrawer();
 
-//	static void draw(Mesh * mesh, bool wireframe = false, bool generateNoise = true);
-
 	static void draw(Mesh * mesh, const DrawOptions& options = DrawOptions());
 
 private:

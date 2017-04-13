@@ -6,9 +6,6 @@
 #include "../../MultiLevelArray.h"
 #include "../matrix.h"
 
-// TODO Verificar a necessidade dessa estrutura
-#include <vector>
-
 class Vertex;
 class Edge;
 class Triangle;
@@ -63,10 +60,10 @@ public:
 	Triangle* addTriangle(Vertex *a, Vertex *b, Vertex *c);
 	void removeTriangle(Triangle *t);
 
-	void printTrianglesPointers(int limit = 1000);
+	void printTrianglesPointers(std::size_t limit = 1000);
 
-	void printTriangles(int limit = 1000);
-	void printVertices(int limit = 1000);
+	void printTriangles(std::size_t limit = 1000);
+	void printVertices(std::size_t limit = 1000);
 
 	virtual void reset() {
 	}

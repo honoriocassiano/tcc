@@ -174,11 +174,15 @@ Vec3f computeNormal(const Vec3f &p1, const Vec3f &p2, const Vec3f &p3) {
 	return normal;
 }
 
-void Mesh::printTrianglesPointers(int limit) {
+void Mesh::printTrianglesPointers(std::size_t limit) {
 
-	int i = 0;
+	std::size_t i = 0;
 
 	for (const auto& t : *triangles) {
+
+		if (i >= limit) {
+			break;
+		}
 
 		auto edge = t->getEdge();
 
@@ -186,24 +190,18 @@ void Mesh::printTrianglesPointers(int limit) {
 		auto p1 = edge->getNext()->getVertex();
 		auto p2 = edge->getNext()->getNext()->getVertex();
 
-//		Log(
 		printf("%d - v0: %p, v1: %p, v2: %p\n", i, p0, p1, p2);
 
 		++i;
 	}
 }
 
-void Mesh::printVertices(int limit) {
+void Mesh::printVertices(std::size_t limit) {
 
-//	while (i < vertices->Count() && i < limit) {
-//		printf(
-//		"[%d] (%f, %f, %f)\n", i, (*vertices)[i]->x(), (*vertices)[i]->y(),
-//				(*vertices)[i]->z());
-//
-//		i++;
-//	}
 	std::size_t i = 0;
+
 	for (const auto& v : *vertices) {
+
 		if (i >= limit) {
 			break;
 		}
@@ -214,13 +212,15 @@ void Mesh::printVertices(int limit) {
 	}
 }
 
-void Mesh::printTriangles(int limit) {
+void Mesh::printTriangles(std::size_t limit) {
 
-//	auto it = triangles->startIteration();
-	int i = 0;
-//
-//	while (Triangle *t = it->getNext()) {
+	std::size_t i = 0;
+
 	for (const auto& t : *triangles) {
+
+		if (i >= limit) {
+			break;
+		}
 
 		auto edge = t->getEdge();
 
@@ -235,15 +235,10 @@ void Mesh::printTriangles(int limit) {
 
 		++i;
 	}
-
-//	triangles->endIteration(it);
 }
 
 void Mesh::updateNormals() {
-//	auto it = triangles->startIteration();
-//
-//	while (auto t = it->getNext()) {
-//	for(auto& t : *triangles) {
+
 	for (auto it = triangles->begin(); it != triangles->end(); ++it) {
 
 		auto& t = *it;
@@ -252,7 +247,6 @@ void Mesh::updateNormals() {
 		auto b = (*t)[1];
 		auto c = (*t)[2];
 
-//		auto normal = ComputeNormal(a->get(), b->get(), c->get());
 		auto normal = computeNormal(a->getReal(), b->getReal(), c->getReal());
 
 		auto normalA = a->getNormal() + normal;
@@ -269,7 +263,4 @@ void Mesh::updateNormals() {
 
 		t->setNormal(normal);
 	}
-
-//	triangles->endIteration(it);
 }
-// =================================================================
