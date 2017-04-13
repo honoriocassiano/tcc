@@ -177,19 +177,12 @@ void MeshDrawer::draw(Mesh* mesh, const DrawOptions& options) {
 //		glDisable(GL_POLYGON_OFFSET_FILL);
 
 		if (options.normals) {
-//			iter = mesh->triangles->StartIteration();
 
 			glBegin(GL_LINES);
-			//		glColor3f(1.0, 0, 0);
 
-//			while (Triangle *t = iter->GetNext()) {
-//				MeshDrawer::drawNormal(t);
-//			}
 			drawNormals(mesh);
 
 			glEnd();
-
-//			mesh->triangles->EndIteration(iter);
 		}
 
 		glEnable(GL_LIGHTING);
@@ -198,27 +191,9 @@ void MeshDrawer::draw(Mesh* mesh, const DrawOptions& options) {
 		glDisable(GL_LIGHTING);
 		glPointSize(1.25);
 		glBegin(GL_POINTS);
-//		for (int i = 0; i < mesh->vertices->Count(); ++i) {
-//			auto v = (*mesh->vertices)[i];
-//
-////			glVertex3f(v->x(), v->y(), v->z());
-//			if (v->isActive()) {
-//				glColor3f(1, 0, 0);
-//			} else {
-//				glColor3f(1, 1, 1);
-//			}
-//
-//			glVertex3f(DX(v->x(), v->y(), v->z()), DY(v->x(), v->y(), v->z()),
-//					DZ(v->x(), v->y(), v->z()));
-//		}
 		for (const auto& v : *mesh->vertices2) {
 
-//			glVertex3f(v->x(), v->y(), v->z());
-			if (v->isActive()) {
-				glColor3f(1, 0, 0);
-			} else {
-				glColor3f(1, 1, 1);
-			}
+			glColor3f(1, 1, 1);
 
 			if (options.noise) {
 				glVertex3f(v->getReal().x(), v->getReal().y(),
@@ -245,7 +220,7 @@ void MeshDrawer::drawNormals(Mesh* mesh) {
 
 	glColor3f(0, 0, 1.0);
 
-	for(const auto& triangle : *mesh->triangles) {
+	for (const auto& triangle : *mesh->triangles) {
 
 		auto p1 = (*triangle)[0]->get();
 		auto p2 = (*triangle)[1]->get();
@@ -348,7 +323,7 @@ void MeshDrawer::drawHalfEdge(Mesh* mesh) {
 
 	int counter = 0;
 
-	for(const auto& t : *mesh->triangles) {
+	for (const auto& t : *mesh->triangles) {
 //		if (counter++ > 0) {
 //			break;
 //		}

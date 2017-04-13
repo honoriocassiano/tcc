@@ -14,9 +14,7 @@ class Edge;
 class Triangle;
 class VertexParent;
 
-class CelestialBody;
 class MeshDrawer;
-class QuadtreeMesh;
 
 // ======================================================================
 // ======================================================================
@@ -32,7 +30,6 @@ public:
 
 	// ========
 	// VERTICES
-//  int numVertices() const { return vertices->Count(); }
 	std::size_t numVertices() const {
 		return vertices2->size();
 	}
@@ -65,8 +62,6 @@ public:
 	}
 	Triangle* addTriangle(Vertex *a, Vertex *b, Vertex *c);
 	void removeTriangle(Triangle *t);
-
-	std::vector<Triangle*> getTrianglesByVertex(Edge * e);
 
 	void printTrianglesPointers(int limit = 1000);
 
