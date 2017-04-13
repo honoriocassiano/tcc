@@ -27,7 +27,7 @@ Mesh::Mesh() {
 	vertex_parents = new Bag<VertexParent*>(INITIAL_VERTEX,
 			VertexParent::extract_func);
 
-	vertices2 = new MultiLevelArray<Vertex*>();
+	vertices = new MultiLevelArray<Vertex*>();
 }
 
 Mesh::~Mesh() {
@@ -36,8 +36,8 @@ Mesh::~Mesh() {
 	delete triangles;
 	triangles = NULL;
 
-	delete vertices2;
-	vertices2 = nullptr;
+	delete vertices;
+	vertices = nullptr;
 }
 
 // =======================================================================
@@ -49,7 +49,7 @@ Vertex* Mesh::addVertex(const Vec3f &position, std::size_t level) {
 	Vertex *v = new Vertex(index, position);
 //	vertices->Add(v);
 
-	vertices2->add(v, level);
+	vertices->add(v, level);
 
 //	if (bbox == NULL)
 //		bbox = new BoundingBox(position, position);
@@ -61,10 +61,10 @@ Vertex* Mesh::addVertex(const Vec3f &position, std::size_t level) {
 void Mesh::removeVertex(Vertex* vertex) {
 //	vertices->Remove(vertex);
 
-	auto it = vertices2->find(vertex, vertex->getLevel());
+	auto it = vertices->find(vertex, vertex->getLevel());
 
-	if (it != vertices2->end(vertex->getLevel())) {
-		vertices2->remove(it);
+	if (it != vertices->end(vertex->getLevel())) {
+		vertices->remove(it);
 	}
 
 	delete vertex;
@@ -203,7 +203,7 @@ void Mesh::printVertices(int limit) {
 //		i++;
 //	}
 	std::size_t i = 0;
-	for (const auto& v : *vertices2) {
+	for (const auto& v : *vertices) {
 		if (i >= limit) {
 			break;
 		}

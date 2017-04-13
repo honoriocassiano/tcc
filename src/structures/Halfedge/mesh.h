@@ -31,7 +31,7 @@ public:
 	// ========
 	// VERTICES
 	std::size_t numVertices() const {
-		return vertices2->size();
+		return vertices->size();
 	}
 	Vertex* addVertex(const Vec3f &pos, std::size_t level);
 
@@ -84,7 +84,7 @@ protected:
 
 	// ==============
 	// REPRESENTATION
-	MultiLevelArray<Vertex*> *vertices2;
+	MultiLevelArray<Vertex*> *vertices;
 
 	Bag<Edge*> *edges;
 	Bag<Triangle*> *triangles;

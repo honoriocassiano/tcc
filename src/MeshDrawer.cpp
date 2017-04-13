@@ -178,11 +178,7 @@ void MeshDrawer::draw(Mesh* mesh, const DrawOptions& options) {
 
 		if (options.normals) {
 
-			glBegin(GL_LINES);
-
 			drawNormals(mesh);
-
-			glEnd();
 		}
 
 		glEnable(GL_LIGHTING);
@@ -191,7 +187,7 @@ void MeshDrawer::draw(Mesh* mesh, const DrawOptions& options) {
 		glDisable(GL_LIGHTING);
 		glPointSize(1.25);
 		glBegin(GL_POINTS);
-		for (const auto& v : *mesh->vertices2) {
+		for (const auto& v : *mesh->vertices) {
 
 			glColor3f(1, 1, 1);
 
@@ -220,6 +216,8 @@ void MeshDrawer::drawNormals(Mesh* mesh) {
 
 	glColor3f(0, 0, 1.0);
 
+	glBegin(GL_LINES);
+
 	for (const auto& triangle : *mesh->triangles) {
 
 		auto p1 = (*triangle)[0]->get();
@@ -236,23 +234,21 @@ void MeshDrawer::drawNormals(Mesh* mesh) {
 		auto centroid = getCentroid(triangle);
 		auto final = centroid + normal;
 
-//	glColor3f(1.0, 0, 0);
 		glVertex3f(centroid.x(), centroid.y(), centroid.z());
-//	glColor3f(1.0, 0, 0);
 		glVertex3f(final.x(), final.y(), final.z());
 	}
 
 	glColor3f(0, 1.0, 0);
 
-	for (auto& v : *mesh->vertices2) {
+	for (auto& v : *mesh->vertices) {
 
 		auto final = v->get() + v->getNormal();
 
 		glVertex3f(v->get().x(), v->get().y(), v->get().z());
-
 		glVertex3f(final.x(), final.y(), final.z());
 
 	}
+	glEnd();
 }
 
 Vec3f MeshDrawer::getCentroid(const Triangle* triangle) {

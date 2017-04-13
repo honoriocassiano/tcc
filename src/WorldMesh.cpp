@@ -66,7 +66,7 @@ void WorldMesh::reset() {
 	triangles->deleteAllElements();
 	edges->deleteAllElements();
 
-	for (auto& v : *vertices2) {
+	for (auto& v : *vertices) {
 		v->setNormal(Vec3f(0.0f, 0.0f, 0.0f));
 
 		if (v->getLevel() > 0) {
@@ -180,7 +180,7 @@ void WorldMesh::update(const Vec3f& position) {
 
 void WorldMesh::deleteUnusedVertices() {
 
-	for (auto it = vertices2->rbegin(); it != vertices2->rend(); ++it) {
+	for (auto it = vertices->rbegin(); it != vertices->rend(); ++it) {
 
 		auto& v = *it;
 		auto vp = v->getParents();
@@ -189,7 +189,7 @@ void WorldMesh::deleteUnusedVertices() {
 			delete v;
 
 			vertex_parents->remove(vp);
-			vertices2->remove(it.reverse());
+			vertices->remove(it.reverse());
 		}
 	}
 }
