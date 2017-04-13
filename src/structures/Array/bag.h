@@ -17,7 +17,7 @@ enum BAG_ELEMENT_MARK {
 #define LARGE_PRIME_B 11003
 #define LARGE_PRIME_C 12007
 
-int NextLargestPrime(unsigned int x);  // defined in utils.C
+int nextLargestPrime(unsigned int x);  // defined in utils.C
 
 // ======================================================================
 
@@ -40,7 +40,7 @@ public:
 			void (*e_func)(BAG_ELEMENT, llint&, llint&, llint&)) {
 		extract_func = e_func;
 		num_iterators = 0;
-		size = NextLargestPrime(s);
+		size = nextLargestPrime(s);
 		marks = new enum BAG_ELEMENT_MARK[size];
 		data = new BAG_ELEMENT[size];
 //		for (int i = 0; i < size; i++)
@@ -233,7 +233,7 @@ private:
 		BAG_ELEMENT *old_data = data;
 		enum BAG_ELEMENT_MARK *old_marks = marks;
 		// make new space
-		size = NextLargestPrime(s);
+		size = nextLargestPrime(s);
 		marks = new enum BAG_ELEMENT_MARK[size];
 		data = new BAG_ELEMENT[size];
 		count = 0;

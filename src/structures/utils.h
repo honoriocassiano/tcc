@@ -30,7 +30,7 @@ static unsigned int primes[] = { 11, 37, 79, 127, 239, 421, 1021, 2383, 5749,
 
 #define MAX_PRIME 100000000
 
-inline int NextLargestPrime(unsigned int x) {
+inline int nextLargestPrime(unsigned int x) {
 	if (x > MAX_PRIME) {
 		printf(
 				"ERROR! requested size (%d) for hash table is too large (max %d)\n",
