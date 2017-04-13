@@ -2,7 +2,6 @@
 #define MESH_H
 
 #include "../vectors.h"
-#include "../Array/array.h"
 #include "../Array/bag.h"
 #include "../../MultiLevelArray.h"
 #include "../matrix.h"
@@ -30,7 +29,6 @@ public:
 	// CONSTRUCTOR & DESTRUCTOR
 	Mesh();
 	virtual ~Mesh();
-	void Load(const char *input_file);
 
 	// ========
 	// VERTICES
@@ -51,16 +49,10 @@ public:
 	// two parent vertices
 	Vertex* getChildVertex(Vertex *p1, Vertex *p2) const;
 	// look up vertex by index from original .obj file
-	Vertex* getVertex(int i) const {
-		assert(i >= 0 && i < numVertices());
-		Vertex *v = (*vertices)[i];
-		assert(v != NULL);
-		return v;
-	}
 
 	// =====
 	// EDGES
-	int numEdges() const {
+	std::size_t numEdges() const {
 		return edges->Count();
 	}
 	// this efficiently looks for an edge with the given vertices, using a hash table
@@ -68,16 +60,11 @@ public:
 
 	// =========
 	// TRIANGLES
-	int numTriangles() const {
+	std::size_t numTriangles() const {
 		return triangles->Count();
 	}
 	Triangle* addTriangle(Vertex *a, Vertex *b, Vertex *c);
 	void removeTriangle(Triangle *t);
-
-	// ===============
-	// OTHER FUNCTIONS
-	void LoopSubdivision();
-	void Simplification(int target_tri_count);
 
 	std::vector<Triangle*> getTrianglesByVertex(Edge * e);
 
@@ -102,8 +89,6 @@ protected:
 
 	// ==============
 	// REPRESENTATION
-	Array<Vertex*> *vertices;
-
 	MultiLevelArray<Vertex*> *vertices2;
 
 	Bag<Edge*> *edges;

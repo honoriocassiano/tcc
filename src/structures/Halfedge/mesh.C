@@ -31,8 +31,6 @@ Mesh::Mesh() {
 }
 
 Mesh::~Mesh() {
-//	delete vertices;
-//	vertices = NULL;
 	delete edges;
 	edges = NULL;
 	delete triangles;
@@ -165,114 +163,7 @@ Vertex* Mesh::deleteParentsChildRelation(Vertex *p1, Vertex *p2) {
 	return vp->get();
 }
 
-// =======================================================================
-// the load function parses very simple .obj files
-// the basic format has been extended to allow the specification 
-// of crease weights on the edges.
-// =======================================================================
-
-void Mesh::Load(const char *input_file) {
-
-	FILE *objfile = fopen(input_file, "r");
-	if (objfile == NULL) {
-		printf("ERROR! CANNOT OPEN '%s'\n", input_file);
-		return;
-	}
-
-	char line[200];
-	char token[100];
-	char atoken[100];
-	char btoken[100];
-	char ctoken[100];
-	char dtoken[100];
-	char etoken[100];
-	float x, y, z;
-	int a, b, c, d, e;
-
-	int index = 0;
-	int vert_count = 0;
-	int vert_index = 1;
-
-	while (fgets(line, 200, objfile)) {
-
-		if (line[strlen(line) - 2] == '\\') {
-			fgets(token, 100, objfile);
-			int tmp = strlen(line) - 2;
-			strncpy(&line[tmp], token, 100);
-		}
-		int token_count = sscanf(line, "%s\n", token);
-		if (token_count == -1)
-			continue;
-		a = b = c = d = e = -1;
-		if (!strcmp(token, "usemtl") || !strcmp(token, "g")) {
-			vert_index = 1; //vert_count + 1;
-			index++;
-		} else if (!strcmp(token, "v")) {
-			vert_count++;
-			sscanf(line, "%s %f %f %f\n", token, &x, &y, &z);
-			addVertex(Vec3f(x, y, z), 0);
-		} else if (!strcmp(token, "f")) {
-			int num = sscanf(line, "%s %s %s %s %s %s\n", token, atoken, btoken,
-					ctoken, dtoken, etoken);
-			sscanf(atoken, "%d", &a);
-			sscanf(btoken, "%d", &b);
-			sscanf(ctoken, "%d", &c);
-			if (num > 4)
-				sscanf(dtoken, "%d", &d);
-			if (num > 5)
-				sscanf(etoken, "%d", &e);
-			a -= vert_index;
-			b -= vert_index;
-			c -= vert_index;
-			if (d >= 0)
-				d -= vert_index;
-			if (e >= 0)
-				e -= vert_index;
-			assert(a >= 0 && a < numVertices());
-			assert(b >= 0 && b < numVertices());
-			assert(c >= 0 && c < numVertices());
-
-			addTriangle(getVertex(a), getVertex(b), getVertex(c));
-			if (d > -1) {
-				assert(d < numVertices());
-				addTriangle(getVertex(a), getVertex(c), getVertex(d));
-			}
-			if (e > -1) {
-				assert(e < numVertices());
-				addTriangle(getVertex(a), getVertex(d), getVertex(e));
-			}
-		} else if (!strcmp(token, "e")) {
-			int num = sscanf(line, "%s %s %s %s\n", token, atoken, btoken,
-					ctoken);
-			assert(num == 4);
-			sscanf(atoken, "%d", &a);
-			sscanf(btoken, "%d", &b);
-			if (!strcmp(ctoken, "inf"))
-				x = 1000000; // this is close to infinity...
-			else
-				sscanf(ctoken, "%f", &x);
-			Vertex *va = getVertex(a);
-			Vertex *vb = getVertex(b);
-			Edge *ab = getEdge(va, vb);
-			Edge *ba = getEdge(vb, va);
-			assert(ab != NULL);
-			assert(ba != NULL);
-			ab->setCrease(x);
-			ba->setCrease(x);
-		} else if (!strcmp(token, "vt")) {
-		} else if (!strcmp(token, "vn")) {
-		} else if (token[0] == '#') {
-		} else {
-			printf("LINE: '%s'", line);
-		}
-	}
-}
-
-// =======================================================================
-// PAINT
-// =======================================================================
-
-Vec3f ComputeNormal(const Vec3f &p1, const Vec3f &p2, const Vec3f &p3) {
+Vec3f computeNormal(const Vec3f &p1, const Vec3f &p2, const Vec3f &p3) {
 	Vec3f v12 = p2;
 	v12 -= p1;
 	Vec3f v23 = p3;
@@ -281,88 +172,6 @@ Vec3f ComputeNormal(const Vec3f &p1, const Vec3f &p2, const Vec3f &p3) {
 	Vec3f::cross3(normal, v12, v23);
 	normal.normalize();
 	return normal;
-}
-
-void InsertNormal(const Vec3f &p1, const Vec3f &p2, const Vec3f &p3) {
-	Vec3f normal = ComputeNormal(p1, p2, p3);
-	glNormal3f(normal.x(), normal.y(), normal.z());
-}
-
-// =================================================================
-// SUBDIVISION
-// =================================================================
-
-void Mesh::LoopSubdivision() {
-	// printf ("Subdivide the mesh!\n");
-//	Iterator<Edge*>* iterator = edges->StartIteration();
-//
-//	Edge* currentEdge = NULL;
-//
-//	while ((currentEdge = iterator->GetNext())) {
-//		//printf("1\n");
-//		Vertex* v0 = (*currentEdge)[0];
-//		Vertex* v1 = (*currentEdge)[1];
-//
-//		Vertex* newVertex = addVertex((v0->get() + v1->get()) * 0.5);
-//
-//		setParentsChild(v0, v1, newVertex);
-//
-//		Vertex* vertex1 = currentEdge->getVertex();
-//		Vertex* vertex2 = currentEdge->getNext()->getVertex();
-//		Vertex* vertex3 = currentEdge->getNext()->getNext()->getVertex();
-//
-//		removeTriangle(currentEdge->getTriangle());
-//
-//		//printf("2\n");
-//
-////		addTriangle(newVertex, (*firstEdge)[0], (*firstEdge->getNext())[0]);
-////
-////		addTriangle(newVertex, (*firstEdge->getNext())[0],
-////				(*firstEdge->getNext()->getNext())[0]);
-//
-//		addTriangle(newVertex, vertex3, vertex2);
-//
-//		addTriangle(newVertex, vertex2, vertex1);
-//
-////		addTriangle(newVertex, vertex1, vertex2);
-////
-////		addTriangle(newVertex, vertex2, vertex3);
-//
-////		addTriangle(newVertex, firstEdge->getVertex(), firstEdge->getNext()->getVertex());
-////
-////		addTriangle(newVertex, firstEdge->getNext()->getVertex(),
-////				firstEdge->getNext()->getNext()->getVertex());
-//
-//		//printf("3\n");
-//		printf("(%d, %d, %d)\n", vertex1->getIndex(), vertex2->getIndex(), vertex3->getIndex());
-//	}
-//
-//	edges->EndIteration(iterator);
-}
-
-// =================================================================
-// SIMPLIFICATION
-// =================================================================
-
-void Mesh::Simplification(int target_tri_count) {
-	printf("Simplify the mesh! %d -> %d\n", numTriangles(), target_tri_count);
-}
-
-std::vector<Triangle*> Mesh::getTrianglesByVertex(Edge * e) {
-	std::vector<Triangle*> faces;
-	Edge * currentEdge = e;
-
-	do {
-		faces.push_back(currentEdge->getTriangle());
-
-		if (currentEdge->getOpposite()) {
-			currentEdge = currentEdge->getOpposite()->getNext()->getNext();
-		} else {
-			break;
-		}
-	} while (currentEdge != e);
-
-	return faces;
 }
 
 void Mesh::printTrianglesPointers(int limit) {
@@ -441,7 +250,7 @@ void Mesh::updateNormals() {
 		auto c = (*t)[2];
 
 //		auto normal = ComputeNormal(a->get(), b->get(), c->get());
-		auto normal = ComputeNormal(a->getReal(), b->getReal(), c->getReal());
+		auto normal = computeNormal(a->getReal(), b->getReal(), c->getReal());
 
 		auto normalA = a->getNormal() + normal;
 		auto normalB = b->getNormal() + normal;

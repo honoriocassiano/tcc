@@ -204,11 +204,11 @@ void Planet::draw() {
 
 void Planet::makeTriangles() {
 	for (int i = 0; i < 20; ++i) {
-		Vertex * v0 = mesh->getVertex(tindices[i][0]);
-		Vertex * v1 = mesh->getVertex(tindices[i][1]);
-		Vertex * v2 = mesh->getVertex(tindices[i][2]);
+//		Vertex * v0 = mesh->getVertex(tindices[i][0]);
+//		Vertex * v1 = mesh->getVertex(tindices[i][1]);
+//		Vertex * v2 = mesh->getVertex(tindices[i][2]);
 
-		mesh->addTriangle(v0, v2, v1);
+//		mesh->addTriangle(v0, v2, v1);
 	}
 }
 
