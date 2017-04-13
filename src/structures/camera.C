@@ -12,23 +12,25 @@
 // CONSTRUCTORS
 
 Camera::Camera(Vec3f c, Vec3f d, Vec3f u) {
-  center = c;
-  direction = d;
-  up = u;
-  // normalize the vectors
-  up.normalize();
-  direction.normalize();
+	center = c;
+	direction = d;
+	up = u;
+	// normalize the vectors
+	up.normalize();
+	direction.normalize();
 }
 
-PerspectiveCamera::PerspectiveCamera(Vec3f c, Vec3f d, Vec3f u, float a) : Camera(c,d,u) {
-  angle = a;
+PerspectiveCamera::PerspectiveCamera(Vec3f c, Vec3f d, Vec3f u, float a) :
+		Camera(c, d, u) {
+	angle = a;
 
-  Vec3f screenCenter = center + direction;
-  float screenHeight = tan(angle/2.0);
+	Vec3f screenCenter = center + direction;
+	float screenHeight = tan(angle / 2.0);
 
-  lowerLeft = screenCenter - (getScreenUp() * screenHeight) - (getHorizontal() * screenHeight);
-  xAxis = getHorizontal() * 2 * screenHeight;
-  yAxis = getScreenUp() * 2 * screenHeight;
+	lowerLeft = screenCenter - (getScreenUp() * screenHeight)
+			- (getHorizontal() * screenHeight);
+	xAxis = getHorizontal() * 2 * screenHeight;
+	yAxis = getScreenUp() * 2 * screenHeight;
 }
 
 // ====================================================================
@@ -38,14 +40,15 @@ PerspectiveCamera::PerspectiveCamera(Vec3f c, Vec3f d, Vec3f u, float a) : Camer
 // crops the screen in the narrowest dimension.
 
 void PerspectiveCamera::glInit(int w, int h) {
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
 
-  float aspect = float(w)/float(h);
-  float asp_angle = angle * 180/M_PI;
-  if (aspect > 1) asp_angle /= aspect;
+	float aspect = float(w) / float(h);
+	float asp_angle = angle * 180 / M_PI;
+	if (aspect > 1)
+		asp_angle /= aspect;
 
-  gluPerspective(asp_angle, aspect, 1, 100);
+	gluPerspective(asp_angle, aspect, 1, 100);
 }
 
 // ====================================================================
@@ -54,14 +57,13 @@ void PerspectiveCamera::glInit(int w, int h) {
 // Place a camera within an OpenGL scene
 
 void Camera::glPlaceCamera(void) {
-  Vec3f lookAt = center + direction;
+	Vec3f lookAt = center + direction;
 //	Vec3f lookAt = direction;
-  gluLookAt(center.x(), center.y(), center.z(),
-	    lookAt.x(), lookAt.y(), lookAt.z(),
-            up.x(), up.y(), up.z());
+	gluLookAt(center.x(), center.y(), center.z(), lookAt.x(), lookAt.y(),
+			lookAt.z(), up.x(), up.y(), up.z());
 
 //  printf("(%f, %f, %f)\n", center.x(), center.y(), center.z());
-  //printf("(%f, %f, %f) (%f, %f, %f)\n", lookAt.x(), lookAt.y(), lookAt.z(), lookAt2.x(), lookAt2.y(), lookAt2.z());
+	//printf("(%f, %f, %f) (%f, %f, %f)\n", lookAt.x(), lookAt.y(), lookAt.z(), lookAt2.x(), lookAt2.y(), lookAt2.z());
 }
 
 // ====================================================================
@@ -82,10 +84,11 @@ void Camera::glPlaceCamera(void) {
 // ====================================================================
 
 void PerspectiveCamera::dollyCamera(float dist) {
-  center += direction*dist;
-  Vec3f screenCenter = center + direction;
-  float screenHeight = tan(angle/2.0);
-  lowerLeft = screenCenter - (getScreenUp() * screenHeight) - (getHorizontal() * screenHeight);
+	center += direction * dist;
+	Vec3f screenCenter = center + direction;
+	float screenHeight = tan(angle / 2.0);
+	lowerLeft = screenCenter - (getScreenUp() * screenHeight)
+			- (getHorizontal() * screenHeight);
 }
 
 // ====================================================================
@@ -93,10 +96,11 @@ void PerspectiveCamera::dollyCamera(float dist) {
 // ====================================================================
 
 void PerspectiveCamera::truckCamera(float dx, float dy) {
-  center += getHorizontal()*dx + getScreenUp()*dy;
-  Vec3f screenCenter = center + direction;
-  float screenHeight = tan(angle/2.0);
-  lowerLeft = screenCenter - (getScreenUp() * screenHeight) - (getHorizontal() * screenHeight);
+	center += getHorizontal() * dx + getScreenUp() * dy;
+	Vec3f screenCenter = center + direction;
+	float screenHeight = tan(angle / 2.0);
+	lowerLeft = screenCenter - (getScreenUp() * screenHeight)
+			- (getHorizontal() * screenHeight);
 }
 
 // ====================================================================
@@ -104,26 +108,27 @@ void PerspectiveCamera::truckCamera(float dx, float dy) {
 // ====================================================================
 
 void PerspectiveCamera::rotateCamera(float rx, float ry) {
-  // Don't let the model flip upside-down (There is a singularity
-  // at the poles when 'up' and 'direction' are aligned)
-  float tiltAngle = acos(up.dot3(direction));
-  if (tiltAngle-ry > 3.13)
-    ry = tiltAngle - 3.13;
-  else if (tiltAngle-ry < 0.01)
-    ry = tiltAngle - 0.01;
+	// Don't let the model flip upside-down (There is a singularity
+	// at the poles when 'up' and 'direction' are aligned)
+	float tiltAngle = acos(up.dot3(direction));
+	if (tiltAngle - ry > 3.13)
+		ry = tiltAngle - 3.13;
+	else if (tiltAngle - ry < 0.01)
+		ry = tiltAngle - 0.01;
 
-  Matrix rotMat = Matrix::MakeAxisRotation(up, rx);
-  rotMat *= Matrix::MakeAxisRotation(getHorizontal(), ry);
+	Matrix rotMat = Matrix::MakeAxisRotation(up, rx);
+	rotMat *= Matrix::MakeAxisRotation(getHorizontal(), ry);
 
-  rotMat.Transform(center);
-  rotMat.TransformDirection(direction);
-  direction.normalize();
-  Vec3f screenCenter = center + direction;
-  float screenHeight = tan(angle/2.0);
+	rotMat.Transform(center);
+	rotMat.TransformDirection(direction);
+	direction.normalize();
+	Vec3f screenCenter = center + direction;
+	float screenHeight = tan(angle / 2.0);
 
-  lowerLeft = screenCenter - (getScreenUp() * screenHeight) - (getHorizontal() * screenHeight);
-  xAxis = getHorizontal() * 2 * screenHeight;
-  yAxis = getScreenUp() * 2 * screenHeight;
+	lowerLeft = screenCenter - (getScreenUp() * screenHeight)
+			- (getHorizontal() * screenHeight);
+	xAxis = getHorizontal() * 2 * screenHeight;
+	yAxis = getScreenUp() * 2 * screenHeight;
 }
 
 // ====================================================================

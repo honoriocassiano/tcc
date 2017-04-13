@@ -4,7 +4,6 @@
 #include <sstream>
 #include <string>
 #include <limits.h>
-#include "boundingbox.h"
 #include "edge.h"
 
 #include "vertex.h"
