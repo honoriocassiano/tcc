@@ -37,22 +37,8 @@ MeshDrawer::~MeshDrawer() {
 
 }
 
-#define DX(x, y, z) (x)
-#define DY(x, y, z) (y)
-#define DZ(x, y, z) (z)
-
-//#define DX(x, y, z) (2 * x * sqrtf(1.0 - (2*y*y) - (2*z*z) + (8*y*y*z*z/1.5)))
-//#define DY(x, y, z) (2 * y * sqrtf(1.0 - (2*z*z) - (2*x*x) + (8*z*z*x*x/1.5)))
-//#define DZ(x, y, z) (2 * z * sqrtf(1.0 - (2*x*x) - (2*y*y) + (8*x*x*y*y/1.5)))
-//#define DX(x, y, z) (x * sqrtf(1.0 - (y*y/2) - (z*z/2) + (y*y*z*z/3)))
-//#define DY(x, y, z) (y * sqrtf(1.0 - (z*z/2) - (x*x/2) + (z*z*x*x/3)))
-//#define DZ(x, y, z) (z * sqrtf(1.0 - (x*x/2) - (y*y/2) + (x*x*y*y/3)))
-
 void MeshDrawer::draw(Mesh* mesh, const DrawOptions& options) {
-//	mesh->computeFaceNormals();
-//	mesh->computeVerticesNormals();
 
-//	mesh->reset();
 	mesh->updateNormals();
 
 	// this offset prevents "z-fighting" bewteen the edges and faces
@@ -122,9 +108,6 @@ void MeshDrawer::draw(Mesh* mesh, const DrawOptions& options) {
 				vc->setNormal(n_c);
 			}
 
-			//		printf("(%f, %f, %f)\n", va->getColor().r(), va->getColor().g(), va->getColor().b());
-
-			//***************************************
 			glColor3f(va->getColor().r(), va->getColor().g(),
 					va->getColor().b());
 			glNormal3f(n_a.x(), n_a.y(), n_a.z());
@@ -136,7 +119,6 @@ void MeshDrawer::draw(Mesh* mesh, const DrawOptions& options) {
 				glVertex3f(va->get().x(), va->get().y(), va->get().z());
 			}
 
-			//		glColor3f(n_b.r(), n_b.g(), n_b.b());
 			glColor3f(vb->getColor().r(), vb->getColor().g(),
 					vb->getColor().b());
 			glNormal3f(n_b.x(), n_b.y(), n_b.z());
@@ -148,7 +130,6 @@ void MeshDrawer::draw(Mesh* mesh, const DrawOptions& options) {
 				glVertex3f(vb->get().x(), vb->get().y(), vb->get().z());
 			}
 
-			//		glColor3f(n_c.r(), n_c.g(), n_c.b());
 			glColor3f(vc->getColor().r(), vc->getColor().g(),
 					vc->getColor().b());
 			glNormal3f(n_c.x(), n_c.y(), n_c.z());
@@ -159,18 +140,6 @@ void MeshDrawer::draw(Mesh* mesh, const DrawOptions& options) {
 			} else {
 				glVertex3f(vc->get().x(), vc->get().y(), vc->get().z());
 			}
-
-			//		if (options.normals) {
-			//			glPushMatrix();
-			//			glColor3f(0, 0, 1);
-			//			glBegin(GL_LINES);
-			//			drawNormal(t);
-			//			glEnd();
-			//
-			//			glPopMatrix();
-			//		}
-
-			//***************************************
 		}
 		glEnd();
 
@@ -312,17 +281,10 @@ void MeshDrawer::drawAxis() {
 
 void MeshDrawer::drawHalfEdge(Mesh* mesh) {
 
-//	glDisable(GL_LIGHTING);
-//	glColor3f(1, 1, 0);
+	glDisable(GL_LIGHTING);
 	glBegin(GL_LINES);
-//	glBegin(GL_TRIANGLES);
-
-	int counter = 0;
 
 	for (const auto& t : *mesh->triangles) {
-//		if (counter++ > 0) {
-//			break;
-//		}
 
 		auto centroid = getCentroid(t);
 
@@ -354,89 +316,38 @@ void MeshDrawer::drawHalfEdge(Mesh* mesh) {
 		m.Transform(dirV2);
 
 		glColor3f(1, 1, 0);
-//		glVertex3f(v0[0], v0[1], v0[2]);
-		glVertex3f(DX(v0[0], v0[1], v0[2]), DY(v0[0], v0[1], v0[2]),
-				DZ(v0[0], v0[1], v0[2]));
+		glVertex3f(v0[0], v0[1], v0[2]);
 
 		glColor3f(1, 0, 0);
-		glVertex3f(DX(v1[0], v1[1], v1[2]), DY(v1[0], v1[1], v1[2]),
-				DZ(v1[0], v1[1], v1[2]));
-//		glVertex3f(v1[0], v1[1], v1[2]);
+		glVertex3f(v1[0], v1[1], v1[2]);
 
-		// ********************************************
-		// ********************************************
+		glVertex3f(v1[0], v1[1], v1[2]);
 
-		glVertex3f(DX(v1[0], v1[1], v1[2]), DY(v1[0], v1[1], v1[2]),
-				DZ(v1[0], v1[1], v1[2]));
-
-		//		glColor3f(1, 0, 0);
-		glVertex3f(DX(v1[0] + dirV0[0], v1[1] + dirV0[1], v1[2] + dirV0[2]),
-				DY(v1[0] + dirV0[0], v1[1] + dirV0[1], v1[2] + dirV0[2]),
-				DZ(v1[0] + dirV0[0], v1[1] + dirV0[1], v1[2] + dirV0[2]));
-//		glVertex3f(v1[0], v1[1], v1[2]);
-//
-////		glColor3f(1, 0, 0);
-//		glVertex3f(v1[0] + dirV0[0], v1[1] + dirV0[1], v1[2] + dirV0[2]);
-
-		// ********************************************
-		// ********************************************
+		glVertex3f(v1[0] + dirV0[0], v1[1] + dirV0[1], v1[2] + dirV0[2]);
 
 		glColor3f(1, 1, 0);
 
-//		glVertex3f(v1[0], v1[1], v1[2]);
-		glVertex3f(DX(v1[0], v1[1], v1[2]), DY(v1[0], v1[1], v1[2]),
-				DZ(v1[0], v1[1], v1[2]));
+		glVertex3f(v1[0], v1[1], v1[2]);
 
 		glColor3f(1, 0, 0);
 
-		glVertex3f(DX(v2[0], v2[1], v2[2]), DY(v2[0], v2[1], v2[2]),
-				DZ(v2[0], v2[1], v2[2]));
-//		glVertex3f(v2[0], v2[1], v2[2]);
+		glVertex3f(v2[0], v2[1], v2[2]);
+		glVertex3f(v2[0], v2[1], v2[2]);
+		glVertex3f(v2[0] + dirV1[0], v2[1] + dirV1[1], v2[2] + dirV1[2]);
 
-		// ********************************************
-		// ********************************************
-
-//		glVertex3f(v2[0], v2[1], v2[2]);
-		glVertex3f(DX(v2[0], v2[1], v2[2]), DY(v2[0], v2[1], v2[2]),
-				DZ(v2[0], v2[1], v2[2]));
-
-//		glColor3f(1, 0, 0);
-//		glVertex3f(v2[0] + dirV1[0], v2[1] + dirV1[1], v2[2] + dirV1[2]);
-		glVertex3f(DX(v2[0] + dirV1[0], v2[1] + dirV1[1], v2[2] + dirV1[2]),
-				DY(v2[0] + dirV1[0], v2[1] + dirV1[1], v2[2] + dirV1[2]),
-				DZ(v2[0] + dirV1[0], v2[1] + dirV1[1], v2[2] + dirV1[2]));
-
-		// ********************************************
-		// ********************************************
 		glColor3f(1, 1, 0);
 
-//		glVertex3f(v2[0], v2[1], v2[2]);
-		glVertex3f(DX(v2[0], v2[1], v2[2]), DY(v2[0], v2[1], v2[2]),
-				DZ(v2[0], v2[1], v2[2]));
+		glVertex3f(v2[0], v2[1], v2[2]);
 
 		glColor3f(1, 0, 0);
 
-//		glVertex3f(v0[0], v0[1], v0[2]);
-		glVertex3f(DX(v0[0], v0[1], v0[2]), DY(v0[0], v0[1], v0[2]),
-				DZ(v0[0], v0[1], v0[2]));
-
-		// ********************************************
-		// ********************************************
-
-		glVertex3f(DX(v0[0], v0[1], v0[2]), DY(v0[0], v0[1], v0[2]),
-				DZ(v0[0], v0[1], v0[2]));
-		glVertex3f(DX(v0[0] + dirV2[0], v0[1] + dirV2[1], v0[2] + dirV2[2]),
-				DY(v0[0] + dirV2[0], v0[1] + dirV2[1], v0[2] + dirV2[2]),
-				DZ(v0[0] + dirV2[0], v0[1] + dirV2[1], v0[2] + dirV2[2]));
-//		glVertex3f(v0[0], v0[1], v0[2]);
-//		glVertex3f(v0[0] + dirV2[0], v0[1] + dirV2[1], v0[2] + dirV2[2]);
-
-		// ********************************************
-		// ********************************************
+		glVertex3f(v0[0], v0[1], v0[2]);
+		glVertex3f(v0[0], v0[1], v0[2]);
+		glVertex3f(v0[0] + dirV2[0], v0[1] + dirV2[1], v0[2] + dirV2[2]);
 	}
 
 	glEnd();
-//	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHTING);
 }
 
 bool MeshDrawer::isClockwise(const Triangle* triangle) {
