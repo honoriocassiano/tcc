@@ -11,6 +11,7 @@
 #include "structures/Halfedge/vertex.h"
 #include "structures/vectors.h"
 #include "structures/Halfedge/mesh.h"
+#include "structures/camera.h"
 
 #include "Time.h"
 
@@ -104,9 +105,9 @@ public:
 	void reset() override;
 
 	void recursiveUpdate(Vertex* v1, Vertex* v2, Vertex* v3,
-			const Vec3f& center, double size = 1);
+			const Camera* camera, double size = 1);
 
-	void updateLOD(const Vec3f& position);
+	void updateLOD(const Camera* camera);
 
 	void rotate(float dTheta);
 

@@ -22,6 +22,14 @@ public:
 	virtual void rotateCamera(float rx, float ry) = 0;
 //  virtual void Print() = 0;
 
+	const Vec3f& getDirection() const {
+		return direction;
+	}
+
+	const Vec3f& getPosition() const {
+		return center;
+	}
+
 protected:
 	Camera() {
 		assert(0);

@@ -110,7 +110,7 @@ void SDLWindow::update(const Time& dt) {
 //	worldMesh.update(lastPosition);
 
 	for (auto& b : mBodies) {
-		b->updateLOD(lastPosition);
+		b->updateLOD(mCamera);
 		b->update(dt);
 	}
 

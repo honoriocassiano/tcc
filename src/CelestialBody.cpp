@@ -61,7 +61,10 @@ void CelestialBody::reset() {
 }
 
 void CelestialBody::recursiveUpdate(Vertex* v1, Vertex* v2, Vertex* v3,
-		const Vec3f& center, double size) {
+		const Camera* camera, double size) {
+
+	auto center = camera->getPosition();
+	auto direction = camera->getDirection();
 
 	double ratio_size = size; // default : 1
 	double minsize = 0.01;    // default : 0.01
@@ -97,8 +100,7 @@ void CelestialBody::recursiveUpdate(Vertex* v1, Vertex* v2, Vertex* v3,
 	}
 
 	{
-		Vec3f d =
-				(getVertexPositionWithTransform(edge_center[0]) - center).normalized();
+		Vec3f d = direction.normalized();
 
 		double dot =
 				computeNormal(edge_center[0]->getReal(),
@@ -108,8 +110,8 @@ void CelestialBody::recursiveUpdate(Vertex* v1, Vertex* v2, Vertex* v3,
 		angle = std::acos(std::max(-1.0, std::min(dot, 1.0)));
 	}
 
-	// 60° degrees
-	if (angle < (M_PI / 3)) {
+	// 45° degrees
+	if (angle < (M_PI / 4)) {
 		return;
 	}
 
@@ -152,18 +154,18 @@ void CelestialBody::recursiveUpdate(Vertex* v1, Vertex* v2, Vertex* v3,
 			p[i2]->setNormal(n2);
 			p[i3]->setNormal(n3);
 
-			recursiveUpdate(p[i1], p[i2], p[i3], center, size / 2);
+			recursiveUpdate(p[i1], p[i2], p[i3], camera, size / 2);
 		}
 	}
 }
 
-void CelestialBody::updateLOD(const Vec3f& position) {
+void CelestialBody::updateLOD(const Camera* camera) {
 
 	reset();
 
 	for (const auto& idx : baseIndices) {
 		recursiveUpdate(baseVertices[idx[0]], baseVertices[idx[1]],
-				baseVertices[idx[2]], position, radius * 20);
+				baseVertices[idx[2]], camera, radius * 20);
 	}
 
 	deleteUnusedVertices();
