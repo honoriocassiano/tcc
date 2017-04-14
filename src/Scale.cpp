@@ -9,6 +9,7 @@
 
 float Scale::length = 1000000;						/**< @hideinitializer */
 float Scale::time = 20000000;						/**< @hideinitializer */
+//float Scale::time = 20000000;						/**< @hideinitializer */
 
 float Scale::getLength() {
 	return length;

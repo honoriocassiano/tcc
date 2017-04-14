@@ -12,20 +12,13 @@
 
 class Planet: public CelestialBody {
 public:
-	Planet(GLfloat radius);
+	Planet(const Vec3f& center, float radius);
 	virtual ~Planet();
 
-	float getRadius() const {
-		return radius;
-	}
-
 	void update(const Time& dt) override;
-	void draw() override;
 
 private:
-	static GLfloat to_rad;
-
-	GLfloat radius;
+	static float to_rad;
 
 	Vec3f orbitGravity;
 

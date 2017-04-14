@@ -13,7 +13,7 @@
 #include "Constants.h"
 #include "Scale.h"
 
-GLfloat Planet::to_rad = M_PI / 180.0;
+float Planet::to_rad = M_PI / 180.0;
 
 float calculateVelocity(float mass, float semiMajorAxis, const Vec3f& orbiter,
 		const Vec3f& planet) {
@@ -28,8 +28,8 @@ float calculateVelocity(float mass, float semiMajorAxis, const Vec3f& orbiter,
 							- 1 / (semiMajorAxis * Scale::getLength())));
 }
 
-Planet::Planet(GLfloat radius) :
-		CelestialBody(Vec3f()), pendingUpdate(false) {
+Planet::Planet(const Vec3f& center, float radius) :
+		CelestialBody(center, radius), pendingUpdate(false) {
 	this->radius = radius;
 
 	turbulenceDistortion = 0.2f;
@@ -61,26 +61,29 @@ void Planet::update(const Time& dt) {
 		Vec3f direction = (normalVelocity + orbitGravity) * dt.getAsSeconds()
 				* Scale::getTime();
 
-		setCenter(getCenter() + direction);
+		center = getCenter() + direction;
 
+		transform *= Matrix::MakeTranslation(direction);
 	}
-
 }
 
-void Planet::draw() {
-	if (pendingUpdate) {
-		recalculateNormals();
-	}
-
-	glPushMatrix();
-
-	glTranslatef(center.x(), center.y(), center.z());
-	glScalef(radius, radius, radius);
-
-	MeshDrawer::draw(mesh);
-
-	glPopMatrix();
-}
+//void Planet::draw() {
+//
+//	/*
+//	 if (pendingUpdate) {
+//	 recalculateNormals();
+//	 }
+//
+//	 glPushMatrix();
+//
+//	 glTranslatef(center.x(), center.y(), center.z());
+//	 glScalef(radius, radius, radius);
+//
+//	 MeshDrawer::draw(mesh);
+//
+//	 glPopMatrix();]
+//	 */
+//}
 
 void Planet::calculateOrbitGravity() {
 

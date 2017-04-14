@@ -8,6 +8,7 @@
 #ifndef SRC_CELESTIALBODY_H_
 #define SRC_CELESTIALBODY_H_
 
+#include "structures/Halfedge/vertex.h"
 #include "structures/vectors.h"
 #include "structures/Halfedge/mesh.h"
 
@@ -16,19 +17,15 @@
 /**
  * Represents a generic celestial body.
  */
-class CelestialBody {
+class CelestialBody : public Mesh {
 public:
 
 	/**
 	 * Construct a celestial body with default mass and size.
 	 * @param center Body position
 	 */
-	CelestialBody(const Vec3f& center) :
-			center(center), mesh(new Mesh()), mass(0.0f), orbiter(nullptr), semiMajorAxis(
-					0) {
-	}
+	CelestialBody(const Vec3f& center, float radius);
 	virtual ~CelestialBody() {
-		delete mesh;
 	}
 
 	/**
@@ -41,14 +38,14 @@ public:
 	/**
 	 * Get body position.
 	 */
-	const Vec3f getCenter() const {
+	inline const Vec3f getCenter() const {
 		return center;
 	}
 
 	/**
 	 * Get body mass.
 	 */
-	float getMass() const {
+	inline float getMass() const {
 		return mass;
 	}
 
@@ -59,17 +56,21 @@ public:
 		this->mass = mass;
 	}
 
-	/**
-	 * Get half-edge mesh.
-	 */
-	Mesh * getMesh() {
-		return mesh;
+	float getRadius() const {
+		return radius;
 	}
+
+//	/**
+//	 * Get half-edge mesh.
+//	 */
+//	Mesh * getMesh() {
+//		return mesh;
+//	}
 
 	/**
 	 * Get orbiter.
 	 */
-	const CelestialBody* getOrbiter() const {
+	inline const CelestialBody* getOrbiter() const {
 		return orbiter;
 	}
 
@@ -100,34 +101,56 @@ public:
 	 */
 	virtual void update(const Time& dt) = 0;
 
-	/**
-	 * Display body on screen.
-	 */
-	virtual void draw() = 0;
+	void reset() override;
 
-private:
+	void recursiveUpdate(Vertex* v1, Vertex* v2, Vertex* v3,
+			const Vec3f& center, double size = 1);
+
+	void updateLOD(const Vec3f& position);
+
+	void rotate(float dTheta);
+
+	void deleteUnusedVertices();
+
+	Vertex* getOrCreateChildVertex(Vertex *p1, Vertex *p2);
+
+	Matrix getTransform() override {
+		return transform;
+	}
 
 protected:
 
-	// TODO Check usage of this function
-	Bag<Triangle*>* getTriangles() {
-		return mesh->triangles;
-	}
+	virtual Vec3f getVertexPositionWithTransform(Vertex* v);
 
-	/**
-	 * Recalculate mesh normals vectors.
-	 */
-	void recalculateNormals() {
-		mesh->updateNormals();
-	}
+//	// TODO Check usage of this function
+//	Bag<Triangle*>* getTriangles() {
+//		return mesh->triangles;
+//	}
+//
+//	/**
+//	 * Recalculate mesh normals vectors.
+//	 */
+//	void recalculateNormals() {
+//		mesh->updateNormals();
+//	}
 
 	Vec3f center; /**< Body position. */
-	Mesh * mesh; /**< Half-edge mesh. */
+//	Mesh * mesh; /**< Half-edge mesh. */
 
 	CelestialBody * orbiter;
 
 	float mass; /**< Body mass. */
 	float semiMajorAxis; /**< Semi major axis of orbit. */
+
+	float radius;
+
+	Vec3f axis;
+
+	Vertex* baseVertices[12];
+
+	std::size_t baseIndices[20][3];
+
+	Matrix transform;
 };
 
 #endif /* SRC_CELESTIALBODY_H_ */

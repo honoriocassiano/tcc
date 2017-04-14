@@ -11,12 +11,9 @@
 #include <assert.h>
 
 #include "WorldMesh.h"
-
-WorldMesh worldMesh(1);
-
 #include "MeshDrawer.h"
 
-const Vec3f position(6.2, 1.2, -28.8);
+//const Vec3f position(6.2, 1.2, -28.8);
 
 int HandleGLErrorWindow2() {
 	GLenum error;
@@ -31,12 +28,13 @@ int HandleGLErrorWindow2() {
 }
 
 SDLWindow::SDLWindow(int width, int height) :
-		mCamera(nullptr), mClock(
-				new Clock()), freezed(false), mIsRunning(
+		mCamera(nullptr), mClock(new Clock()), freezed(false), mIsRunning(
 				false), mWindow(nullptr), mWidth(width), mHeight(height) {
 
 //	options.normals = true;
 //	options.wireframe = true;
+
+	const Vec3f position(1000, 500, 0);
 
 	Vec3f direction = (Vec3f(0, 0, 0) - position).normalized();
 
@@ -105,32 +103,45 @@ void SDLWindow::run() {
 void SDLWindow::update(const Time& dt) {
 //	if (lastPosition != mCamera->getPosition()) {
 
-	worldMesh.rotate(M_PI / 360);
-
+//	worldMesh.rotate(M_PI / 360);
+//
 	lastPosition = mCamera->getPosition();
+//
+//	worldMesh.update(lastPosition);
 
-	worldMesh.update(lastPosition);
+	for (auto& b : mBodies) {
+		b->updateLOD(lastPosition);
+		b->update(dt);
+	}
+
 //	}
 }
 
 void SDLWindow::processRealtimeEvents() {
 	const Uint8 *state = SDL_GetKeyboardState(nullptr);
 
+	float dolly = 0;
+	float truck = 0;
+
 	if (state[SDL_SCANCODE_UP]) {
-//		mCamera->dollyCamera(0.1f);
-		mCamera->dollyCamera(0.5f);
-//		mCamera->dollyCamera(2.0f);
+		dolly = 0.5f;
 	} else if (state[SDL_SCANCODE_DOWN]) {
-//		mCamera->dollyCamera(-0.1f);
-		mCamera->dollyCamera(-0.5f);
-//		mCamera->dollyCamera(-2.0f);
+		dolly = -0.5f;
 	}
 
 	if (state[SDL_SCANCODE_LEFT]) {
-		mCamera->truckCamera(-0.025, 0);
+		truck = -0.5;
 	} else if (state[SDL_SCANCODE_RIGHT]) {
-		mCamera->truckCamera(0.025, 0);
+		truck = 0.5;
 	}
+
+	if(state[SDL_SCANCODE_LSHIFT] || state[SDL_SCANCODE_RSHIFT] ) {
+		dolly *= 10;
+		truck *= 10;
+	}
+
+	mCamera->dollyCamera(dolly);
+	mCamera->truckCamera(truck, 0);
 
 	int x = 0, y = 0;
 
@@ -165,14 +176,14 @@ void SDLWindow::display() {
 
 	HandleGLErrorWindow2();
 
-	//	for (CelestialBody* body : mBodies) {
-	//		body->draw();
-	//	}
+	for (CelestialBody* body : mBodies) {
+		MeshDrawer::draw(body, options);
+	}
 
 //	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 //	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-	MeshDrawer::draw(&worldMesh, options);
+//	MeshDrawer::draw(&worldMesh, options);
 
 	// Trocar buffers
 	SDL_GL_SwapWindow(mWindow);
@@ -218,7 +229,7 @@ bool SDLWindow::initOpenGL() {
 	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambArr);
 
 	glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
-	glCullFace(GL_BACK);
+//	glCullFace(GL_BACK);
 
 	return true;
 }

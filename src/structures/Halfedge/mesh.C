@@ -5,10 +5,6 @@
 #include <string.h>
 
 #include "mesh.h"
-#include "edge.h"
-#include "vertex.h"
-#include "triangle.h"
-#include "vertex_parent.h"
 
 #define INITIAL_VERTEX 10000
 #define INITIAL_EDGE 10000
@@ -163,7 +159,7 @@ Vertex* Mesh::deleteParentsChildRelation(Vertex *p1, Vertex *p2) {
 	return vp->get();
 }
 
-Vec3f computeNormal(const Vec3f &p1, const Vec3f &p2, const Vec3f &p3) {
+Vec3f Mesh::computeNormal(const Vec3f &p1, const Vec3f &p2, const Vec3f &p3) {
 	Vec3f v12 = p2;
 	v12 -= p1;
 	Vec3f v23 = p3;

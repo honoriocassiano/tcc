@@ -6,10 +6,10 @@
 #include "../../MultiLevelArray.h"
 #include "../matrix.h"
 
-class Vertex;
-class Edge;
-class Triangle;
-class VertexParent;
+#include "edge.h"
+#include "vertex.h"
+#include "triangle.h"
+#include "vertex_parent.h"
 
 class MeshDrawer;
 
@@ -61,6 +61,8 @@ public:
 	void removeTriangle(Triangle *t);
 
 	void printTrianglesPointers(std::size_t limit = 1000);
+
+	Vec3f computeNormal(const Vec3f &p1, const Vec3f &p2, const Vec3f &p3);
 
 	void printTriangles(std::size_t limit = 1000);
 	void printVertices(std::size_t limit = 1000);

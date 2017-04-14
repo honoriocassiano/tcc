@@ -42,7 +42,7 @@ void PerspectiveCamera::glInit(int w, int h) {
 	if (aspect > 1)
 		asp_angle /= aspect;
 
-	gluPerspective(asp_angle, aspect, 1, 2000.0);
+	gluPerspective(asp_angle, aspect, 1, 20000.0);
 }
 
 // ====================================================================

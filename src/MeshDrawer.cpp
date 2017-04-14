@@ -71,6 +71,7 @@ void MeshDrawer::draw(Mesh* mesh, const DrawOptions& options) {
 
 	if (!options.points) {
 		glBegin(GL_TRIANGLES);
+
 		for (const auto& t : *mesh->triangles) {
 			Vertex* va = (*t)[0];
 			Vertex* vb = (*t)[1];
