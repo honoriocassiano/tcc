@@ -61,7 +61,11 @@ void MeshDrawer::draw(Mesh* mesh, const DrawOptions& options) {
 			drawHalfEdge(mesh);
 		}
 	} else {
-		//		glPolygonMode( GL_FRONT, GL_FILL);
+//				glPolygonMode( GL_FRONT, GL_FILL);
+
+		glColorMaterial(GL_FRONT, GL_DIFFUSE);
+		glEnable(GL_COLOR_MATERIAL);
+
 		glPolygonMode( GL_FRONT_AND_BACK, GL_FILL);
 	}
 
@@ -109,9 +113,9 @@ void MeshDrawer::draw(Mesh* mesh, const DrawOptions& options) {
 				vc->setNormal(n_c);
 			}
 
+			glNormal3f(n_a.x(), n_a.y(), n_a.z());
 			glColor3f(va->getColor().r(), va->getColor().g(),
 					va->getColor().b());
-			glNormal3f(n_a.x(), n_a.y(), n_a.z());
 
 			if (options.noise) {
 				glVertex3f(va->getReal().x(), va->getReal().y(),
@@ -120,9 +124,9 @@ void MeshDrawer::draw(Mesh* mesh, const DrawOptions& options) {
 				glVertex3f(va->get().x(), va->get().y(), va->get().z());
 			}
 
+			glNormal3f(n_b.x(), n_b.y(), n_b.z());
 			glColor3f(vb->getColor().r(), vb->getColor().g(),
 					vb->getColor().b());
-			glNormal3f(n_b.x(), n_b.y(), n_b.z());
 
 			if (options.noise) {
 				glVertex3f(vb->getReal().x(), vb->getReal().y(),
@@ -131,9 +135,9 @@ void MeshDrawer::draw(Mesh* mesh, const DrawOptions& options) {
 				glVertex3f(vb->get().x(), vb->get().y(), vb->get().z());
 			}
 
+			glNormal3f(n_c.x(), n_c.y(), n_c.z());
 			glColor3f(vc->getColor().r(), vc->getColor().g(),
 					vc->getColor().b());
-			glNormal3f(n_c.x(), n_c.y(), n_c.z());
 
 			if (options.noise) {
 				glVertex3f(vc->getReal().x(), vc->getReal().y(),
@@ -226,9 +230,9 @@ Vec3f MeshDrawer::getCentroid(const Triangle* triangle) {
 }
 
 Vec3f MeshDrawer::getNormal(const Triangle* triangle) {
-	auto& A = (*triangle)[0]->get();
-	auto& B = (*triangle)[1]->get();
-	auto& C = (*triangle)[2]->get();
+	auto A = (*triangle)[0]->get();
+	auto B = (*triangle)[1]->get();
+	auto C = (*triangle)[2]->get();
 
 	Vec3f normal;
 
@@ -351,9 +355,9 @@ void MeshDrawer::drawHalfEdge(Mesh* mesh) {
 }
 
 bool MeshDrawer::isClockwise(const Triangle* triangle) {
-	auto& A = (*triangle)[0]->get();
-	auto& B = (*triangle)[1]->get();
-	auto& C = (*triangle)[2]->get();
+	auto A = (*triangle)[0]->get();
+	auto B = (*triangle)[1]->get();
+	auto C = (*triangle)[2]->get();
 
 	Vec3f normal;
 

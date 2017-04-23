@@ -123,6 +123,8 @@ protected:
 
 	virtual Vec3f getVertexPositionWithTransform(Vertex* v);
 
+	void setColor(Vertex* vertex);
+
 //	// TODO Check usage of this function
 //	Bag<Triangle*>* getTriangles() {
 //		return mesh->triangles;

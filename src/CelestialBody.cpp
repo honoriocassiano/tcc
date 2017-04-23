@@ -33,10 +33,15 @@ CelestialBody::CelestialBody(const Vec3f& _center, float _radius) :
 	}
 
 	for (auto i = 0; i < SIZE(basePoints); ++i) {
+
 		baseVertices[i] = addVertex(basePoints[i], 0);
 
-		baseVertices[i]->setElevation(EL(baseVertices[i]));
+		float elevation = EL(baseVertices[i]);
+
+		baseVertices[i]->setElevation(elevation);
 		baseVertices[i]->setActive(true);
+
+		setColor(baseVertices[i]);
 	}
 
 	for (const auto& idx : baseIndices) {
@@ -82,9 +87,14 @@ void CelestialBody::recursiveUpdate(Vertex* v1, Vertex* v2, Vertex* v3,
 //				edge_center[2]->getReal().normalized() };
 
 		for (auto i = 0; i < 3; ++i) {
+
+			float elevation = EL(edge_center[i]);
+
 			edge_center[i]->set(tempCenters[i]);
-			edge_center[i]->setElevation(EL(edge_center[i]));
+			edge_center[i]->setElevation(elevation);
 			edge_center[i]->setActive(true);
+
+			setColor(edge_center[i]);
 		}
 	}
 
@@ -213,6 +223,18 @@ Vec3f CelestialBody::getVertexPositionWithTransform(Vertex* v) {
 	transform.Transform(position);
 
 	return position;
+}
+
+void CelestialBody::setColor(Vertex* vertex) {
+	auto el = vertex->getElevation();
+
+	if (el < 0) {
+		vertex->setColor(Color(0 / 255.0f, 102 / 255.0f, 0 / 255.0f));
+	} else if (el < 0.5) {
+		vertex->setColor(Color(102 / 255.0f, 102 / 255.0f, 51 / 255.0f));
+	} else {
+		vertex->setColor(Color(255 / 255.0f, 255 / 255.0f, 255 / 255.0f));
+	}
 }
 
 #undef SIZE

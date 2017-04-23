@@ -42,7 +42,7 @@ public:
 	double z() const {
 		return position.z();
 	}
-	const Vec3f& get() const {
+	Vec3f get() const {
 		return position;
 	}
 
