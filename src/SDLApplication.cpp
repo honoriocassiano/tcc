@@ -19,22 +19,70 @@ void SDLApplication::ResetScene() {
 
 void SDLApplication::UsePerspectiveProjection(const double zNear,
 		const double zFar) const {
+
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	gluPerspective(50.0, (double) windowWidth / (double) windowHeight, zNear,
+			zFar);
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+	camera->Use();
+
 }
 
 void SDLApplication::UsePerspectiveProjection(
 		const AstronomicalObject* astronomicalObject) const {
+
+	const double distance = astronomicalObject->GetClosestSurfaceDistance(
+			camera->GetPosition());
+	const double zNear = 0.4 * distance;
+	const double zFar = distance
+			+ 3.0 * astronomicalObject->GetBoundingRadius();
+	UsePerspectiveProjection(zNear, zFar);
+
+	// Instead of translating the planet; translate the camera while keeping the planet still
+	// This will prevent OpenGL floating-point precision issues for objects far away from the global origin
+	AstronomicalObject::SetTranslateWhenRendering(false);
+	glLoadIdentity();
+	Camera<double> cam(*camera);
+	cam.SetPosition(cam.GetPosition() - astronomicalObject->GetPosition());
+	cam.Use();
 }
 
 void SDLApplication::UseOrthogonalProjection() const {
+
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	gluOrtho2D(0, windowWidth, 0, windowHeight);
+	glScalef(1.0, -1.0, 1.0);
+	glTranslatef(0.0, -(double) windowHeight, 0.0);
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
 }
 
 void SDLApplication::RestoreProjection() const {
+
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
 }
 
 void SDLApplication::Move(const double frameTime) {
 }
 
+#define min(a, b) (a < b? a : b)
+
 double SDLApplication::GetDistanceToClosestAstronomicalObject() const {
+
+	  return astronomicalObjects.size()
+	    ? min(CAMERA_MAX_DISTANCE_TO_PLANET, astronomicalObjects[0]->GetClosestSurfaceDistance(camera->GetPosition()))
+	    : CAMERA_MAX_DISTANCE_TO_PLANET;
+
 }
 
 void SDLApplication::ProcessRealtimeEvents() {
