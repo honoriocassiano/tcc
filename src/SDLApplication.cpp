@@ -68,7 +68,29 @@ SDLApplication::~SDLApplication() {
 	// TODO Auto-generated destructor stub
 }
 
-void SDLApplication::Update(const Time& dt) {
+struct AstronomicalObjectComparer {
+	Vector3<double> cameraPosition;
+	bool operator()(AstronomicalObject *a, AstronomicalObject *b) {
+		return a->GetClosestSurfaceDistance(cameraPosition)
+				< b->GetClosestSurfaceDistance(cameraPosition);
+	}
+} astronomicalObjectComparer;
+
+bool GetLineSphereIntersection(const Vector3<double> &rayStart,
+		const Vector3<double> &rayDir, const double sphereRadius, double &t0,
+		double &t1) {
+	const double b = 2.0 * rayStart.Dot(rayDir);
+	const double c = rayStart.Dot(rayStart) - sphereRadius * sphereRadius;
+	const double s = b * b - 4.0 * c;
+	if (s < 0.0)
+		return false;
+	const double discriminant = sqrt(s);
+	t0 = -0.5 * b - 0.5 * discriminant;
+	t1 = -0.5 * b + 0.5 * discriminant;
+	return true;
+}
+
+void SDLApplication::Update(const pssg::Time& dt) {
 
 	const double frameTime = dt.getAsSeconds();
 
@@ -101,7 +123,9 @@ void SDLApplication::Update(const Time& dt) {
 
 			// Perform picking
 			Vector2<int> mousePosInt;
-			glfwGetMousePos(&mousePosInt.x, &mousePosInt.y);
+
+			SDL_GetMouseState(&mousePosInt.x, &mousePosInt.y);
+
 			const Vector2<double> mousePos(mousePosInt.x,
 					viewport[3] - mousePosInt.y);
 			Vector3<double> rayStart, rayEnd;
@@ -175,7 +199,7 @@ void SDLApplication::Run() {
 			ProcessEvent(e);
 		}
 
-		Time dt = clock.getTime();
+		pssg::Time dt = clock.getTime();
 
 		Update(dt);
 

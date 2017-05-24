@@ -13,6 +13,8 @@
 
 #include "Time.h"
 
+namespace pssg {
+
 class Clock {
 public:
 	Clock();
@@ -34,5 +36,6 @@ private:
 
 	bool mIsStarted;
 };
+}
 
 #endif /* SRC_CLOCK_H_ */

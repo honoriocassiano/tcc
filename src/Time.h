@@ -12,6 +12,8 @@
 
 #include <stdio.h>
 
+namespace pssg {
+
 class Time {
 public:
 	Time(const std::chrono::system_clock::duration& duration) :
@@ -32,5 +34,6 @@ public:
 private:
 	std::chrono::system_clock::duration mDuration;
 };
+}
 
 #endif /* SRC_TIME_H_ */
