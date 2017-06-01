@@ -11,7 +11,7 @@
 
 #include "../GL/GLee.h"
 #include <GL/gl.h>
-#include <GL/glfw.h>
+#include <GL/glu.h>
 #include <string>
 #include "GLSL/ShaderSources.h"
 

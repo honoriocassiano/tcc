@@ -63,13 +63,11 @@ private:
 			const AstronomicalObject *astronomicalObject) const;
 	void UseOrthogonalProjection() const;
 	void RestoreProjection() const;
-//	void Move(const pssg::Time& dt);
 	double GetDistanceToClosestAstronomicalObject() const;
 	void ProcessRealtimeEvents(const pssg::Time& dt);
 	void ProcessEvent(const SDL_Event& event);
 
 	bool InitSDL();
-	bool InitGL();
 
 public:
 	SDLApplication(int width, int height);
