@@ -8,9 +8,10 @@
 #include "SDLApplication.h"
 
 SDLApplication::SDLApplication(int _width, int _height) :
-		width(_width), height(_height), isRunning(false) {
+		windowWidth(_width), windowHeight(_height), isRunning(false) {
 
 	if (InitSDL()) {
+
 		PerlinNoise<double>::GetPermutationTexture();
 		ShaderManager::Initialize();
 
@@ -167,8 +168,9 @@ void SDLApplication::ResetScene() {
 	animationTimeUnit = ZERO_SECONDS;
 
 	// Delete all astronomical objects
-	for (unsigned int i = 0; i < astronomicalObjects.size(); i++)
+	for (unsigned int i = 0; i < astronomicalObjects.size(); i++) {
 		delete astronomicalObjects[i];
+	}
 	astronomicalObjects.clear();
 
 	RenderSystem();
@@ -357,7 +359,7 @@ void SDLApplication::ProcessRealtimeEvents(const pssg::Time& dt) {
 	// If left-click dragging; rotate the camera
 	if (mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)) {
 		rotation += Vector3<double>(mouseDelta.y, mouseDelta.x,
-						0.0) * 0.005 * CAMERA_ROTATION_SPEED;
+				0.0) * 0.005 * CAMERA_ROTATION_SPEED;
 //		rotation += Vector3<double>(mouseDelta.y, -mouseDelta.x,
 //				0.0) * 0.005 * CAMERA_ROTATION_SPEED;
 	}
@@ -380,9 +382,10 @@ void SDLApplication::ProcessRealtimeEvents(const pssg::Time& dt) {
 	// If any objects exist (index 0 is the closest one after sorting)
 	if (astronomicalObjects.size() > 0) {
 		// If same position; move the camera a little (otherwise we won't know in which direction to move to get out)
-		if (camera->GetPosition() == astronomicalObjects[0]->GetPosition())
+		if (camera->GetPosition() == astronomicalObjects[0]->GetPosition()) {
 			camera->Translate(
 					Vector3<double>(0.0, CAMERA_MIN_DISTANCE_TO_PLANET, 0.0));
+		}
 
 		// If camera below ground level; move the camera back to the planet's surface
 		const auto planetSurfaceDirection = (camera->GetPosition()
@@ -395,10 +398,11 @@ void SDLApplication::ProcessRealtimeEvents(const pssg::Time& dt) {
 		const auto cameraDistanceToPlanet = planetSurfaceDistance
 				- CAMERA_MIN_DISTANCE_TO_PLANET;
 
-		if (cameraDistanceToPlanet < 0.0)
+		if (cameraDistanceToPlanet < 0.0) {
 			camera->SetPosition(
 					camera->GetPosition()
 							- planetSurfaceDirection * cameraDistanceToPlanet);
+		}
 	}
 }
 
@@ -691,7 +695,7 @@ bool SDLApplication::InitSDL() {
 	}
 
 	window = SDL_CreateWindow("TCC", SDL_WINDOWPOS_UNDEFINED,
-	SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_OPENGL);
+	SDL_WINDOWPOS_UNDEFINED, windowWidth, windowHeight, SDL_WINDOW_OPENGL);
 
 	if (!window) {
 		printf("Error creating window: %s\n", SDL_GetError());

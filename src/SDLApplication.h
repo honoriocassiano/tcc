@@ -49,8 +49,6 @@ private:
 	bool showControls;
 	bool reverseTime;
 	TimeUnit animationTimeUnit;
-	int width;
-	int height;
 	bool isRunning;
 	pssg::Clock clock;
 
