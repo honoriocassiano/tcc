@@ -15,6 +15,28 @@ SDLApplication::SDLApplication(int _width, int _height) :
 }
 
 void SDLApplication::ResetScene() {
+
+	Particle2D::DeleteAllParticles();
+	QuadtreeTerrainNode::SetSplitDistanceScale(2.5);
+	Planet::SetRenderOrbits(true);
+	Planet::SetWireframe(false);
+	camera->SetPosition(Vector3<double>(-120.0, 150.0, 420.0));
+	camera->SetOrientation(
+			Matrix3x3<double>::CreateRotationMatrixY(2.32)
+					* Matrix3x3<double>::CreateRotationMatrixX(0.33));
+	hoveredAstronomicalObjectIndex = -1;
+	freezeLod = false;
+	showControls = true;
+	reverseTime = false;
+	animationTimeUnit = ZERO_SECONDS;
+
+	// Delete all astronomical objects
+	for (unsigned int i = 0; i < astronomicalObjects.size(); i++)
+		delete astronomicalObjects[i];
+	astronomicalObjects.clear();
+
+//	TODO Create the system
+
 }
 
 void SDLApplication::UsePerspectiveProjection(const double zNear,
@@ -73,15 +95,92 @@ void SDLApplication::RestoreProjection() const {
 }
 
 void SDLApplication::Move(const double frameTime) {
+
+	const double movementSpeed = 100.0
+			- 99.995 * exp(-0.01 * GetDistanceToClosestAstronomicalObject());
+
+	// Update the mouse position
+	static Vector2<int> mousePositionLast(0, 0);
+	Vector2<int> mousePosition;
+//	glfwGetMousePos(&mousePosition.x, &mousePosition.y);
+	const auto keyboardState = SDL_GetKeyboardState(nullptr);
+	const auto mouseState = SDL_GetMouseState(&mousePosition.x,
+			&mousePosition.y);
+
+	const Vector2<int> mouseDelta = mousePosition - mousePositionLast;
+	mousePositionLast = mousePosition;
+
+	// Calculate camera velocity and rotation
+	const auto velocity = Vector3<double>(
+			keyboardState[SDL_SCANCODE_A] - keyboardState[SDL_SCANCODE_D], 0.0,
+			keyboardState[SDL_SCANCODE_W] - keyboardState[SDL_SCANCODE_S])
+			* movementSpeed;
+
+	const auto angularVelocity = Vector3<double>(
+			keyboardState[SDL_SCANCODE_UP] - keyboardState[SDL_SCANCODE_DOWN],
+			keyboardState[SDL_SCANCODE_LEFT]
+					- keyboardState[SDL_SCANCODE_RIGHT],
+			keyboardState[SDL_SCANCODE_E]
+					- keyboardState[SDL_SCANCODE_Q]) * CAMERA_ROTATION_SPEED;
+
+	Vector3<double> rotation(0.0);
+	Vector3<double> translation(0.0);
+
+	// If left-click dragging; rotate the camera
+	if (mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)) {
+		rotation += Vector3<double>(mouseDelta.y, -mouseDelta.x,
+				0.0) * 0.005 * CAMERA_ROTATION_SPEED;
+	}
+
+	// If middle-click dragging; translate the camera
+	if (mouseState & SDL_BUTTON(SDL_BUTTON_MIDDLE)) {
+		translation += Vector3<double>(mouseDelta.x, mouseDelta.y, 0.0) * -0.01
+				* movementSpeed;
+	}
+
+	// If right-click dragging; translate the camera
+	if (mouseState & SDL_BUTTON(SDL_BUTTON_RIGHT)) {
+		translation.z += (mouseDelta.y + mouseDelta.x) * 0.05 * movementSpeed;
+	}
+
+	// Update the camera
+	camera->RotateEuler(angularVelocity * frameTime + rotation);
+	camera->Translate(velocity * frameTime + translation);
+
+	// If any objects exist (index 0 is the closest one after sorting)
+	if (astronomicalObjects.size() > 0) {
+		// If same position; move the camera a little (otherwise we won't know in which direction to move to get out)
+		if (camera->GetPosition() == astronomicalObjects[0]->GetPosition())
+			camera->Translate(
+					Vector3<double>(0.0, CAMERA_MIN_DISTANCE_TO_PLANET, 0.0));
+
+		// If camera below ground level; move the camera back to the planet's surface
+		const auto planetSurfaceDirection = (camera->GetPosition()
+				- astronomicalObjects[0]->GetPosition()).GetNormalized();
+
+		const auto planetSurfaceDistance =
+				astronomicalObjects[0]->GetClosestSurfaceDistance(
+						camera->GetPosition());
+
+		const auto cameraDistanceToPlanet = planetSurfaceDistance
+				- CAMERA_MIN_DISTANCE_TO_PLANET;
+
+		if (cameraDistanceToPlanet < 0.0)
+			camera->SetPosition(
+					camera->GetPosition()
+							- planetSurfaceDirection * cameraDistanceToPlanet);
+	}
 }
 
 #define min(a, b) (a < b? a : b)
 
 double SDLApplication::GetDistanceToClosestAstronomicalObject() const {
 
-	  return astronomicalObjects.size()
-	    ? min(CAMERA_MAX_DISTANCE_TO_PLANET, astronomicalObjects[0]->GetClosestSurfaceDistance(camera->GetPosition()))
-	    : CAMERA_MAX_DISTANCE_TO_PLANET;
+	return astronomicalObjects.size() ?
+			min(CAMERA_MAX_DISTANCE_TO_PLANET,
+					astronomicalObjects[0]->GetClosestSurfaceDistance(
+							camera->GetPosition())) :
+			CAMERA_MAX_DISTANCE_TO_PLANET;
 
 }
 
@@ -113,7 +212,23 @@ bool SDLApplication::InitSDL() {
 }
 
 SDLApplication::~SDLApplication() {
-	// TODO Auto-generated destructor stub
+	delete camera;
+	delete textTool;
+	delete skybox;
+	delete starfield;
+
+	// Delete all astronomical objects
+	for (unsigned int i = 0; i < astronomicalObjects.size(); i++)
+		delete astronomicalObjects[i];
+	astronomicalObjects.clear();
+
+	// Deinitialize
+	Particle2D::DeleteAllParticles();
+	ShaderManager::Deinitialize();
+
+	// Delete permutation texture
+	const GLuint permTex = PerlinNoise<double>::GetPermutationTexture();
+	glDeleteTextures(1, &permTex);
 }
 
 struct AstronomicalObjectComparer {
