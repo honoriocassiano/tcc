@@ -11,6 +11,7 @@
 #include <cstddef>
 #include <utility>
 #include <vector>
+#include <stdexcept>
 
 template<class T>
 class MultiLevelArray {
