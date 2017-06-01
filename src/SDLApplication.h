@@ -64,10 +64,10 @@ private:
 			const AstronomicalObject *astronomicalObject) const;
 	void UseOrthogonalProjection() const;
 	void RestoreProjection() const;
-	void Move(const double frameTime);
+//	void Move(const pssg::Time& dt);
 	double GetDistanceToClosestAstronomicalObject() const;
-	void ProcessRealtimeEvents();
-	void ProcessEvent(SDL_Event& event);
+	void ProcessRealtimeEvents(const pssg::Time& dt);
+	void ProcessEvent(const SDL_Event& event);
 
 	bool InitSDL();
 	bool InitGL();
