@@ -58,6 +58,7 @@ private:
 	SDL_Window* window;
 	SDL_GLContext glContext;
 
+	void RenderSystem();
 	void ResetScene();
 	void UsePerspectiveProjection(const double zNear, const double zFar) const;
 	void UsePerspectiveProjection(

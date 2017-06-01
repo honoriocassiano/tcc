@@ -10,6 +10,7 @@
 #define SHADERMANAGER_H_INCLUDED
 
 #include "../GL/GLee.h"
+#include <GL/gl.h>
 #include <GL/glfw.h>
 #include <string>
 #include "GLSL/ShaderSources.h"
