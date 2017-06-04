@@ -8,6 +8,7 @@
 #ifndef SRC_SCALE_H_
 #define SRC_SCALE_H_
 
+namespace pssg {
 /**
  * Class to manage scales (time, length...).
  */
@@ -46,5 +47,6 @@ private:
 	static float time;
 
 };
+}
 
 #endif /* SRC_SCALE_H_ */

@@ -7,6 +7,8 @@
 
 #include "SDLApplication.h"
 
+#include "Scale.h"
+
 SDLApplication::SDLApplication(int _width, int _height) :
 		windowWidth(_width), windowHeight(_height), isRunning(false) {
 
@@ -165,7 +167,7 @@ void SDLApplication::ResetScene() {
 	freezeLod = false;
 	showControls = true;
 	reverseTime = false;
-	animationTimeUnit = ZERO_SECONDS;
+//	animationTimeUnit = ZERO_SECONDS;
 
 	// Delete all astronomical objects
 	for (unsigned int i = 0; i < astronomicalObjects.size(); i++) {
@@ -367,7 +369,7 @@ void SDLApplication::ProcessEvent(const SDL_Event& e) {
 		case SDLK_7:
 		case SDLK_8:
 		case SDLK_9:
-			animationTimeUnit = (TimeUnit) (SDL_GetKeyName(key)[0] - '0');
+//			animationTimeUnit = (TimeUnit) (SDL_GetKeyName(key)[0] - '0');
 			break;
 //		case GLFW_KEY_KP_ADD:
 		case SDLK_KP_PLUS:
@@ -593,8 +595,8 @@ void SDLApplication::Update(const pssg::Time& dt) {
 		// If the object is a planet
 		if (Planet *planet = dynamic_cast<Planet*>(astronomicalObjects[i])) {
 			planet->Animate(
-					timeUnitSeconds[animationTimeUnit]
-							* (reverseTime ? -frameTime : frameTime));
+								pssg::Scale::getTime()
+										* (reverseTime ? -frameTime : frameTime));
 			planet->SetCameraPosition(camera->GetPosition());
 
 			// If not frozen; update

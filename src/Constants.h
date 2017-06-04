@@ -13,6 +13,8 @@
 #include <random>
 #include <chrono>
 
+namespace pssg {
+
 /**
  * Define some constants used by program.
  */
@@ -41,6 +43,7 @@ private:
 	static std::mt19937 mtRand;
 };
 
+}
 }
 
 #endif /* SRC_CONSTANTS_H_ */

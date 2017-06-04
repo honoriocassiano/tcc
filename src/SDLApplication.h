@@ -48,7 +48,6 @@ private:
 	bool freezeLod;
 	bool showControls;
 	bool reverseTime;
-	TimeUnit animationTimeUnit;
 	bool isRunning;
 	pssg::Clock clock;
 
