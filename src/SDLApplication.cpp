@@ -37,6 +37,11 @@ void SDLApplication::RenderSystem() {
 	// Create a Mercury-like planet
 	Planet *freddie = new Planet(2.4397);
 	freddie->SetMass(3.3022e5);
+
+	//******************************************************************
+	freddie->SetPosition(Vector3<double>(0, 0, 280));
+	//******************************************************************
+
 	freddie->SetName("Freddie");
 	freddie->SetParent(sun);
 	freddie->GetTerrain()->SetRidgedMultifractalParameters(0.035, 20, 2.1, 2.01,
@@ -56,6 +61,11 @@ void SDLApplication::RenderSystem() {
 	Planet *procedurus = new Planet(6.3710);
 	procedurus->SetMass(5.9736e6);
 	procedurus->SetName("Procedurus");
+
+	//******************************************************************
+	procedurus->SetPosition(Vector3<double>(0, 0, 420));
+	//******************************************************************
+
 	procedurus->SetParent(sun);
 	procedurus->GetTerrain()->SetRidgedMultifractalParameters(0.03, 20, 1.6,
 			2.5, 1.0, 0.87);
@@ -78,27 +88,30 @@ void SDLApplication::RenderSystem() {
 	procedurus->BuildColormap(procedurusColors);
 	astronomicalObjects.push_back(procedurus);
 
-	// Create a Luna-like planet
-	Planet *runar = new Planet(1.737);
-	runar->SetMass(7.3477e4);
-	runar->SetName("Runar");
-	runar->SetParent(procedurus);
-	runar->GetTerrain()->SetRidgedMultifractalParameters(0.02, 20, 1.8, 2.5,
-			1.0, 0.85);
-	runar->SetAnimationOrbit(Matrix3x3<double>::CreateRotationMatrixZ(0.09),
-			50.0, 0.2, 2.66e-6);
-	runar->SetAnimationRotation(Matrix3x3<double>::CreateRotationMatrixZ(0.029),
-			0.0, 2.66e-6);
-	vector<Vector4<double> > runarColors;
-	runarColors.push_back(Vector4<double>(0.25, 0.25, 0.25, 0.05));
-	runarColors.push_back(Vector4<double>(0.95, 0.95, 0.95, 0.95));
-	runar->BuildColormap(runarColors);
-	astronomicalObjects.push_back(runar);
+//	// Create a Luna-like planet
+//	Planet *runar = new Planet(1.737);
+//	runar->SetMass(7.3477e4);
+//	runar->SetName("Runar");
+//	runar->SetParent(procedurus);
+//	runar->GetTerrain()->SetRidgedMultifractalParameters(0.02, 20, 1.8, 2.5,
+//			1.0, 0.85);
+//	runar->SetAnimationOrbit(Matrix3x3<double>::CreateRotationMatrixZ(0.09),
+//			50.0, 0.2, 2.66e-6);
+//	runar->SetAnimationRotation(Matrix3x3<double>::CreateRotationMatrixZ(0.029),
+//			0.0, 2.66e-6);
+//	vector<Vector4<double> > runarColors;
+//	runarColors.push_back(Vector4<double>(0.25, 0.25, 0.25, 0.05));
+//	runarColors.push_back(Vector4<double>(0.95, 0.95, 0.95, 0.95));
+//	runar->BuildColormap(runarColors);
+//	astronomicalObjects.push_back(runar);
 
-	// Create a Mars-like planet
+// Create a Mars-like planet
 	Planet *ares = new Planet(3.3962);
 	ares->SetMass(6.4185e5);
 	ares->SetName("Ares");
+	//******************************************************************
+	ares->SetPosition(Vector3<double>(0, 0, 520));
+	//******************************************************************
 	ares->SetParent(sun);
 	ares->GetTerrain()->SetRidgedMultifractalParameters(0.028, 20, 2.4, 1.95,
 			1.0, 0.85);
@@ -116,6 +129,11 @@ void SDLApplication::RenderSystem() {
 	Planet *ringo = new Planet(60.268);
 	ringo->SetMass(5.6846e8);
 	ringo->SetName("Ringo");
+
+	//******************************************************************
+	ringo->SetPosition(Vector3<double>(0, 0, 800));
+	//******************************************************************
+
 	ringo->SetParent(sun);
 	ringo->GetTerrain()->SetRidgedMultifractalParameters(0.005, 16, 1.5, 2.1,
 			1.0, 1.0);
@@ -136,6 +154,11 @@ void SDLApplication::RenderSystem() {
 	Planet *xb360 = new Planet(25.0);
 	xb360->SetMass(1.0e8);
 	xb360->SetName("XB-360");
+
+	//******************************************************************
+	xb360->SetPosition(Vector3<double>(0, 0, 1100));
+	//******************************************************************
+
 	xb360->SetParent(sun);
 	xb360->GetTerrain()->SetRidgedMultifractalParameters(0.03, 20, 2.2, 2.01,
 			1.0, 0.90);
@@ -167,7 +190,6 @@ void SDLApplication::ResetScene() {
 	freezeLod = false;
 	showControls = true;
 	reverseTime = false;
-//	animationTimeUnit = ZERO_SECONDS;
 
 	// Delete all astronomical objects
 	for (unsigned int i = 0; i < astronomicalObjects.size(); i++) {
@@ -595,8 +617,8 @@ void SDLApplication::Update(const pssg::Time& dt) {
 		// If the object is a planet
 		if (Planet *planet = dynamic_cast<Planet*>(astronomicalObjects[i])) {
 			planet->Animate(
-								pssg::Scale::getTime()
-										* (reverseTime ? -frameTime : frameTime));
+					pssg::Scale::getTime()
+							* (reverseTime ? -frameTime : frameTime));
 			planet->SetCameraPosition(camera->GetPosition());
 
 			// If not frozen; update
