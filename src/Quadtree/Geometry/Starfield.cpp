@@ -33,8 +33,6 @@ Starfield::Starfield(const unsigned int numberOfStars, const float starSizeMin, 
   Billboard billboards[numberOfStars];
   GLushort inds[elementCount];
 
-  Randomizer::Seed(0);
-
   // Create stars
   int index = 0;
   for (unsigned int i = 0; i < numberOfStars; i++)

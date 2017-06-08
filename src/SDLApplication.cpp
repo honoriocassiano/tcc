@@ -9,8 +9,12 @@
 
 #include "Scale.h"
 
+#include <chrono>
+
 SDLApplication::SDLApplication(int _width, int _height) :
 		windowWidth(_width), windowHeight(_height), isRunning(false) {
+
+	Randomizer::Seed(std::chrono::high_resolution_clock::now().time_since_epoch().count());
 
 	if (InitSDL()) {
 
