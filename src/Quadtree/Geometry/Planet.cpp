@@ -48,7 +48,7 @@ Planet::Planet(const double radius) :
 				0.0), rotationAngularVelocity(0.0) {
 	// If first instance to be created
 	if (!instanceCount++) {
-		cylinderAxis = new CylinderAxis(0.076, 3.5, 0.5);
+//		cylinderAxis = new CylinderAxis(0.076, 3.5, 0.5);
 		orbitCircle = new SimpleCircle(1.0, 128);
 	}
 

@@ -72,6 +72,8 @@ double RidgedMultifractalSphericalQuadtreeTerrain::GetTerrainHeight(const Vector
 
     // Get the next "octave" (only true octave if lacunarity = 2.0, right?)
     signal = offset - fabs(PerlinNoise<double>::GetValue(dir.x, dir.y, dir.z));
+//    signal = fabs(PerlinNoise<double>::GetValue(dir.x, dir.y, dir.z));
+//    signal = PerlinNoise<double>::GetValue(dir.x, dir.y, dir.z);
     signal *= signal;
     signal *= weight;
 

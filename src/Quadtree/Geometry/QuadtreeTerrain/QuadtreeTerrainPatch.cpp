@@ -6,7 +6,8 @@
 #include <stdio.h>
 
 #define BUFFER_OFFSET(i) ((char*)0 + (i))
-#define TEXTURE_SIZE        192
+//#define TEXTURE_SIZE        192
+#define TEXTURE_SIZE        256
 #define TEXTURE_SIZE_BORDER (TEXTURE_SIZE + 2)
 #define TEXEL_SIZE          (1.0 / TEXTURE_SIZE)
 #define TEXEL_SIZE_BORDER   (1.0 / TEXTURE_SIZE_BORDER)

@@ -6,7 +6,7 @@
  */
 
 #include "SDLApplication.h"
-
+#include "Presets.h"
 #include "Scale.h"
 
 #include <chrono>
@@ -14,12 +14,14 @@
 SDLApplication::SDLApplication(int _width, int _height) :
 		windowWidth(_width), windowHeight(_height), isRunning(false) {
 
-	Randomizer::Seed(std::chrono::high_resolution_clock::now().time_since_epoch().count());
+	Randomizer::Seed(
+			std::chrono::high_resolution_clock::now().time_since_epoch().count());
 
 	if (InitSDL()) {
 
 		PerlinNoise<double>::GetPermutationTexture();
 		ShaderManager::Initialize();
+		pssg::Presets::Initialize();
 
 		// Create objects
 		fpsCounter = new FpsCounter<double>;
@@ -54,11 +56,12 @@ void SDLApplication::RenderSystem() {
 			280.0, 0.05, 8.27e-7);
 	freddie->SetAnimationRotation(
 			Matrix3x3<double>::CreateRotationMatrixX(0.037), 0.5, 1.24e-6);
-	vector<Vector4<double> > freddieColors;
-	freddieColors.push_back(Vector4<double>(0.80, 0.82, 0.80, 0.05));
-	freddieColors.push_back(Vector4<double>(0.75, 0.70, 0.75, 0.55));
-	freddieColors.push_back(Vector4<double>(0.85, 0.90, 0.95, 0.95));
-	freddie->BuildColormap(freddieColors);
+//	vector<Vector4<double> > freddieColors;
+//	freddieColors.push_back(Vector4<double>(0.80, 0.82, 0.80, 0.05));
+//	freddieColors.push_back(Vector4<double>(0.75, 0.70, 0.75, 0.55));
+//	freddieColors.push_back(Vector4<double>(0.85, 0.90, 0.95, 0.95));
+//	freddie->BuildColormap(freddieColors);
+	freddie->BuildColormap(pssg::Presets::GetRandomPreset());
 	astronomicalObjects.push_back(freddie);
 
 	// Create an Earth-like planet
@@ -79,17 +82,18 @@ void SDLApplication::RenderSystem() {
 			Matrix3x3<double>::CreateRotationMatrixZ(-0.41), 0.0, 7.29e-5);
 	procedurus->SetAtmosphere(7.2, Vector3<float>(0.5, 0.6, 1.0));
 	procedurus->SetClouds(6.56213, 0.6, 0.01);
-	vector<Vector4<double> > procedurusColors;
-	procedurusColors.push_back(Vector4<double>(0.00, 0.00, 0.20, 0.05));
-	procedurusColors.push_back(Vector4<double>(0.00, 0.00, 0.40, 0.35));
-	procedurusColors.push_back(Vector4<double>(0.00, 0.00, 1.00, 0.45));
-	procedurusColors.push_back(Vector4<double>(1.00, 1.00, 0.80, 0.52));
-	procedurusColors.push_back(Vector4<double>(0.10, 0.50, 0.10, 0.55));
-	procedurusColors.push_back(Vector4<double>(0.10, 0.40, 0.10, 0.65));
-	procedurusColors.push_back(Vector4<double>(0.40, 0.40, 0.20, 0.70));
-	procedurusColors.push_back(Vector4<double>(0.60, 0.70, 0.60, 0.85));
-	procedurusColors.push_back(Vector4<double>(0.90, 0.95, 0.95, 0.92));
-	procedurus->BuildColormap(procedurusColors);
+//	vector<Vector4<double> > procedurusColors;
+//	procedurusColors.push_back(Vector4<double>(0.00, 0.00, 0.20, 0.05));
+//	procedurusColors.push_back(Vector4<double>(0.00, 0.00, 0.40, 0.35));
+//	procedurusColors.push_back(Vector4<double>(0.00, 0.00, 1.00, 0.45));
+//	procedurusColors.push_back(Vector4<double>(1.00, 1.00, 0.80, 0.52));
+//	procedurusColors.push_back(Vector4<double>(0.10, 0.50, 0.10, 0.55));
+//	procedurusColors.push_back(Vector4<double>(0.10, 0.40, 0.10, 0.65));
+//	procedurusColors.push_back(Vector4<double>(0.40, 0.40, 0.20, 0.70));
+//	procedurusColors.push_back(Vector4<double>(0.60, 0.70, 0.60, 0.85));
+//	procedurusColors.push_back(Vector4<double>(0.90, 0.95, 0.95, 0.92));
+//	procedurus->BuildColormap(procedurusColors);
+	procedurus->BuildColormap(pssg::Presets::GetEarthPreset());
 	astronomicalObjects.push_back(procedurus);
 
 //	// Create a Luna-like planet
@@ -123,10 +127,12 @@ void SDLApplication::RenderSystem() {
 			520.0, -3.0, 1.06e-7);
 	ares->SetAnimationRotation(Matrix3x3<double>::CreateRotationMatrixX(0.44),
 			0.2, 7.09e-5);
-	vector<Vector4<double> > aresColors;
-	aresColors.push_back(Vector4<double>(0.50, 0.25, 0.25, 0.05));
-	aresColors.push_back(Vector4<double>(0.95, 0.50, 0.40, 0.95));
-	ares->BuildColormap(aresColors);
+//	vector<Vector4<double> > aresColors;
+//	aresColors.push_back(Vector4<double>(0.50, 0.25, 0.25, 0.05));
+//	aresColors.push_back(Vector4<double>(0.95, 0.50, 0.40, 0.95));
+//	aresColors.push_back(Vector4<double>(0, 0, 0, 1.0));
+//	ares->BuildColormap(aresColors);
+	ares->BuildColormap(pssg::Presets::GetRandomPreset());
 	astronomicalObjects.push_back(ares);
 
 	// Create a ringed planet
@@ -148,10 +154,11 @@ void SDLApplication::RenderSystem() {
 					* Matrix3x3<double>::CreateRotationMatrixZ(-0.467), 0.2,
 			1.92e-7);
 	ringo->SetRing(68.0, 128.0, Vector4<double>(0.6, 0.8, 1.0, 1.0));
-	vector<Vector4<double> > ringoColors;
-	ringoColors.push_back(Vector4<double>(0.60, 0.75, 0.95, 0.05));
-	ringoColors.push_back(Vector4<double>(0.70, 0.80, 0.95, 0.95));
-	ringo->BuildColormap(ringoColors);
+//	vector<Vector4<double> > ringoColors;
+//	ringoColors.push_back(Vector4<double>(0.60, 0.75, 0.95, 0.05));
+//	ringoColors.push_back(Vector4<double>(0.70, 0.80, 0.95, 0.95));
+//	ringo->BuildColormap(ringoColors);
+	ringo->BuildColormap(pssg::Presets::GetRandomPreset());
 	astronomicalObjects.push_back(ringo);
 
 	// Create a distant planet
@@ -172,11 +179,12 @@ void SDLApplication::RenderSystem() {
 			Matrix3x3<double>::CreateRotationMatrixY(-0.5)
 					* Matrix3x3<double>::CreateRotationMatrixZ(-0.8), 0.2,
 			1.0e-5);
-	vector<Vector4<double> > xb360Colors;
-	xb360Colors.push_back(Vector4<double>(0.10, 0.10, 0.15, 0.00));
-	xb360Colors.push_back(Vector4<double>(0.10, 0.15, 0.25, 0.70));
-	xb360Colors.push_back(Vector4<double>(0.50, 0.45, 0.85, 1.00));
-	xb360->BuildColormap(xb360Colors);
+//	vector<Vector4<double> > xb360Colors;
+//	xb360Colors.push_back(Vector4<double>(0.10, 0.10, 0.15, 0.00));
+//	xb360Colors.push_back(Vector4<double>(0.10, 0.15, 0.25, 0.70));
+//	xb360Colors.push_back(Vector4<double>(0.50, 0.45, 0.85, 1.00));
+//	xb360->BuildColormap(xb360Colors);
+	xb360->BuildColormap(pssg::Presets::GetRandomPreset());
 	astronomicalObjects.push_back(xb360);
 }
 
@@ -186,10 +194,24 @@ void SDLApplication::ResetScene() {
 	QuadtreeTerrainNode::SetSplitDistanceScale(2.5);
 	Planet::SetRenderOrbits(true);
 	Planet::SetWireframe(false);
-	camera->SetPosition(Vector3<double>(-120.0, 150.0, 420.0));
+
+	// ***********************************************************************************
+//	camera->SetPosition(Vector3<double>(-120.0, 150.0, 420.0));
+//	camera->SetOrientation(
+//			Matrix3x3<double>::CreateRotationMatrixY(2.32)
+//					* Matrix3x3<double>::CreateRotationMatrixX(0.33));
+	camera->SetPosition(
+			Vector3<double>(1.5561839566494833, 3.6942584656225335,
+					518.96080096997184));
 	camera->SetOrientation(
-			Matrix3x3<double>::CreateRotationMatrixY(2.32)
-					* Matrix3x3<double>::CreateRotationMatrixX(0.33));
+			Matrix3x3<double>(-0.32924165152117058, 0.88434557008875381,
+					0.33095747093548017, -0.1520530582368855,
+					0.29627018136846595, -0.9429230335041705,
+					-0.93192263755336613, -0.36077263241035001,
+					0.03692296466000599));
+
+	// ***********************************************************************************
+
 	hoveredAstronomicalObjectIndex = -1;
 	freezeLod = false;
 	showControls = true;
@@ -668,6 +690,7 @@ void SDLApplication::Render() const {
 
 	// Set the clear color and clear the color and depth buffers before rendering
 	glClearColor(0.0, 0.0, 0.0, 1.0);
+//	glClearColor(1.0, 1.0, 1.0, 1.0);
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
 	glColor4d(1.0, 1.0, 1.0, 1.0);
