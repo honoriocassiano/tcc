@@ -91,6 +91,72 @@ void Presets::Initialize() {
 	colors.back().push_back(
 			Vector4<double>(150 / 255.0, 254 / 255.0, 251 / 255.0, 0.95));
 
+	// Io preset
+	colors.push_back(std::vector<Vector4<double>>());
+
+	colors.back().push_back(
+			Vector4<double>(81 / 255.0, 81 / 255.0, 27 / 255.0, 0.05));
+	colors.back().push_back(
+			Vector4<double>(156 / 255.0, 122 / 255.0, 48 / 255.0, 0.05));
+	colors.back().push_back(
+			Vector4<double>(198 / 255.0, 192 / 255.0, 106 / 255.0, 0.45));
+	colors.back().push_back(
+			Vector4<double>(254 / 255.0, 244 / 255.0, 131 / 255.0, 0.8));
+	colors.back().push_back(
+			Vector4<double>(211 / 255.0, 133 / 255.0, 58 / 255.0, 0.98));
+
+	// Europa preset
+	colors.push_back(std::vector<Vector4<double>>());
+
+	colors.back().push_back(
+			Vector4<double>(236 / 255.0, 236 / 255.0, 202 / 255.0, 0.05));
+	colors.back().push_back(
+			Vector4<double>(113 / 255.0, 67 / 255.0, 31 / 255.0, 0.8));
+
+	// Ganymede preset
+	colors.push_back(std::vector<Vector4<double>>());
+
+	colors.back().push_back(
+			Vector4<double>(194 / 255.0, 180 / 255.0, 179 / 255.0, 0.05));
+	colors.back().push_back(
+			Vector4<double>(155 / 255.0, 132 / 255.0, 101 / 255.0, 0.45));
+	colors.back().push_back(
+			Vector4<double>(99 / 255.0, 72 / 255.0, 45 / 255.0, 0.8));
+
+	// Callisto preset
+	colors.push_back(std::vector<Vector4<double>>());
+
+	colors.back().push_back(
+			Vector4<double>(28 / 255.0, 22 / 255.0, 24 / 255.0, 0.05));
+	colors.back().push_back(
+			Vector4<double>(61 / 255.0, 63 / 255.0, 49 / 255.0, 0.35));
+	colors.back().push_back(
+			Vector4<double>(118 / 255.0, 105 / 255.0, 86 / 255.0, 0.65));
+	colors.back().push_back(
+			Vector4<double>(146 / 255.0, 125 / 255.0, 96 / 255.0, 0.85));
+	colors.back().push_back(
+			Vector4<double>(220 / 255.0, 232 / 255.0, 212 / 255.0, 0.95));
+
+	// Titan preset
+	colors.push_back(std::vector<Vector4<double>>());
+
+	colors.back().push_back(
+			Vector4<double>(212 / 255.0, 161 / 255.0, 80 / 255.0, 0.05));
+	colors.back().push_back(
+			Vector4<double>(236 / 255.0, 194 / 255.0, 96 / 255.0, 0.35));
+	colors.back().push_back(
+			Vector4<double>(216 / 255.0, 196 / 255.0, 97 / 255.0, 0.95));
+
+	// Enceladus preset
+	colors.push_back(std::vector<Vector4<double>>());
+
+	colors.back().push_back(
+				Vector4<double>(55 / 255.0, 73 / 255.0, 80 / 255.0, 0.05));
+	colors.back().push_back(
+			Vector4<double>(189 / 255.0, 218 / 255.0, 231 / 255.0, 0.15));
+	colors.back().push_back(
+			Vector4<double>(166 / 255.0, 169 / 255.0, 174 / 255.0, 0.7));
+
 	// Earth preset
 	colors.push_back(std::vector<Vector4<double>>());
 
@@ -103,10 +169,11 @@ void Presets::Initialize() {
 	colors.back().push_back(Vector4<double>(0.40, 0.40, 0.20, 0.70));
 	colors.back().push_back(Vector4<double>(0.60, 0.70, 0.60, 0.85));
 	colors.back().push_back(Vector4<double>(0.90, 0.95, 0.95, 0.92));
+
 }
 
 const std::vector<Vector4<double>>& Presets::GetRandomPreset() {
-	return colors.at(Randomizer::GetInteger(0, colors.size() - 1));
+	return colors.at(Randomizer::GetInteger(0, colors.size() - 2));
 }
 
 const std::vector<Vector4<double> >& Presets::GetEarthPreset() {
