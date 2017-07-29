@@ -9,6 +9,8 @@
 #include "Presets.h"
 #include "Scale.h"
 
+#include <algorithm>
+
 #include <chrono>
 
 SDLApplication::SDLApplication(int _width, int _height) :
@@ -36,24 +38,35 @@ SDLApplication::SDLApplication(int _width, int _height) :
 }
 
 void SDLApplication::RenderSystem() {
-	Star *sun = new Star(50.0);
+	Star *sun = new Star(100.0);
 	sun->SetName("Star");
 	astronomicalObjects.push_back(sun);
 
+	std::vector<double> distances { 300, 525, 750, 1200, 2100 };
+
+//	std::random_shuffle(distances.begin(), distances.end());
+
 	// Create a Mercury-like planet
-	Planet *freddie = new Planet(2.4397);
+//	Planet *freddie = new Planet(2.4397);
+	Planet *freddie = new Planet(8.92846);
 	freddie->SetMass(3.3022e5);
 
 	//******************************************************************
-	freddie->SetPosition(Vector3<double>(0, 0, 280));
+//	freddie->SetPosition(Vector3<double>(0, 0, 280));
+//	freddie->SetPosition(Vector3<double>(0, 0, 300));
+	freddie->SetPosition(Vector3<double>(0, 0, distances[0]));
 	//******************************************************************
 
 	freddie->SetName("Freddie");
 	freddie->SetParent(sun);
 	freddie->GetTerrain()->SetRidgedMultifractalParameters(0.035, 20, 2.1, 2.01,
 			1.0, 0.9);
+//	freddie->SetAnimationOrbit(Matrix3x3<double>::CreateRotationMatrixZ(0.09),
+//			280.0, 0.05, 8.27e-7);
+//	freddie->SetAnimationOrbit(Matrix3x3<double>::CreateRotationMatrixZ(0.09),
+//			300.0, 0.05, 8.27e-7);
 	freddie->SetAnimationOrbit(Matrix3x3<double>::CreateRotationMatrixZ(0.09),
-			280.0, 0.05, 8.27e-7);
+				distances[0], 0.05, 8.27e-7);
 	freddie->SetAnimationRotation(
 			Matrix3x3<double>::CreateRotationMatrixX(0.037), 0.5, 1.24e-6);
 //	vector<Vector4<double> > freddieColors;
@@ -70,18 +83,24 @@ void SDLApplication::RenderSystem() {
 	procedurus->SetName("Procedurus");
 
 	//******************************************************************
-	procedurus->SetPosition(Vector3<double>(0, 0, 420));
+//	procedurus->SetPosition(Vector3<double>(0, 0, 420));
+//	procedurus->SetPosition(Vector3<double>(0, 0, 525));
+	procedurus->SetPosition(Vector3<double>(0, 0, distances[1]));
 	//******************************************************************
 
 	procedurus->SetParent(sun);
 	procedurus->GetTerrain()->SetRidgedMultifractalParameters(0.03, 20, 1.6,
 			2.5, 1.0, 0.87);
+//	procedurus->SetAnimationOrbit(Matrix3x3<double>::CreateIdentityMatrix(),
+//			420.0, 0.0, 1.99e-7);
+//	procedurus->SetAnimationOrbit(Matrix3x3<double>::CreateIdentityMatrix(),
+//			525.0, 0.0, 1.99e-7);
 	procedurus->SetAnimationOrbit(Matrix3x3<double>::CreateIdentityMatrix(),
-			420.0, 0.0, 1.99e-7);
+				distances[1], 0.0, 1.99e-7);
 	procedurus->SetAnimationRotation(
 			Matrix3x3<double>::CreateRotationMatrixZ(-0.41), 0.0, 7.29e-5);
-	procedurus->SetAtmosphere(7.2, Vector3<float>(0.5, 0.6, 1.0));
-	procedurus->SetClouds(6.56213, 0.6, 0.01);
+//	procedurus->SetAtmosphere(7.2, Vector3<float>(0.5, 0.6, 1.0));
+//	procedurus->SetClouds(6.56213, 0.6, 0.01);
 //	vector<Vector4<double> > procedurusColors;
 //	procedurusColors.push_back(Vector4<double>(0.00, 0.00, 0.20, 0.05));
 //	procedurusColors.push_back(Vector4<double>(0.00, 0.00, 0.40, 0.35));
@@ -93,7 +112,8 @@ void SDLApplication::RenderSystem() {
 //	procedurusColors.push_back(Vector4<double>(0.60, 0.70, 0.60, 0.85));
 //	procedurusColors.push_back(Vector4<double>(0.90, 0.95, 0.95, 0.92));
 //	procedurus->BuildColormap(procedurusColors);
-	procedurus->BuildColormap(pssg::Presets::GetEarthPreset());
+//	procedurus->BuildColormap(pssg::Presets::GetEarthPreset());
+	procedurus->BuildColormap(pssg::Presets::GetRandomPreset());
 	astronomicalObjects.push_back(procedurus);
 
 //	// Create a Luna-like planet
@@ -113,18 +133,51 @@ void SDLApplication::RenderSystem() {
 //	runar->BuildColormap(runarColors);
 //	astronomicalObjects.push_back(runar);
 
+//	// Create a ringed planet
+//	Planet *ringo = new Planet(60.268);
+//	ringo->SetMass(5.6846e8);
+//	ringo->SetName("Ringo");
+//
+//	//******************************************************************
+//	ringo->SetPosition(Vector3<double>(0, 0, 520));
+//	//******************************************************************
+//
+//	ringo->SetParent(sun);
+//	ringo->GetTerrain()->SetRidgedMultifractalParameters(0.005, 16, 1.5, 2.1,
+//			1.0, 1.0);
+//	ringo->SetAnimationOrbit(Matrix3x3<double>::CreateRotationMatrixZ(-0.038),
+//			800.0, -0.2, 6.76e-9);
+//	ringo->SetAnimationRotation(
+//			Matrix3x3<double>::CreateRotationMatrixY(0.5)
+//					* Matrix3x3<double>::CreateRotationMatrixZ(-0.467), 0.2,
+//			1.92e-7);
+////	ringo->SetRing(68.0, 128.0, Vector4<double>(0.6, 0.8, 1.0, 1.0));
+////	vector<Vector4<double> > ringoColors;
+////	ringoColors.push_back(Vector4<double>(0.60, 0.75, 0.95, 0.05));
+////	ringoColors.push_back(Vector4<double>(0.70, 0.80, 0.95, 0.95));
+////	ringo->BuildColormap(ringoColors);
+//	ringo->BuildColormap(pssg::Presets::GetRandomPreset());
+//	astronomicalObjects.push_back(ringo);
+
 // Create a Mars-like planet
-	Planet *ares = new Planet(3.3962);
+//	Planet *ares = new Planet(3.3962, 0.506);
+	Planet *ares = new Planet(16, 0.506);
 	ares->SetMass(6.4185e5);
 	ares->SetName("Ares");
 	//******************************************************************
-	ares->SetPosition(Vector3<double>(0, 0, 520));
+//	ares->SetPosition(Vector3<double>(0, 0, 520));
+//	ares->SetPosition(Vector3<double>(0, 0, 750));
+	ares->SetPosition(Vector3<double>(0, 0, distances[2]));
 	//******************************************************************
 	ares->SetParent(sun);
 	ares->GetTerrain()->SetRidgedMultifractalParameters(0.028, 20, 2.4, 1.95,
 			1.0, 0.85);
+//	ares->SetAnimationOrbit(Matrix3x3<double>::CreateRotationMatrixZ(0.035),
+//			520.0, -3.0, 1.06e-7);
+//	ares->SetAnimationOrbit(Matrix3x3<double>::CreateRotationMatrixZ(0.035),
+//			750.0, -3.0, 1.06e-7);
 	ares->SetAnimationOrbit(Matrix3x3<double>::CreateRotationMatrixZ(0.035),
-			520.0, -3.0, 1.06e-7);
+				distances[2], -3.0, 1.06e-7);
 	ares->SetAnimationRotation(Matrix3x3<double>::CreateRotationMatrixX(0.44),
 			0.2, 7.09e-5);
 //	vector<Vector4<double> > aresColors;
@@ -132,7 +185,7 @@ void SDLApplication::RenderSystem() {
 //	aresColors.push_back(Vector4<double>(0.95, 0.50, 0.40, 0.95));
 //	aresColors.push_back(Vector4<double>(0, 0, 0, 1.0));
 //	ares->BuildColormap(aresColors);
-	ares->BuildColormap(pssg::Presets::GetRandomPreset());
+//	ares->BuildColormap(pssg::Presets::GetRandomPreset());
 	astronomicalObjects.push_back(ares);
 
 	// Create a ringed planet
@@ -141,19 +194,25 @@ void SDLApplication::RenderSystem() {
 	ringo->SetName("Ringo");
 
 	//******************************************************************
-	ringo->SetPosition(Vector3<double>(0, 0, 800));
+//	ringo->SetPosition(Vector3<double>(0, 0, 800));
+//	ringo->SetPosition(Vector3<double>(0, 0, 1200));
+	ringo->SetPosition(Vector3<double>(0, 0, distances[3]));
 	//******************************************************************
 
 	ringo->SetParent(sun);
 	ringo->GetTerrain()->SetRidgedMultifractalParameters(0.005, 16, 1.5, 2.1,
 			1.0, 1.0);
+//	ringo->SetAnimationOrbit(Matrix3x3<double>::CreateRotationMatrixZ(-0.038),
+//			800.0, -0.2, 6.76e-9);
+//	ringo->SetAnimationOrbit(Matrix3x3<double>::CreateRotationMatrixZ(-0.038),
+//			1200.0, -0.2, 6.76e-9);
 	ringo->SetAnimationOrbit(Matrix3x3<double>::CreateRotationMatrixZ(-0.038),
-			800.0, -0.2, 6.76e-9);
+				distances[3], -0.2, 6.76e-9);
 	ringo->SetAnimationRotation(
 			Matrix3x3<double>::CreateRotationMatrixY(0.5)
 					* Matrix3x3<double>::CreateRotationMatrixZ(-0.467), 0.2,
 			1.92e-7);
-	ringo->SetRing(68.0, 128.0, Vector4<double>(0.6, 0.8, 1.0, 1.0));
+//	ringo->SetRing(68.0, 128.0, Vector4<double>(0.6, 0.8, 1.0, 1.0));
 //	vector<Vector4<double> > ringoColors;
 //	ringoColors.push_back(Vector4<double>(0.60, 0.75, 0.95, 0.05));
 //	ringoColors.push_back(Vector4<double>(0.70, 0.80, 0.95, 0.95));
@@ -167,14 +226,22 @@ void SDLApplication::RenderSystem() {
 	xb360->SetName("XB-360");
 
 	//******************************************************************
-	xb360->SetPosition(Vector3<double>(0, 0, 1100));
+//	xb360->SetPosition(Vector3<double>(0, 0, 1100));
+//	xb360->SetPosition(Vector3<double>(0, 0, 2100));
+	xb360->SetPosition(Vector3<double>(0, 0, distances[4]));
 	//******************************************************************
 
 	xb360->SetParent(sun);
 	xb360->GetTerrain()->SetRidgedMultifractalParameters(0.03, 20, 2.2, 2.01,
 			1.0, 0.90);
+//	xb360->SetAnimationOrbit(Matrix3x3<double>::CreateRotationMatrixX(-0.04),
+//			1100.0, -0.2, 1.65e-9);
+//	xb360->SetAnimationOrbit(Matrix3x3<double>::CreateRotationMatrixX(-0.04),
+//			2100.0, -0.2, 1.65e-9);
 	xb360->SetAnimationOrbit(Matrix3x3<double>::CreateRotationMatrixX(-0.04),
-			1100.0, -0.2, 1.65e-9);
+			distances[4], -0.2, 1.65e-9);
+
+
 	xb360->SetAnimationRotation(
 			Matrix3x3<double>::CreateRotationMatrixY(-0.5)
 					* Matrix3x3<double>::CreateRotationMatrixZ(-0.8), 0.2,
@@ -192,7 +259,8 @@ void SDLApplication::ResetScene() {
 
 	Particle2D::DeleteAllParticles();
 	QuadtreeTerrainNode::SetSplitDistanceScale(2.5);
-	Planet::SetRenderOrbits(true);
+	Planet::SetRenderOrbits(false);
+//	Planet::SetRenderOrbits(true);
 	Planet::SetWireframe(false);
 
 	// ***********************************************************************************
@@ -418,6 +486,7 @@ void SDLApplication::ProcessEvent(const SDL_Event& e) {
 		case SDLK_8:
 		case SDLK_9:
 //			animationTimeUnit = (TimeUnit) (SDL_GetKeyName(key)[0] - '0');
+			pssg::Scale::setTime(timeUnitSeconds[SDL_GetKeyName(key)[0] - '0']);
 			break;
 //		case GLFW_KEY_KP_ADD:
 		case SDLK_KP_PLUS:
@@ -645,6 +714,9 @@ void SDLApplication::Update(const pssg::Time& dt) {
 			planet->Animate(
 					pssg::Scale::getTime()
 							* (reverseTime ? -frameTime : frameTime));
+
+//			planet->Animate(0);
+
 			planet->SetCameraPosition(camera->GetPosition());
 
 			// If not frozen; update
@@ -667,6 +739,7 @@ void SDLApplication::Run() {
 	while (isRunning) {
 
 		pssg::Time dt = clock.getTime();
+
 		clock.restart();
 
 		ProcessRealtimeEvents(dt);
@@ -689,8 +762,8 @@ void SDLApplication::Render() const {
 	glViewport(0, 0, windowWidth, windowHeight);
 
 	// Set the clear color and clear the color and depth buffers before rendering
-	glClearColor(0.0, 0.0, 0.0, 1.0);
-//	glClearColor(1.0, 1.0, 1.0, 1.0);
+//	glClearColor(0.0, 0.0, 0.0, 1.0);
+	glClearColor(1.0, 1.0, 1.0, 1.0);
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
 	glColor4d(1.0, 1.0, 1.0, 1.0);
@@ -703,6 +776,7 @@ void SDLApplication::Render() const {
 
 	// Render skybox and starfield
 	UsePerspectiveProjection(0.1, 2.0);
+	// TODO Reactivate this
 	skybox->Render();
 	starfield->Render();
 	RestoreProjection();

@@ -54,6 +54,7 @@ private:
 	Vector3<double> CalculateOrbitGravity();
 
 	// Instance variables
+
 	RidgedMultifractalSphericalQuadtreeTerrain *terrain;
 	Atmosphere *atmosphere;
 	CloudLayer *cloudLayer;
@@ -71,6 +72,8 @@ private:
 
 	Vector3<double> orbitGravity;
 
+	float orbitEccentricity;
+
 
 public:
 	// Class methods
@@ -80,7 +83,7 @@ public:
 	static void SetRenderOrbits(const bool value);
 
 	// Constructor
-	Planet(const double radius = 1.0);
+	Planet(const double radius = 1.0, const float orbitEccentricity = 0);
 
 	// Destructor
 	~Planet();

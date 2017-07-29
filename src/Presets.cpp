@@ -26,10 +26,8 @@ void Presets::Initialize() {
 
 	colors.back().push_back(
 			Vector4<double>(135 / 255.0, 109 / 255.0, 60 / 255.0, 0.05));
-
 	colors.back().push_back(
 			Vector4<double>(192 / 255.0, 169 / 255.0, 128 / 255.0, 0.7));
-
 	colors.back().push_back(
 			Vector4<double>(207 / 255.0, 191 / 255.0, 155 / 255.0, 0.9));
 
@@ -173,7 +171,9 @@ void Presets::Initialize() {
 }
 
 const std::vector<Vector4<double>>& Presets::GetRandomPreset() {
-	return colors.at(Randomizer::GetInteger(0, colors.size() - 2));
+//	return colors.at(Randomizer::GetInteger(0, colors.size() - 2));
+//	return colors.at(colors.size() - 6);
+	return colors.at(1);
 }
 
 const std::vector<Vector4<double> >& Presets::GetEarthPreset() {

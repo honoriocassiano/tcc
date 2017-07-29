@@ -11,7 +11,7 @@ bool AstronomicalObject::GetTranslateWhenRendering() {
 }
 
 AstronomicalObject::AstronomicalObject() :
-		parent(0), name(), mass(1.0) {
+		parent(0), name(), mass(1.0), semiMajorAxis(-1.0) {
 }
 
 AstronomicalObject::~AstronomicalObject() {
@@ -38,9 +38,9 @@ void AstronomicalObject::SetParent(AstronomicalObject *newParent) {
 		newParent->children.push_back(this);
 		float distance = (position - newParent->GetPosition()).GetLength();
 
-		semiMajorAxis = (distance / 2) * 1.5;
+//		semiMajorAxis = (distance / 2) * 1.5;
 	} else {
-		semiMajorAxis = 0;
+//		semiMajorAxis = 0;
 	}
 
 	parent = newParent;

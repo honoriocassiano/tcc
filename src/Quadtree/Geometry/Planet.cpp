@@ -17,7 +17,7 @@ unsigned int Planet::instanceCount = 0;
 bool Planet::wireframe = false;
 CylinderAxis* Planet::cylinderAxis = 0;
 SimpleCircle* Planet::orbitCircle = 0;
-bool Planet::renderOrbits = true;
+bool Planet::renderOrbits = false;
 
 float to_rad = M_PI / 180.0;
 
@@ -37,8 +37,9 @@ void Planet::SetRenderOrbits(const bool value) {
 	renderOrbits = value;
 }
 
-Planet::Planet(const double radius) :
-		terrain(new RidgedMultifractalSphericalQuadtreeTerrain(radius)), atmosphere(
+Planet::Planet(const double radius, const float _orbitEccentricity) :
+		orbitEccentricity(_orbitEccentricity), terrain(
+				new RidgedMultifractalSphericalQuadtreeTerrain(radius)), atmosphere(
 				0), cloudLayer(0), planetRing(0), texColormap(0), lightDirection(
 				Vector3<double>(0.0, 0.0, 1.0).GetNormalized()), animationTimeElapsed(
 				0.0), orbitOrientation(
@@ -52,7 +53,7 @@ Planet::Planet(const double radius) :
 		orbitCircle = new SimpleCircle(1.0, 128);
 	}
 
-	// Build initial color map
+// Build initial color map
 	BuildColormap(vector<Vector4<double> >(), 1);
 
 	// Animate once to properly initialize position and orientation
@@ -218,6 +219,11 @@ void Planet::Animate(const double timeDelta) {
 
 	// Update planet position
 	if (parent) {
+
+		if(semiMajorAxis < 0.0 && orbitEccentricity > 0) {
+			semiMajorAxis = (position - parent->GetParentPosition()).GetSquaredLength() * orbitEccentricity;
+		}
+
 		orbitGravity = CalculateOrbitGravity();
 
 		double velocity = calculateVelocity(this->mass, semiMajorAxis,
@@ -246,17 +252,22 @@ void Planet::RenderOrbit() const {
 	if (orbitDistance == 0.0 || !orbitCircle)
 		return;
 
-// Set orbit transformation
+	// Set orbit transformation
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	const Vector3<double> parentPosition = GetParentPosition();
 	glTranslated(parentPosition.x, parentPosition.y, parentPosition.z);
-	glScaled(orbitDistance, orbitDistance, orbitDistance);
+
+	const double semiminorAxis = sqrt(
+			pow(orbitDistance, 2)
+					- pow((orbitDistance * orbitEccentricity), 2));
+
+	glScaled(semiminorAxis, orbitDistance, orbitDistance);
 	const Matrix4x4<double> orbitMatrix = Matrix4x4<double>(orbitOrientation)
 			* Matrix4x4<double>::CreateRotationMatrixX(0.5 * M_PI);
 	glMultTransposeMatrixd(orbitMatrix.data1d);
 
-// Render
+	// Render
 	orbitCircle->Render();
 
 	glPopMatrix();

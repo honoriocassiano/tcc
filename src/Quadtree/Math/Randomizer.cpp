@@ -1,5 +1,7 @@
 #include "Randomizer.h"
 
+#include <cstdlib>
+
 #define RANDOM_MAX  0x7FFF
 #define LCG_A       214013
 #define LCG_C       2531011
@@ -12,6 +14,8 @@ void Randomizer::Seed(const int seed) {
 	state = seed;
 
 	engine = std::mt19937(seed);
+
+	srand(seed);
 }
 
 // Returns a pseudorandom integer [0,RANDOM_MAX]
