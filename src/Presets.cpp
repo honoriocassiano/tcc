@@ -171,9 +171,9 @@ void Presets::Initialize() {
 }
 
 const std::vector<Vector4<double>>& Presets::GetRandomPreset() {
-//	return colors.at(Randomizer::GetInteger(0, colors.size() - 2));
+	return colors.at(Randomizer::GetInteger(0, colors.size() - 1));
 //	return colors.at(colors.size() - 6);
-	return colors.at(1);
+//	return colors.at(1);
 }
 
 const std::vector<Vector4<double> >& Presets::GetEarthPreset() {
