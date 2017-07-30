@@ -1,7 +1,7 @@
 #ifndef PERLIN_H_
 #define PERLIN_H_
 
-#include "structures/vectors.h"
+#include "Quadtree/Math/VectorMath.h"
 
 /**
  * Perlin noise functions.
@@ -12,7 +12,7 @@ public:
 	/**
 	 * Generate noise by vector position.
 	 */
-	static float generate(const Vec3f& position);
+	static float generate(const Vector3f& position);
 
 	/**
 	 * Generate noise by parameter position.
@@ -29,7 +29,7 @@ public:
 	 * @return Value between -1 and 1
 	 */
 	static float generateTurbulence(int octaves, float A, float B,
-			const Vec3f& position);
+			const Vector3f& position);
 
 	/**
 	 * Generate turbulence by parameters position.

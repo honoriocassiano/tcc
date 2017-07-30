@@ -1,16 +1,5 @@
 #include "Debug.h"
-#include <assert.h>
-
-//#include <GL/glut.h>
-#include "structures/vectors.h"
-//#include "Planet.h"
-
-#include "SDLWindow.h"
-
-#include "MultiLevelArray.h"
-
 #include "Greeting.h"
-
 #include "SDLApplication.h"
 
 // =========================================
