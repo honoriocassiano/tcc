@@ -24,7 +24,7 @@ public:
 
 	double getAsSeconds() const {
 		return std::chrono::duration_cast<std::chrono::milliseconds>(mDuration).count()
-				/ 1000.0d;
+				/ 1000.0;
 	}
 
 	long int getAsMilliseconds() const {
