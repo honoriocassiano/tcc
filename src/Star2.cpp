@@ -9,6 +9,7 @@
 
 #include "Quadtree/Math/PerlinNoise.h"
 #include <sstream>
+#include <GL/glut.h>
 #include "Constants.h"
 
 namespace pssg {
@@ -73,6 +74,24 @@ void Star2::Render() const {
 
 //	glPushMatrix();
 //	glTranslatef(position.x, position.y, position.z);
+
+//    position += camera->getTranslation() * camera->getRotation();
+//	position += camera->GetPosition() * camera->GetForwardVector();
+//	position += camera->GetOrientation() * camera->GetPosition();
+
+	glPushAttrib(GL_ENABLE_BIT);
+
+	glEnable(GL_DEPTH_TEST);
+
+	glPushMatrix();
+	glTranslated(position.x, position.y, position.z);
+	glColor3d(sphereColor.x, sphereColor.y, sphereColor.z);
+
+	// TODO Add sphere here
+	glutSolidSphere(radius, 32, 32);
+
+	glPopMatrix();
+	glPopAttrib();
 
 	for (int i = 0; i < effects.size(); i++) {
 		effects[i]->render();

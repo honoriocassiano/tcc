@@ -82,21 +82,22 @@ void SDLApplication::RenderSystem() {
 
 //	sun->AddParticleEffects("data/beam.png", 37500, color1, 0.7f, 1.0f, 6.0f);
 	sun->AddParticleEffects("data/beam.png", 1024, color1, 70.0f, 1.0f, 6.0f);
+//	sun->AddParticleEffects("data/beam.png", 1024, color1, 0.7f, 1.0f, 6.0f);
 	sun->GetEffects(0)->setParticleSpeedRange(minSpeed, maxSpeed);
 	sun->GetEffects(0)->setCamera(this->camera);
 
-	sun->AddParticleEffects("data/explosion.png", 5, color2, 7.0f, 7.0f, 15.0f);
-//	sun->AddParticleEffects("data/explosion.png", 5, color2, 70.0f, 7.0f, 15.0f);
+//	sun->AddParticleEffects("data/explosion.png", 5, color2, 7.0f, 7.0f, 15.0f);
+	sun->AddParticleEffects("data/explosion.png", 5, color2, 70.0f, 7.0f, 15.0f);
 	sun->GetEffects(1)->setParticleSpeedRange(minSpeed, maxSpeed);
 	sun->GetEffects(1)->setCamera(this->camera);
 
-	sun->AddParticleEffects("data/fire2.png", 50, color2, 4.5f, 1.0f, 12.0f);
-//	sun->AddParticleEffects("data/fire2.png", 50, color2, 45.0f, 1.0f, 12.0f);
+//	sun->AddParticleEffects("data/fire2.png", 50, color2, 4.5f, 1.0f, 12.0f);
+	sun->AddParticleEffects("data/fire2.png", 50, color2, 45.0f, 1.0f, 12.0f);
 	sun->GetEffects(2)->setParticleSpeedRange(minSpeed, maxSpeed);
 	sun->GetEffects(2)->setCamera(this->camera);
 
-	sun->AddParticleEffects("data/dust.png", 1000, color3, 5.0f, 1.0f, 12.0f);
-//	sun->AddParticleEffects("data/dust.png", 1000, color3, 50.0f, 1.0f, 12.0f);
+//	sun->AddParticleEffects("data/dust.png", 1000, color3, 5.0f, 1.0f, 12.0f);
+	sun->AddParticleEffects("data/dust.png", 1000, color3, 50.0f, 1.0f, 12.0f);
 	sun->GetEffects(3)->setParticleSpeedRange(minSpeed, maxSpeed);
 	sun->GetEffects(3)->setCamera(this->camera);
 	// ********************************************************

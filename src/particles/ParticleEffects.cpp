@@ -185,7 +185,7 @@ void ParticleEffects::update(float deltaTime) {
 }
 
 void ParticleEffects::render() const {
-	renderSphere();
+//	renderSphere();
 
 	glEnable(GL_BLEND);                 //Habilida blending
 	glDepthMask(GL_FALSE); //N�o permite que as part�culas escrevam no buffer de profundidade
