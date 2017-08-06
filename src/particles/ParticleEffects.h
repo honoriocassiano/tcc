@@ -35,7 +35,7 @@ public:
 	void initParticles();
 
 	virtual void update(float deltaTime);
-	virtual void render();
+	virtual void render()  const;
 
 	bool loadTexture(const std::string& fileName);
 
@@ -55,7 +55,7 @@ private:
 	float maxSpeed;
 	float particleInitialSize;
 	float particleFinalSize;
-	void renderSphere();
+	void renderSphere() const;
 	Vector3d sphereColor;
 	Camera<double>* camera;
 	ParticleInitializer* particleInitializer;

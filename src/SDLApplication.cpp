@@ -8,6 +8,8 @@
 #include "SDLApplication.h"
 #include "Presets.h"
 #include "Scale.h"
+#include "Star2.h"
+#include "particles/Interpolator.h"
 
 #include <algorithm>
 
@@ -38,15 +40,65 @@ SDLApplication::SDLApplication(int _width, int _height) :
 }
 
 void SDLApplication::RenderSystem() {
-	Star *sun = new Star(100.0);
+//	Star *sun = new Star(100.0);
+//	sun->SetName("Star");
+
+//	pssg::Star2 *sun = new pssg::Star2(100.0, Vector3d(), Vector3d(0.8, 0.2, 0.0));
+	pssg::Star2 *sun = new pssg::Star2(100.0, Vector3d(),
+			Vector3d(0.8, 0.2, 0.0));
 	sun->SetName("Star");
+
 	astronomicalObjects.push_back(sun);
+
+	// ********************************************************
+	float minSpeed = 0.05, maxSpeed = 0.15; //experimente aumentar o maxSpeed pra 1.5
+//	float minSpeed = 0.05, maxSpeed = 1.5; //experimente aumentar o maxSpeed pra 1.5
+
+	//Cada textura terá uma cor interpolada associada
+	Interpolator<Vector4d> color1;
+	Interpolator<Vector4d> color2;
+	Interpolator<Vector4d> color3;
+
+	//Interpolar as cores entre esses pontos. O primeiro argumento representa a razão de vida da partícula, variando de 0 (quando nasce) e 1 (quando morre)
+	//#dica: começamos usando uma cor com alpha 0 para suavizar a aparência do nascimento da partícula
+	//Cores de 1 a 3 são para a estrela 1, cores de 4  6 são para a estrela 2
+	color1.addValue(0.00f, Vector4d(1.0f, 0.7f, 0.3f, 0.0f));
+	color1.addValue(0.30f, Vector4d(1.0f, 0.5f, 0.0f, 1.0f));
+	color1.addValue(0.45f, Vector4d(1.0f, 0.5f, 0.0f, 0.9f));
+	color1.addValue(0.60f, Vector4d(1.0f, 0.3f, 0.0f, 0.8f));
+	color1.addValue(0.70f, Vector4d(1.0f, 0.1f, 0.0f, 0.7f));
+	color1.addValue(1.00f, Vector4d(1.0f, 0.0f, 0.0f, 0.0f));
+
+	color2.addValue(0.0f, Vector4d(1, 1, 1, 0));
+	color2.addValue(0.3f, Vector4d(1.0f, 1.0, 0.5, 1.0f));
+	color2.addValue(1.0f, Vector4d(1.0f, 1.0f, 0.0, 0.0f));
+
+	color3.addValue(0.0f, Vector4d(0.5, 0.5, 0, 0));
+	color3.addValue(0.3f, Vector4d(0.8f, 0.3f, 0, 0.25f));
+	color3.addValue(1.0f, Vector4d(1.0f, 0.0f, 0, 0.25f));
+
+	sun->AddParticleEffects("data/beam.png", 37500, color1, 0.7f, 1.0f, 6.0f);
+	sun->GetEffects(0)->setParticleSpeedRange(minSpeed, maxSpeed);
+	sun->GetEffects(0)->setCamera(this->camera);
+
+	sun->AddParticleEffects("data/explosion.png", 5, color2, 7.0f, 7.0f, 15.0f);
+	sun->GetEffects(1)->setParticleSpeedRange(minSpeed, maxSpeed);
+	sun->GetEffects(1)->setCamera(this->camera);
+
+	sun->AddParticleEffects("data/fire2.png", 50, color2, 4.5f, 1.0f, 12.0f);
+	sun->GetEffects(2)->setParticleSpeedRange(minSpeed, maxSpeed);
+	sun->GetEffects(2)->setCamera(this->camera);
+
+	sun->AddParticleEffects("data/dust.png", 1000, color3, 5.0f, 1.0f, 12.0f);
+	sun->GetEffects(3)->setParticleSpeedRange(minSpeed, maxSpeed);
+	sun->GetEffects(3)->setCamera(this->camera);
+	// ********************************************************
 
 	std::vector<double> distances { 300, 525, 750, 1200, 2100 };
 
 //	std::random_shuffle(distances.begin(), distances.end());
 
-	// Create a Mercury-like planet
+// Create a Mercury-like planet
 //	Planet *freddie = new Planet(2.4397);
 	Planet *freddie = new Planet(8.92846);
 	freddie->SetMass(3.3022e5);
@@ -66,7 +118,7 @@ void SDLApplication::RenderSystem() {
 //	freddie->SetAnimationOrbit(Matrix3x3<double>::CreateRotationMatrixZ(0.09),
 //			300.0, 0.05, 8.27e-7);
 	freddie->SetAnimationOrbit(Matrix3x3<double>::CreateRotationMatrixZ(0.09),
-				distances[0], 0.05, 8.27e-7);
+			distances[0], 0.05, 8.27e-7);
 	freddie->SetAnimationRotation(
 			Matrix3x3<double>::CreateRotationMatrixX(0.037), 0.5, 1.24e-6);
 //	vector<Vector4<double> > freddieColors;
@@ -96,7 +148,7 @@ void SDLApplication::RenderSystem() {
 //	procedurus->SetAnimationOrbit(Matrix3x3<double>::CreateIdentityMatrix(),
 //			525.0, 0.0, 1.99e-7);
 	procedurus->SetAnimationOrbit(Matrix3x3<double>::CreateIdentityMatrix(),
-				distances[1], 0.0, 1.99e-7);
+			distances[1], 0.0, 1.99e-7);
 	procedurus->SetAnimationRotation(
 			Matrix3x3<double>::CreateRotationMatrixZ(-0.41), 0.0, 7.29e-5);
 //	procedurus->SetAtmosphere(7.2, Vector3<float>(0.5, 0.6, 1.0));
@@ -177,7 +229,7 @@ void SDLApplication::RenderSystem() {
 //	ares->SetAnimationOrbit(Matrix3x3<double>::CreateRotationMatrixZ(0.035),
 //			750.0, -3.0, 1.06e-7);
 	ares->SetAnimationOrbit(Matrix3x3<double>::CreateRotationMatrixZ(0.035),
-				distances[2], -3.0, 1.06e-7);
+			distances[2], -3.0, 1.06e-7);
 	ares->SetAnimationRotation(Matrix3x3<double>::CreateRotationMatrixX(0.44),
 			0.2, 7.09e-5);
 //	vector<Vector4<double> > aresColors;
@@ -207,7 +259,7 @@ void SDLApplication::RenderSystem() {
 //	ringo->SetAnimationOrbit(Matrix3x3<double>::CreateRotationMatrixZ(-0.038),
 //			1200.0, -0.2, 6.76e-9);
 	ringo->SetAnimationOrbit(Matrix3x3<double>::CreateRotationMatrixZ(-0.038),
-				distances[3], -0.2, 6.76e-9);
+			distances[3], -0.2, 6.76e-9);
 	ringo->SetAnimationRotation(
 			Matrix3x3<double>::CreateRotationMatrixY(0.5)
 					* Matrix3x3<double>::CreateRotationMatrixZ(-0.467), 0.2,
@@ -240,7 +292,6 @@ void SDLApplication::RenderSystem() {
 //			2100.0, -0.2, 1.65e-9);
 	xb360->SetAnimationOrbit(Matrix3x3<double>::CreateRotationMatrixX(-0.04),
 			distances[4], -0.2, 1.65e-9);
-
 
 	xb360->SetAnimationRotation(
 			Matrix3x3<double>::CreateRotationMatrixY(-0.5)
@@ -724,6 +775,9 @@ void SDLApplication::Update(const pssg::Time& dt) {
 				planet->UpdateFrustum();
 				planet->Update();
 			}
+		} else if (pssg::Star2 *star =
+				dynamic_cast<pssg::Star2*>(astronomicalObjects[i])) {
+			star->Update(frameTime);
 		}
 
 		RestoreProjection();
