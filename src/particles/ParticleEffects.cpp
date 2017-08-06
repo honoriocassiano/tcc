@@ -82,7 +82,8 @@ void ParticleEffects::renderSphere() const {
 	Vector3d position = particleInitializer->origin;
 
 //    position += camera->getTranslation() * camera->getRotation();
-	position += camera->GetPosition() * camera->GetForwardVector();
+//	position += camera->GetPosition() * camera->GetForwardVector();
+//	position += camera->GetOrientation() * camera->GetPosition();
 
 	glPushAttrib(GL_ENABLE_BIT);
 
@@ -111,7 +112,9 @@ void ParticleEffects::buildVertexBuffer() {
 //        cameraRotation = glm::quat( glm::radians(camera->getRotation()) );
 //    	cameraRotation = glm::quat( glm::radians(camera->GetLeftVector()Rotation()) );
 //		cameraRotation = camera->GetForwardVector();
-		cameraRotation = camera->GetOrientation();
+
+//		cameraRotation = camera->GetOrientation();
+		cameraRotation = Matrix3x3d::CreateIdentityMatrix();
 
 		for (unsigned int i = 0; i < particles.size(); ++i) {
 			Particle& particle = particles[i];
