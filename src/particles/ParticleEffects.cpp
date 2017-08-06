@@ -170,8 +170,6 @@ void ParticleEffects::update(float deltaTime) {
 //        particle.size = glm::lerp<float>( particleInitialSize, particleFinalSize, lifeRatio);
 		particle.size = particleInitialSize
 				+ lifeRatio * (particleFinalSize - particleInitialSize);
-
-//		std::printf("(%lf, %lf, %lf)\n", particle.position.x, particle.position.y, particle.position.z);
 	}
 
 	buildVertexBuffer();
@@ -196,8 +194,8 @@ void ParticleEffects::render() const {
 //	glVertexPointer(3, GL_FLOAT, sizeof(Vertex), &(vertexBuffer[0].pos));
 //	glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex), &(vertexBuffer[0].tex0));
 	glVertexPointer(3, GL_DOUBLE, sizeof(Vertex), &(vertexBuffer[0].pos));
-	glTexCoordPointer(2, GL_DOUBLE, sizeof(Vertex), &(vertexBuffer[0].tex0));
-	glColorPointer(4, GL_FLOAT, sizeof(Vertex), &(vertexBuffer[0].diffuse));
+	glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex), &(vertexBuffer[0].tex0));
+	glColorPointer(4, GL_DOUBLE, sizeof(Vertex), &(vertexBuffer[0].diffuse));
 
 	glDrawArrays( GL_QUADS, 0, vertexBuffer.size());
 

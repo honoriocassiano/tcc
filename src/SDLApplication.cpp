@@ -51,8 +51,8 @@ void SDLApplication::RenderSystem() {
 	astronomicalObjects.push_back(sun);
 
 	// ********************************************************
-	float minSpeed = 0.05, maxSpeed = 0.15; //experimente aumentar o maxSpeed pra 1.5
-//	float minSpeed = 0.05, maxSpeed = 1.5; //experimente aumentar o maxSpeed pra 1.5
+	float minSpeed = 0.05, maxSpeed = 0.15;
+//	float minSpeed = 0.05, maxSpeed = 1.5;
 
 	//Cada textura terá uma cor interpolada associada
 	Interpolator<Vector4d> color1;
