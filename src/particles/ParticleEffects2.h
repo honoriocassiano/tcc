@@ -1,6 +1,10 @@
-#ifndef PARTICLE_EFFECTS_H
+#ifndef PARTICLE_EFFECTS2_H
 
-#define PARTICLE_EFFECTS_H
+#define PARTICLE_EFFECTS2_H
+
+#define GL_GLEXT_PROTOTYPES
+#include "../Quadtree/GL/GLee.h"
+#include <GL/gl.h>
 
 #include "Interpolator.h"
 #include "ParticleInitializer.h"
@@ -8,8 +12,13 @@
 
 #include "../Quadtree/Application/Camera.h"
 
+#ifdef NUM_FBOS
+#undef NUM_FBOS
+#endif
 
-class ParticleEffects {
+#define NUM_FBOS 1
+
+class ParticleEffects2 {
 public:
 
 	struct Vertex {
@@ -25,8 +34,8 @@ public:
 	typedef std::vector<Vertex> VertexBuffer;
 	typedef Interpolator<Vector4d> ColorInterpolator;
 
-	ParticleEffects(GLuint numParticles, float minLifeTime, float maxLifeTime, ParticleInitializer* initializer = nullptr);
-	virtual ~ParticleEffects();
+	ParticleEffects2(GLsizei numParticles, float minLifeTime, float maxLifeTime, ParticleInitializer* initializer = nullptr);
+	virtual ~ParticleEffects2();
 
 	void setCamera(Camera<double>* camera);
 	void setParticleInitializer(ParticleInitializer *initializer);
@@ -49,6 +58,10 @@ protected:
 	void initParticle(Particle& particle);
 	void initParticleAt(std::size_t position);
 
+	void initTextures();
+
+	static GLuint fbos[NUM_FBOS];
+
 private:
 	float minLifeTime;
 	float maxLifeTime;
@@ -64,5 +77,19 @@ private:
 	ParticleBuffer particles;
 	VertexBuffer vertexBuffer;
 	GLuint textureID;
+
+	GLsizei numParticles;
+
+	GLuint positionID;
+	GLuint speedID;
+
+	// al = Age, Lifetime
+	GLuint alID;
+//	GLuint ageID;
+//	GLuint lifetimeID;
+//
+//	GLuint ageBufferID;
+//	GLuint lifetimeBufferID;
+
 };
 #endif // PARTICLE_EFFECTS_H

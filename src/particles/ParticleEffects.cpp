@@ -8,13 +8,17 @@
 #include <iostream>
 
 ParticleEffects::ParticleEffects(GLuint numParticles, float minLifeTime,
-		float maxLifeTime) :
-		camera(NULL), particleInitializer(NULL), colorInterpolator(
+		float maxLifeTime, ParticleInitializer* initializer) :
+		camera(NULL), particleInitializer(initializer), colorInterpolator(
 				Vector4d(1.0f)), textureID(0), sphereColor(Vector3d(0.0f)), particleInitialSize(
 				1), particleFinalSize(0), minLifeTime(minLifeTime), maxLifeTime(
 				maxLifeTime), minSpeed(1.0f), maxSpeed(2.0f) {
 	particles.resize(numParticles, Particle());
 	vertexBuffer.resize(numParticles * 4, Vertex());
+
+	if(particleInitializer) {
+		initParticles();
+	}
 }
 
 ParticleEffects::~ParticleEffects() {
@@ -68,7 +72,8 @@ void ParticleEffects::initParticle(Particle& particle) {
 
 void ParticleEffects::initParticles() {
 	for (unsigned int i = 0; i < particles.size(); ++i) {
-		initParticle(particles[i]);
+//		initParticle(particles[i]);
+		initParticleAt(i);
 	}
 }
 
@@ -108,13 +113,14 @@ void ParticleEffects::buildVertexBuffer() {
 //	Vector3d cameraRotation;
 	Matrix3x3d cameraRotation;
 
-	if (camera != NULL) {
+	if (camera) {
+
 //        cameraRotation = glm::quat( glm::radians(camera->getRotation()) );
 //    	cameraRotation = glm::quat( glm::radians(camera->GetLeftVector()Rotation()) );
 //		cameraRotation = camera->GetForwardVector();
 
-//		cameraRotation = camera->GetOrientation();
-		cameraRotation = Matrix3x3d::CreateIdentityMatrix();
+		cameraRotation = camera->GetOrientation();
+//		cameraRotation = Matrix3x3d::CreateIdentityMatrix();
 
 		for (unsigned int i = 0; i < particles.size(); ++i) {
 			Particle& particle = particles[i];
@@ -126,27 +132,27 @@ void ParticleEffects::buildVertexBuffer() {
 			Vertex& v3 = vertexBuffer[vertexIndex + 3];   //Superior esquerdo
 
 			//Inferior esquerdo
-			v0.pos = cameraRotation * particle.position
-					+ ((-x - y) * particle.size);
-			v0.tex0 = Vector2f(0, 1);
+			v0.pos = particle.position
+					+ cameraRotation * ((-x - y) * particle.size);
+//			v0.tex0 = Vector2f(0, 1);
 			v0.diffuse = particle.color;
 
 			//Inferior direito
-			v1.pos = cameraRotation * particle.position
-					+ ((x - y) * particle.size);
-			v1.tex0 = Vector2f(1, 1);
+			v1.pos = particle.position
+					+ cameraRotation * ((x - y) * particle.size);
+//			v1.tex0 = Vector2f(1, 1);
 			v1.diffuse = particle.color;
 
 			//Superior direito
-			v2.pos = cameraRotation * particle.position
-					+ ((x + y) * particle.size);
-			v2.tex0 = Vector2f(1, 0);
+			v2.pos = particle.position
+					+ cameraRotation * ((x + y) * particle.size);
+//			v2.tex0 = Vector2f(1, 0);
 			v2.diffuse = particle.color;
 
 			//Superior esquerdo
-			v3.pos = cameraRotation * particle.position
-					+ ((-x + y) * particle.size);
-			v3.tex0 = Vector2f(0, 0);
+			v3.pos = particle.position
+					+ cameraRotation * ((-x + y) * particle.size);
+//			v3.tex0 = Vector2f(0, 0);
 			v3.diffuse = particle.color;
 		}
 	}
@@ -211,4 +217,28 @@ void ParticleEffects::render() const {
 	glPopMatrix();
 	glDepthMask(GL_TRUE);
 	glDisable(GL_BLEND);
+}
+
+void ParticleEffects::initParticleAt(std::size_t position) {
+	assert(particleInitializer != NULL);
+
+	auto& particle = particles[position];
+
+	auto vertexIndex = position * 4;
+	auto speed = Randomizer::GetFloat(minSpeed, maxSpeed);
+	auto lifetime = Randomizer::GetFloat(minLifeTime, maxLifeTime);
+
+	particle.lifeTime = lifetime;
+	particle.speed = speed;
+	particleInitializer->initParticle(particle);
+
+	Vertex& v0 = vertexBuffer[vertexIndex + 0];   //Inferior esquerdo
+	Vertex& v1 = vertexBuffer[vertexIndex + 1];   //Inferior direito
+	Vertex& v2 = vertexBuffer[vertexIndex + 2];   //Superior direito
+	Vertex& v3 = vertexBuffer[vertexIndex + 3];   //Superior esquerdo
+
+	v0.tex0 = Vector2f(0, 1);
+	v1.tex0 = Vector2f(1, 1);
+	v2.tex0 = Vector2f(1, 0);
+	v3.tex0 = Vector2f(0, 0);
 }

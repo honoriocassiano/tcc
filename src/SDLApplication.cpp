@@ -9,6 +9,7 @@
 #include "Presets.h"
 #include "Scale.h"
 #include "Star2.h"
+#include "Star3.h"
 #include "particles/Interpolator.h"
 
 #include <algorithm>
@@ -46,6 +47,8 @@ void SDLApplication::RenderSystem() {
 //	pssg::Star2 *sun = new pssg::Star2(100.0, Vector3d(), Vector3d(0.8, 0.2, 0.0));
 	pssg::Star2 *sun = new pssg::Star2(100.0, Vector3d(),
 			Vector3d(0.8, 0.2, 0.0));
+//	pssg::Star3 *sun = new pssg::Star3(100.0, Vector3d(),
+//				Vector3d(0.8, 0.2, 0.0));
 	sun->SetName("Star");
 
 	astronomicalObjects.push_back(sun);
@@ -77,19 +80,23 @@ void SDLApplication::RenderSystem() {
 	color3.addValue(0.3f, Vector4d(0.8f, 0.3f, 0, 0.25f));
 	color3.addValue(1.0f, Vector4d(1.0f, 0.0f, 0, 0.25f));
 
-	sun->AddParticleEffects("data/beam.png", 37500, color1, 0.7f, 1.0f, 6.0f);
+//	sun->AddParticleEffects("data/beam.png", 37500, color1, 0.7f, 1.0f, 6.0f);
+	sun->AddParticleEffects("data/beam.png", 1024, color1, 70.0f, 1.0f, 6.0f);
 	sun->GetEffects(0)->setParticleSpeedRange(minSpeed, maxSpeed);
 	sun->GetEffects(0)->setCamera(this->camera);
 
 	sun->AddParticleEffects("data/explosion.png", 5, color2, 7.0f, 7.0f, 15.0f);
+//	sun->AddParticleEffects("data/explosion.png", 5, color2, 70.0f, 7.0f, 15.0f);
 	sun->GetEffects(1)->setParticleSpeedRange(minSpeed, maxSpeed);
 	sun->GetEffects(1)->setCamera(this->camera);
 
 	sun->AddParticleEffects("data/fire2.png", 50, color2, 4.5f, 1.0f, 12.0f);
+//	sun->AddParticleEffects("data/fire2.png", 50, color2, 45.0f, 1.0f, 12.0f);
 	sun->GetEffects(2)->setParticleSpeedRange(minSpeed, maxSpeed);
 	sun->GetEffects(2)->setCamera(this->camera);
 
 	sun->AddParticleEffects("data/dust.png", 1000, color3, 5.0f, 1.0f, 12.0f);
+//	sun->AddParticleEffects("data/dust.png", 1000, color3, 50.0f, 1.0f, 12.0f);
 	sun->GetEffects(3)->setParticleSpeedRange(minSpeed, maxSpeed);
 	sun->GetEffects(3)->setCamera(this->camera);
 	// ********************************************************
@@ -778,6 +785,9 @@ void SDLApplication::Update(const pssg::Time& dt) {
 		} else if (pssg::Star2 *star =
 				dynamic_cast<pssg::Star2*>(astronomicalObjects[i])) {
 			star->Update(frameTime);
+//		} else if (pssg::Star3 *star =
+//						dynamic_cast<pssg::Star3*>(astronomicalObjects[i])) {
+//					star->Update(frameTime);
 		}
 
 		RestoreProjection();

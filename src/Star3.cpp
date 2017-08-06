@@ -1,11 +1,11 @@
 /*
- * Star2.cpp
+ * Star3.cpp
  *
  *  Created on: 3 de ago de 2017
  *      Author: cassiano
  */
 
-#include "Star2.h"
+#include "Star3.h"
 
 #include "Quadtree/Math/PerlinNoise.h"
 #include <sstream>
@@ -15,16 +15,16 @@ namespace pssg {
 
 #define BOUNDING_RADIUS_SCALE 4.4
 
-Star2::Star2(double radius, Vector3d position, Vector3d _sphereColor) :
+Star3::Star3(double radius, Vector3d position, Vector3d _sphereColor) :
 		radius(radius), initializer(radius, position), sphereColor(_sphereColor) {
 }
 
-void Star2::AddParticleEffects(const char *textureFilename,
+void Star3::AddParticleEffects(const char *textureFilename,
 		unsigned int nParticles,
-		const ParticleEffects::ColorInterpolator& colors,
+		const ParticleEffects2::ColorInterpolator& colors,
 		float particleInitialSize, float minLifeTime, float maxLifeTime) {
 	effects.push_back(
-			new ParticleEffects(nParticles, minLifeTime, maxLifeTime, &initializer));
+			new ParticleEffects2(nParticles, minLifeTime, maxLifeTime, &initializer));
 //	effects.back()->setParticleInitializer(&initializer);
 	effects.back()->loadTexture(textureFilename);
 	effects.back()->setColorInterplator(colors);
@@ -32,25 +32,25 @@ void Star2::AddParticleEffects(const char *textureFilename,
 	effects.back()->setParticleSizeRange(particleInitialSize, 0);
 }
 
-Vector3d Star2::GetClosestSurfacePoint(const Vector3d &pos) const {
+Vector3d Star3::GetClosestSurfacePoint(const Vector3d &pos) const {
 	return TransformToWorld(TransformToLocal(pos, true).GetNormalized(), false)
 			* radius;
 }
 
-double Star2::GetHoverBoundingRadius() const {
+double Star3::GetHoverBoundingRadius() const {
 	return radius;
 }
 
-double Star2::GetBoundingRadius() const {
+double Star3::GetBoundingRadius() const {
 	// Greater than the actual radius, to cover the glow
 	return radius * BOUNDING_RADIUS_SCALE;
 }
 
-double Star2::GetClosestSurfaceDistance(const Vector3<double> &pos) const {
+double Star3::GetClosestSurfaceDistance(const Vector3<double> &pos) const {
 	return TransformToLocal(pos, true).GetLength() - radius;
 }
 
-void Star2::Update(GLfloat deltaTime) {
+void Star3::Update(GLfloat deltaTime) {
 	GLfloat _mvmatrix[16];
 
 	glGetFloatv(GL_MODELVIEW_MATRIX, _mvmatrix);
@@ -69,7 +69,7 @@ void Star2::Update(GLfloat deltaTime) {
 	}
 }
 
-void Star2::Render() const {
+void Star3::Render() const {
 
 //	glPushMatrix();
 //	glTranslatef(position.x, position.y, position.z);
@@ -81,7 +81,7 @@ void Star2::Render() const {
 //	glPopMatrix();
 }
 
-ParticleEffects *Star2::GetEffects(int index) {
+ParticleEffects2 *Star3::GetEffects(int index) {
 	return effects[index];
 }
 

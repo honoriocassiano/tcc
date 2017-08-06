@@ -16,6 +16,7 @@ enum
   SKYBOX_TEXTURE,
   STAR,
   SUN,
+  PARTICLE_UPDATE,
   NONE
 };
 

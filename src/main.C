@@ -2,7 +2,10 @@
 #include "Greeting.h"
 #include "SDLApplication.h"
 
+
 #include <GL/glut.h>
+
+
 
 // =========================================
 // =========================================
