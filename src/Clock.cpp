@@ -10,6 +10,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+namespace pssg {
+
 Clock::Clock() :
 //		mPreviousTime(0), mCurrentTime(0), mIsStarted(false) {
 		mIsStarted(false) {
@@ -57,4 +59,6 @@ Time Clock::getTime() {
 	} else {
 		return Time(std::chrono::system_clock::duration::zero());
 	}
+}
+
 }

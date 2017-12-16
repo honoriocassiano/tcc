@@ -56,7 +56,7 @@ float Perlin::generateTurbulence(int octaves, float A, float B, float x, float y
 }
 
 void Perlin::shuffle() {
-	std::shuffle(&permutation[0], &permutation[256], constant::Shuffle::getRandom());
+	std::shuffle(&permutation[0], &permutation[256], pssg::constant::Shuffle::getRandom());
 
 	for (int i = 0; i < 256; ++i) {
 		perm[256 + i] = perm[i] = Perlin::permutation[i];
@@ -169,14 +169,14 @@ float Perlin::generate(float x, float y, float z) {
 	return lerp(w, a8_5, a4_1);
 }
 
-float Perlin::generate(const Vec3f& position) {
+float Perlin::generate(const Vector3f& position) {
 
-	return Perlin::generate(position.x(), position.y(), position.z());
+	return Perlin::generate(position.x, position.y, position.z);
 }
 
 float Perlin::generateTurbulence(int octaves, float A, float B,
-		const Vec3f& position) {
+		const Vector3f& position) {
 
-	return Perlin::generateTurbulence(octaves, A, B, position.x(), position.y(),
-			position.z());
+	return Perlin::generateTurbulence(octaves, A, B, position.x, position.y,
+			position.z);
 }

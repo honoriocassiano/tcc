@@ -21,8 +21,18 @@ find_package(OpenGL REQUIRED)
 find_package(SDL2 REQUIRED)
 find_package(SOIL REQUIRED)
 
+
+find_package(GLUT REQUIRED)
+
+
 include_directories(${OPENGL_INCLUDE_DIR})
 include_directories(${SDL2_INCLUDE_DIR})
 include_directories(${SOIL_INCLUDE_DIR})
 
-target_link_libraries(TCC ${OPENGL_LIBRARIES} ${SDL2_LIBRARY} ${SOIL_LIBRARY})
+
+include_directories(${GLUT_INCLUDE_DIR})
+
+
+
+# target_link_libraries(TCC ${OPENGL_LIBRARIES} ${SDL2_LIBRARY} ${SOIL_LIBRARY})
+target_link_libraries(TCC ${OPENGL_LIBRARIES} ${SDL2_LIBRARY} ${SOIL_LIBRARY} ${GLUT_LIBRARIES})

@@ -12,6 +12,8 @@
 
 #include <stdio.h>
 
+namespace pssg {
+
 class Time {
 public:
 	Time(const std::chrono::system_clock::duration& duration) :
@@ -22,7 +24,7 @@ public:
 
 	double getAsSeconds() const {
 		return std::chrono::duration_cast<std::chrono::milliseconds>(mDuration).count()
-				/ 1000.0d;
+				/ 1000.0;
 	}
 
 	long int getAsMilliseconds() const {
@@ -32,5 +34,6 @@ public:
 private:
 	std::chrono::system_clock::duration mDuration;
 };
+}
 
 #endif /* SRC_TIME_H_ */

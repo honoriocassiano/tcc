@@ -7,9 +7,12 @@
 
 #include "Scale.h"
 
-float Scale::length = 1000000;						/**< @hideinitializer */
-float Scale::time = 20000000;						/**< @hideinitializer */
-//float Scale::time = 20000000;						/**< @hideinitializer */
+namespace pssg {
+
+float Scale::length = 1000000; /**< @hideinitializer */
+//float Scale::time = 20000000; /**< @hideinitializer */
+//float Scale::time = 60 * 60 * 24; /**< @hideinitializer */
+float Scale::time = 0; /**< @hideinitializer */
 
 float Scale::getLength() {
 	return length;
@@ -25,4 +28,5 @@ float Scale::getTime() {
 
 void Scale::setTime(float value) {
 	time = value;
+}
 }

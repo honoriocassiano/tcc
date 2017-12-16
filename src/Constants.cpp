@@ -7,6 +7,8 @@
 
 #include "Constants.h"
 
+namespace pssg {
+
 namespace constant {
 
 unsigned int Shuffle::seed = 0;
@@ -36,4 +38,6 @@ std::mt19937 Shuffle::getRandom() {
 
 	return mtRand;
 }
+}
+
 }
